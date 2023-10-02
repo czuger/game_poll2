@@ -1,4 +1,9 @@
 # Byte-compiled / optimized / DLL files
+.idea
+discord_token.txt
+mongo.json
+.python-version
+
 __pycache__/
 *.py[cod]
 *$py.class
