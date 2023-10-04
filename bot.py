@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from pymongo import MongoClient
 from libs.poll_manager import PollManager
+from libs.poll_manager import register_poll_message
+from libs.poll_manager import get_poll_message
 
 intents = discord.Intents.default()  # This will enable all non-privileged intents
 intents.members = True  # This is a privileged intent, must be enabled in the portal too.
@@ -16,7 +18,6 @@ games_collection = db["games"]
 polls_collection = db["poll_instance"]
 
 pm = PollManager(client)
-current_message = None
 
 
 # My button class is a call for when someone presses a button
@@ -25,7 +26,8 @@ class PollButton(discord.ui.Button):
         pm.toggle_vote(interaction.channel, interaction.user, self.custom_id)
 
         message = pm.get_players_string(interaction.channel)
-        await current_message.edit(content=message)
+        poll_message = get_poll_message(interaction.channel)
+        await poll_message.edit(content=message)
         await interaction.response.send_message(content="Done", ephemeral=True, delete_after=1)
 
 
@@ -34,7 +36,8 @@ class OtherButton(discord.ui.Button):
         pm.toggle_others(interaction.channel, interaction.user, self.custom_id)
 
         message = pm.get_players_string(interaction.channel)
-        await current_message.edit(content=message)
+        poll_message = get_poll_message(interaction.channel)
+        await poll_message.edit(content=message)
         await interaction.response.send_message(content="Done", ephemeral=True, delete_after=1)
 
 
@@ -72,8 +75,6 @@ class PollView(discord.ui.View):
 
 @bot.command()
 async def create(ctx):
-    global current_message
-
     """Crée un sondage basé sur les jeux de la collection 'games'."""
     games = [game["name"] for game in games_collection.find()]
     games.sort()
@@ -94,23 +95,26 @@ async def create(ctx):
 
     # buttons = [discord.ui.Button(style=1, label=game, custom_id=game) for game in games]
     view = PollView(games, ctx.channel.id)
+    # TODO : use https://discordpy.readthedocs.io/en/stable/api.html?highlight=embed#discord.Embed instead of text
+    # ctx.send(embed=embed, view=view)
     message = pm.get_players_string(ctx.channel)
-    current_message = await ctx.send(message, view=view)
+    poll_message = await ctx.send(message, view=view)
+    register_poll_message(ctx.channel, poll_message)
 
 
-@bot.command()
-async def show(ctx):
-    """Affiche le sondage actuel pour le canal avec des boutons pour voter."""
-    poll = polls_collection.find_one({"channel_id": str(ctx.channel.id)})
-
-    if not poll:
-        await ctx.send("Aucun sondage n'a été créé pour ce canal.")
-        return
-
-    games = poll["games"]
-
-    view = PollView(games, ctx.channel.id)
-    await ctx.send("Votez pour votre jeu préféré :", view=view)
+# @bot.command()
+# async def show(ctx):
+#     """Affiche le sondage actuel pour le canal avec des boutons pour voter."""
+#     poll = polls_collection.find_one({"channel_id": str(ctx.channel.id)})
+#
+#     if not poll:
+#         await ctx.send("Aucun sondage n'a été créé pour ce canal.")
+#         return
+#
+#     games = poll["games"]
+#
+#     view = PollView(games, ctx.channel.id)
+#     await ctx.send("Votez pour votre jeu préféré :", view=view)
 
 
 @bot.event

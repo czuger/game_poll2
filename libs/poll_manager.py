@@ -2,6 +2,19 @@ class NoPoll(RuntimeError):
     pass
 
 
+polls_messages_dict = {}
+
+
+def register_poll_message(channel, message):
+    global polls_messages_dict
+
+    polls_messages_dict[channel.id] = message
+
+
+def get_poll_message(channel):
+    return polls_messages_dict[channel.id]
+
+
 class PollManager:
 
     def __init__(self, mongo_client):
