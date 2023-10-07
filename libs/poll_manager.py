@@ -1,3 +1,6 @@
+import discord
+
+
 class NoPoll(RuntimeError):
     pass
 
@@ -29,92 +32,78 @@ class PollManager:
 
         return poll
 
-    def toggle_vote(self, channel, user, game_voted):
-        user_id = user.id
-
+    def toggle_activity(self, channel, user, activity, activity_type):
+        user_key = str(user.id)
         poll = self.get_poll(channel.id)
 
-        user_key = str(user_id)
-        if game_voted not in poll["choices"]:
-            poll["choices"][game_voted] = [user_key]
+        activities = poll[activity_type]
+
+        if activity not in activities:
+            activities[activity] = [user_key]
         else:
-            players = poll["choices"][game_voted]
-            if user_key in players:
-                players.remove(user_key)
+            if user_key in activities[activity]:
+                activities[activity].remove(user_key)
             else:
-                players.append(user_key)
+                activities[activity].append(user_key)
 
-            poll["choices"][game_voted] = players
+        self.polls_collection.update_one({"channel_id": str(channel.id)}, {"$set": {activity_type: activities}})
 
-        self.polls_collection.update_one({"channel_id": str(channel.id)}, {"$set": {"choices": poll["choices"]}})
+    def toggle_vote(self, channel, user, game_voted):
+        self.toggle_activity(channel, user, game_voted, "choices")
 
     def toggle_others(self, channel, user, other_action):
-        user_id = user.id
+        self.toggle_activity(channel, user, other_action, "others")
 
-        poll = self.get_poll(channel.id)
-
-        user_key = str(user_id)
-        if other_action not in poll["others"]:
-            poll["others"][other_action] = [user_key]
-        else:
-            players = poll["others"][other_action]
-            if user_key in players:
-                players.remove(user_key)
+    def __get_user_names(self, users_ids, guild):
+        user_names = []
+        for id in users_ids:
+            user = guild.get_member(int(id))
+            if user:
+                name = user.display_name
+                user_names.append(name)
             else:
-                players.append(user_key)
+                print(f"Cant find user for {id}")
+        return sorted(user_names)
 
-            poll["others"][other_action] = players
+    def __process_data_into_embed(self, data, guild, label_mapping=None):
+        info_list = []
 
-        self.polls_collection.update_one({"channel_id": str(channel.id)}, {"$set": {"others": poll["others"]}})
+        for key, users_ids in data.items():
+            if len(users_ids) == 0:
+                continue
+            user_names = self.__get_user_names(users_ids, guild)
+            users_line = ",".join(user_names)
+            if label_mapping and key in label_mapping:
+                priority = label_mapping[key].get('priority', 5)
+                label = label_mapping[key]['label']
+            else:
+                priority = 5  # Default priority for items without a label mapping.
+                label = key
+            info_list.append((priority, label, users_line))
 
-    def get_players_string(self, channel):
+        return info_list
+
+    def get_players_embed(self, channel):
         poll = self.get_poll(channel.id)
 
-        lines = ["A quoi allez vous jouer ?"]
-
-        # Autres activités
         activity_labels = {
-            "other": "Autres activités",
-            "tournament": "En tournoi",
-            "pkey": "🔑 Présent avec les clés"
+            "other": {"label": "Autres activités", "priority": 10},
+            "tournament": {"label": "En tournoi", "priority": 9},
+            "pkey": {"label": "🔑 Présent avec les clés", "priority": 1}
         }
 
-        for activity, users_ids in poll["others"].items():
+        embed = discord.Embed(title="A quoi allez vous jouer ?", color=discord.Color.blue())
 
-            if len(users_ids) == 0:
-                continue
-
-            user_names = []
-            for id in users_ids:
-                user = channel.guild.get_member(int(id))
-                if user:
-                    name = user.display_name
-                    user_names.append(name)
-                else:
-                    print(f"Cant find user for {id}")
-
-            user_names.sort()
-            users_line = ",".join(user_names)
-            activity_name = activity_labels[activity]
-            lines.append(f"{activity_name} : {users_line}")
+        # Autres activités
+        activities_info = self.__process_data_into_embed(poll["others"], channel.guild, activity_labels)
 
         # Joueurs
-        for game, users_ids in poll["choices"].items():
+        activities_info += self.__process_data_into_embed(poll["choices"], channel.guild, None)
 
-            if len(users_ids) == 0:
-                continue
+        # Sorting by priority and then by label
+        activities_info.sort(key=lambda x: (x[0], x[1]))
 
-            user_names = []
-            for id in users_ids:
-                user = channel.guild.get_member(int(id))
-                if user:
-                    name = user.display_name
-                    user_names.append(name)
-                else:
-                    print(f"Cant find user for {id}")
+        for _, label, users_line in activities_info:
+            embed.add_field(name="", value=label + " : " + users_line, inline=False)
 
-            user_names.sort()
-            users_line = ",".join(user_names)
-            lines.append(f"{game} : {users_line}")
-
-        return "\n".join(lines)
+        return embed

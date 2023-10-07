@@ -25,9 +25,9 @@ class PollButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         pm.toggle_vote(interaction.channel, interaction.user, self.custom_id)
 
-        message = pm.get_players_string(interaction.channel)
+        embed = pm.get_players_embed(interaction.channel)
         poll_message = get_poll_message(interaction.channel)
-        await poll_message.edit(content=message)
+        await poll_message.edit(embed=embed)
         await interaction.response.send_message(content="Done", ephemeral=True, delete_after=1)
 
 
@@ -35,9 +35,10 @@ class OtherButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         pm.toggle_others(interaction.channel, interaction.user, self.custom_id)
 
-        message = pm.get_players_string(interaction.channel)
+
+        embed = pm.get_players_embed(interaction.channel)
         poll_message = get_poll_message(interaction.channel)
-        await poll_message.edit(content=message)
+        await poll_message.edit(embed=embed)
         await interaction.response.send_message(content="Done", ephemeral=True, delete_after=1)
 
 
@@ -97,8 +98,8 @@ async def create(ctx):
     view = PollView(games, ctx.channel.id)
     # TODO : use https://discordpy.readthedocs.io/en/stable/api.html?highlight=embed#discord.Embed instead of text
     # ctx.send(embed=embed, view=view)
-    message = pm.get_players_string(ctx.channel)
-    poll_message = await ctx.send(message, view=view)
+    embed = pm.get_players_embed(ctx.channel)
+    poll_message = await ctx.send("Activités", embed=embed, view=view)
     register_poll_message(ctx.channel, poll_message)
 
 
