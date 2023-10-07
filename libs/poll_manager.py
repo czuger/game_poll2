@@ -104,6 +104,6 @@ class PollManager:
         activities_info.sort(key=lambda x: (x[0], x[1]))
 
         for _, label, users_line in activities_info:
-            embed.add_field(name="", value=label + " : " + users_line, inline=False)
+            embed.add_field(name="", value="**" + label + "** : " + users_line, inline=False)
 
         return embed
