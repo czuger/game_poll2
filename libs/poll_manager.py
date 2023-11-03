@@ -8,16 +8,6 @@ class NoPoll(RuntimeError):
 polls_messages_dict = {}
 
 
-def register_poll_message(channel, message):
-    global polls_messages_dict
-
-    polls_messages_dict[channel.id] = message
-
-
-def get_poll_message(channel):
-    return polls_messages_dict[channel.id]
-
-
 class PollManager:
 
     def __init__(self, mongo_client):
@@ -27,10 +17,12 @@ class PollManager:
 
     def get_poll(self, channel_id):
         poll = self.polls_collection.find_one({"channel_id": str(channel_id)})
-        if not poll:
-            raise NoPoll
-
         return poll
+
+    async def refresh_poll_messages(self, message_refresh_function):
+        print("in")
+        for poll in self.polls_collection.find():
+            await message_refresh_function(poll["channel_id"], poll["message_id"])
 
     def toggle_activity(self, channel, user, activity, activity_type):
         user_key = str(user.id)
@@ -84,8 +76,6 @@ class PollManager:
         return info_list
 
     def get_players_embed(self, channel):
-        poll = self.get_poll(channel.id)
-
         activity_labels = {
             "other": {"label": "Autres activités", "priority": 10},
             "tournament": {"label": "En tournoi", "priority": 9},
@@ -94,14 +84,16 @@ class PollManager:
 
         embed = discord.Embed(title="A quoi allez vous jouer ?", color=discord.Color.blue())
 
-        # Autres activités
-        activities_info = self.__process_data_into_embed(poll["others"], channel.guild, activity_labels)
+        activities_info = []
+        poll = self.get_poll(channel.id)
+        if poll:
+            # Autres activités
+            activities_info = self.__process_data_into_embed(poll["others"], channel.guild, activity_labels)
+            # Joueurs
+            activities_info += self.__process_data_into_embed(poll["choices"], channel.guild, None)
 
-        # Joueurs
-        activities_info += self.__process_data_into_embed(poll["choices"], channel.guild, None)
-
-        # Sorting by priority and then by label
-        activities_info.sort(key=lambda x: (x[0], x[1]))
+            # Sorting by priority and then by label
+            activities_info.sort(key=lambda x: (x[0], x[1]))
 
         for _, label, users_line in activities_info:
             embed.add_field(name="", value="**" + label + "** : " + users_line, inline=False)
