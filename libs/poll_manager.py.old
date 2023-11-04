@@ -22,7 +22,8 @@ class PollManager:
     async def refresh_poll_messages(self, message_refresh_function):
         print("in")
         for poll in self.polls_collection.find():
-            await message_refresh_function(poll["channel_id"], poll["message_id"])
+            if "message_id" in poll:
+                await message_refresh_function(poll["channel_id"], poll["message_id"])
 
     def toggle_activity(self, channel, user, activity, activity_type):
         user_key = str(user.id)
