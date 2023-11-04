@@ -18,4 +18,6 @@ class PollButton(discord.ui.Button):
         # print(embed)
         poll_message = interaction.message
         await poll_message.edit(embed=embed)
-        await interaction.response.send_message(content="Done", ephemeral=True, delete_after=1)
+        # await interaction.response.send_message(content="Done", ephemeral=True, delete_after=1)
+
+        await interaction.response.defer(thinking=False)
