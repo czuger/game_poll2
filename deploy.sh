@@ -1,1 +1,1 @@
-rsync -rv . --exclude ".git" --exclude ".idea" pw:~/python/gamebot/
+rsync -rv . --exclude ".git" --exclude ".idea" --exclude "mongo.json" pw:~/python/gamebot/
