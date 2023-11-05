@@ -1,7 +1,7 @@
 import discord
 
-from libs.poll import Poll
 from libs.games import Games
+from libs.poll import Poll
 
 
 def __get_user_names(users_ids, guild):

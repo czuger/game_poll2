@@ -1,6 +1,3 @@
-import libs.database as database
-
-
 class Guild:
 
     def __init__(self, db, record):

@@ -1,15 +1,21 @@
 import discord
 
+from libs.games import Games
 from libs.poll import Poll
 from libs.poll_buttons import PollButton
 
 
 class PollView(discord.ui.View):
 
-    def __init__(self, poll: Poll):
+    def __init__(self):
         super().__init__(timeout=None)
 
-        games = [(v["short"], k, discord.ButtonStyle.primary) for k, v in poll.games.items()]
+    async def initialize_view(self, db, poll: Poll):
+
+        games_db_object = await Games.get_games(db)
+
+        games = [(games_db_object.dict[game_key]["short"], game_uuid, discord.ButtonStyle.primary) for
+                 game_uuid, game_key in poll.games.items()]
         games.sort()
 
         packet_size = 5
@@ -19,13 +25,14 @@ class PollView(discord.ui.View):
         for packet in packets:
             for game in packet:
                 (short, key, style) = game
-                button = PollButton(poll, short, key, row)
+                button = PollButton(db, poll, short, key, row)
                 self.add_item(button)
 
             row += 1
 
         for k, v in poll.others.items():
-            button = PollButton(poll, v["short"], k, row, emoji=v["emoji"], style=discord.ButtonStyle.primary)
+            button = PollButton(db, poll, Poll.OTHER_BUTTONS[v]["short"], k, row, emoji=Poll.OTHER_BUTTONS[v]["emoji"],
+                                style=discord.ButtonStyle.primary)
             self.add_item(button)
 
         # key = OtherButton(label="Ajouter", custom_id="add", emoji='➕', style=discord.ButtonStyle.success, row=2)
@@ -35,3 +42,5 @@ class PollView(discord.ui.View):
         # key = OtherButton(label="Plateau", custom_id="board", emoji='👑', style=discord.ButtonStyle.success, row=2)
         # # action_row = discord.ActionRow(key)
         # self.add_item(key)
+
+        return self
