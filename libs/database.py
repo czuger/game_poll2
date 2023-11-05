@@ -13,11 +13,16 @@ class DbConnector:
         self.db_connection = None
         self.db_name = None
 
+        self.admins = None
+
     def __initialize_collections(self):
         self.db = self.db_connection[self.db_name]
+
         self.games = self.db["games"]
         self.polls = self.db["poll_instances"]
         self.guilds = self.db["guilds"]
+
+        self.admins = self.db["admins"]
 
     def connect(self, db_name="games_database"):
         with open("mongo.json", "r") as f:

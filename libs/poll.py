@@ -1,8 +1,15 @@
 import uuid
 
 import discord
-
+import logging
+from logging.handlers import RotatingFileHandler
 from libs.guild import Guild
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+rotating_handler = RotatingFileHandler("/var/log/gamebot.log", maxBytes=20 * 1024 * 1024, backupCount=2)
+logger.addHandler(rotating_handler)
 
 
 class PollNotFound(RuntimeError):
