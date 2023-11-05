@@ -1,7 +1,6 @@
 {
-  "key": "firefly_1",
-  "short": "Firefly",
-  "long": "Firefly",
-  "desc": "",
-  "type": "Plateau"
+    "key": "GAMB_firefly_224234391",
+    "long": "Firefly",
+    "short": "Firefly",
+    "type": "Board"
 }

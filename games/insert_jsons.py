@@ -3,7 +3,7 @@ import json
 from pymongo import MongoClient
 import uuid
 
-with open("../mongo.json", "r") as f:
+with open("../config/mongo.json", "r") as f:
     mongo = json.load(f)
 
 client = MongoClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])

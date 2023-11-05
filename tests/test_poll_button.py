@@ -6,8 +6,8 @@ from unittest.mock import Mock
 
 import discord
 
-from libs.poll import Poll
-from libs.poll_buttons import PollButton
+from libs.poll.poll import Poll
+from libs.poll.poll_buttons import PollButton
 from tests.base import BotTest
 
 
@@ -25,16 +25,25 @@ class TestPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_channel = MagicMock(id=123456, guild=discord_guild)
 
         message = AsyncMock(edit=AsyncMock())
-        message.edit.return_value(0)
+        # message.edit.return_value(0)
 
         response = AsyncMock(defer=AsyncMock())
-        response.defer.return_value(0)
+        # response.defer.return_value(0)
 
-        interaction = MagicMock(channel=discord_channel, user=user, message = message, response=response)
+        interaction = MagicMock(channel=discord_channel, user=user, message=message, response=response)
 
+        # Toggle first button (should be game)
         poll = await Poll.find_or_create(self.db, discord_channel)
-        game_key = list(poll.games.keys())[0]
+        button_id = list(poll.buttons.keys())[0]
 
-        pb = PollButton(self.db, poll, "foo", game_key, 0)
+        pb = PollButton(self.db, poll, "foo", button_id, 0)
+        await pb.callback(interaction)
+        self.assertIsInstance(pb, discord.ui.Button)
+
+        # Toggle last button (should be other)
+        poll = await Poll.find_or_create(self.db, discord_channel)
+        button_id = list(poll.buttons.keys())[-1]
+
+        pb = PollButton(self.db, poll, "foo", button_id, 0)
         await pb.callback(interaction)
         self.assertIsInstance(pb, discord.ui.Button)

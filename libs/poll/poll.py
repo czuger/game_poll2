@@ -1,4 +1,4 @@
-import uuid
+import random
 
 import discord
 
@@ -19,20 +19,22 @@ class Poll:
                   "style": discord.ButtonStyle.success},
     }
 
+    BUTTONS_KEY = "buttons"
     SELECTIONS_KEY = "selections"
     MESSAGE_ID_KEY = "message_id"
 
     def __init__(self, db, record):
         self.key = record["key"]
-        self.games = record["games"]
-        self.others = record["others"]
 
-        if self.SELECTIONS_KEY in record:
-            self.selection = record[self.SELECTIONS_KEY]
-        else:
-            self.selection = []
+        self.selections = record.get(self.SELECTIONS_KEY, {})
+        self.buttons = record.get(self.BUTTONS_KEY, {})
 
         self.db = db
+
+    @staticmethod
+    def make_btn_key(game_key, typ):
+        tmp_gk = game_key[5:-1] if typ == "G" else game_key
+        return "BTN" + typ + "_" + tmp_gk + "_" + format(random.randrange(0, 10 ** 9), '09d')
 
     @classmethod
     async def find_or_create(cls, db, channel):
@@ -43,22 +45,16 @@ class Poll:
         try:
             poll = await cls.find(db, key)
         except PollNotFound:
-            games = {}
-            for k in guild.games:
-                games[str(uuid.uuid4())] = k
+            buttons = {}
+            for btn_type in ((guild.games, "G"), (cls.OTHER_BUTTONS.keys(), "O")):
+                (btn_list, btn_marker) = btn_type
 
-            others = {}
-            for k in cls.OTHER_BUTTONS:
-                others[str(uuid.uuid4())] = k
+                for k in btn_list:
+                    buttons[cls.make_btn_key(k, btn_marker)] = k
 
-            existing_record = {
-                "key": key,
-                "games": games,
-                "others": others
-            }
-
-            db.polls.insert_one(existing_record)
-            poll = cls(db, existing_record)
+            record = {"key": key, cls.BUTTONS_KEY: buttons}
+            db.polls.insert_one(record)
+            poll = cls(db, record)
 
         return poll
 
@@ -79,19 +75,14 @@ class Poll:
     def toggle_button_id(self, user, button_id):
         user_key = str(user.id)
 
-        poll_db_obj = self.get_poll_db_object()
+        game_key = self.buttons[button_id]
 
-        if self.SELECTIONS_KEY in poll_db_obj:
-            selections = poll_db_obj[self.SELECTIONS_KEY]
+        if game_key not in self.selections:
+            self.selections[game_key] = [user_key]
         else:
-            selections = {}
-
-        if button_id not in selections:
-            selections[button_id] = [user_key]
-        else:
-            if user_key in selections[button_id]:
-                selections[button_id].remove(user_key)
+            if user_key in self.selections[game_key]:
+                self.selections[game_key].remove(user_key)
             else:
-                selections[button_id].append(user_key)
+                self.selections[game_key].append(user_key)
 
-        self.db.polls.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: selections}})
+        self.db.polls.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})
