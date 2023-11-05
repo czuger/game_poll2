@@ -2,22 +2,31 @@ import json
 
 from pymongo import MongoClient
 
-# Configuration de la connexion MongoDB
 
-db = None
-games_collection = None
-polls_collection = None
+class DbConnector:
+    def __init__(self):
+        self.db = None
+        self.games = None
+        self.polls = None
+        self.guilds = None
 
+        self.db_connection = None
+        self.db_name = None
 
-def initialize_db():
-    global db
-    global games_collection
-    global polls_collection
+    def __initialize_collections(self):
+        self.db = self.db_connection[self.db_name]
+        self.games = self.db["games"]
+        self.polls = self.db["poll_instances"]
+        self.guilds = self.db["guilds"]
 
-    with open("mongo.json", "r") as f:
-        mongo = json.load(f)
+    def connect(self, db_name="games_database"):
+        with open("mongo.json", "r") as f:
+            mongo = json.load(f)
 
-    client = MongoClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
-    db = client["games_database"]
-    games_collection = db["games"]
-    polls_collection = db["poll_instances"]
+        self.db_connection = MongoClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
+        self.db_name = db_name
+        self.__initialize_collections()
+
+    def clear_db(self):
+        self.db_connection.drop_database(self.db_name)
+        self.__initialize_collections()

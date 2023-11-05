@@ -5,6 +5,10 @@ import discord
 from libs.guild import Guild
 
 
+class PollNotFound(RuntimeError):
+    pass
+
+
 class Poll:
     OTHER_BUTTONS = {
         "present_with_key": {"key": "present_with_key", "short": "Clés", "long": "Présent avec les clés", "emoji": "🔑",
@@ -18,31 +22,29 @@ class Poll:
     SELECTIONS_KEY = "selections"
     MESSAGE_ID_KEY = "message_id"
 
-    def __init__(self, polls, record):
+    def __init__(self, db, record):
         self.key = record["key"]
         self.games = record["games"]
         self.others = record["others"]
 
-        self.polls = polls
+        self.db = db
 
     @classmethod
-    async def find_or_create(cls, database, channel):
+    async def find_or_create(cls, db, channel):
         key = str(channel.id)
 
-        guild = await Guild.find_or_create(database, channel)
-        polls = database["poll_instances"]
+        guild = await Guild.find_or_create(db, channel)
 
-        query = {"key": key}
-        existing_record = polls.find_one(query)
-
-        if not existing_record:
+        try:
+            poll = await cls.find(db, key)
+        except PollNotFound:
             games = {}
-            for _, v in guild.games.items():
-                games[str(uuid.uuid4())] = v
+            for k in guild.games:
+                games[str(uuid.uuid4())] = k
 
             others = {}
-            for _, v in cls.OTHER_BUTTONS.items():
-                others[str(uuid.uuid4())] = v
+            for k in cls.OTHER_BUTTONS:
+                others[str(uuid.uuid4())] = k
 
             existing_record = {
                 "key": key,
@@ -50,25 +52,24 @@ class Poll:
                 "others": others
             }
 
-            polls.insert_one(existing_record)
+            db.polls.insert_one(existing_record)
+            poll = cls(db, existing_record)
 
-        return cls(polls, existing_record)
+        return poll
 
     @classmethod
-    async def find(cls, database, poll_key):
-        polls = database["poll_instances"]
-
+    async def find(cls, db, poll_key):
         query = {"key": poll_key}
-        existing_record = polls.find_one(query)
+        existing_record = db.polls.find_one(query)
 
         if not existing_record:
-            raise RuntimeError(f"No poll for {poll_key}")
+            raise PollNotFound(f"No poll for {poll_key}")
 
-        return cls(polls, existing_record)
+        return cls(db, existing_record)
 
     def get_poll_db_object(self):
-        poll = self.polls.find_one({"key": self.key})
-        return poll
+        poll_db_object = self.db.polls.find_one({"key": self.key})
+        return poll_db_object
 
     def toggle_button_id(self, user, button_id):
         user_key = str(user.id)
@@ -88,4 +89,4 @@ class Poll:
             else:
                 selections[button_id].append(user_key)
 
-        self.polls.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: selections}})
+        self.db.polls.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: selections}})

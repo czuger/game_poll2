@@ -1,0 +1,32 @@
+{
+  "key": "saga_2",
+  "short": "SAGA",
+  "long": "SAGA",
+  "desc": "",
+  "thematics":
+  {
+    "magie": {
+      "long": "Age de la magie",
+      "short": "ADM",
+      "thematics":
+      [
+        "Grands royaumes", "Peuples de la natures", "Morts vivants", "Horde", "Outreterre", "Peuples souterrains"
+      ]
+    },
+    "historique": {
+      "long": "Historique",
+      "short": "Histo",
+      "thematics":
+      {
+        "invasions": {
+          "long": "Age des invasions",
+          "short": "Invasions",
+          "thematics":
+          {
+
+          }
+        }
+      }
+    }
+  }
+}
