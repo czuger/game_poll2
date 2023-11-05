@@ -27,6 +27,11 @@ class Poll:
         self.games = record["games"]
         self.others = record["others"]
 
+        if self.SELECTIONS_KEY in record:
+            self.selection = record[self.SELECTIONS_KEY]
+        else:
+            self.selection = []
+
         self.db = db
 
     @classmethod
