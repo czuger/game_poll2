@@ -21,8 +21,8 @@ async def duplicate(interaction):
     await send_message(interaction, "User already listed")
 
 
-async def not_not_found(interaction):
-    await send_message(interaction, "User is not admin")
+async def not_not_found(interaction, message="User is not admin"):
+    await send_message(interaction, )
 
 
 async def access_denied(interaction):
@@ -39,50 +39,49 @@ async def __sub_is_admin_function(db, interaction, query):
 
 
 async def is_admin(db, interaction, user_id):
-    return await __sub_is_admin_function({"user_id": user_id})
+    return await __sub_is_admin_function(db, interaction, {"user_id": user_id})
 
 
 async def is_super_admin(db, interaction, user_id):
-    return await __sub_is_admin_function({"user_id": user_id, "super_admin": True})
+    return await __sub_is_admin_function(db, interaction, {"user_id": user_id, "super_admin": True})
+
+
+async def __update_sub_function(interaction, update_function, update_params):
+    try:
+        update_function(update_params)
+        await ack_msg(interaction)
+    except Exception as e:
+        await error_msg(interaction, e)
 
 
 async def grant(db, interaction, user_id):
     existing_user = db.admins.find_one({"user_id": user_id})
     if not existing_user:
-        user_data = {"user_id": user_id, "super_admin": False}
-
-        try:
-            db.admins.insert_one(user_data)
-            await ack_msg(interaction)
-        except Exception as e:
-            await error_msg(interaction, e)
+        await __update_sub_function(interaction, db.admins.insert_one, {"user_id": user_id, "super_admin": False})
     else:
         await duplicate(interaction)
 
 
-async def upgrade(db, interaction, user_id):
+async def __update_status_sub_function(db, interaction, user_id, update_function, update_params,
+                                       not_found_message="User already listed"):
     existing_user = db.admins.find_one({"user_id": user_id})
     if existing_user:
-        db.admins.update_one({"user_id": user_id}, {"$set": {"super_admin": True}})
+        update_function(*update_params)
         await ack_msg(interaction)
     else:
-        await interaction.response.send_message(content="User is not admin. Grant rights before upgrading",
-                                                ephemeral=True, delete_after=DELETE_TIME)
+        await not_not_found(interaction, not_found_message)
+
+
+async def upgrade(db, interaction, user_id):
+    await __update_status_sub_function(db, interaction, user_id, db.admins.update_one,
+                                 ({"user_id": user_id}, {"$set": {"super_admin": True}}),
+                                 "User is not admin. Grant rights before upgrading")
 
 
 async def downgrade(db, interaction, user_id):
-    existing_user = db.admins.find_one({"user_id": user_id})
-    if existing_user:
-        db.admins.update_one({"user_id": user_id}, {"$set": {"super_admin": False}})
-        await ack_msg(interaction)
-    else:
-        await not_not_found(interaction)
+    await __update_status_sub_function(db, interaction, user_id, db.admins.update_one,
+                                 ({"user_id": user_id}, {"$set": {"super_admin": False}}))
 
 
 async def revoke(db, interaction, user_id):
-    existing_user = db.admins.find_one({"user_id": user_id})
-    if existing_user:
-        db.admins.delete_one({"user_id": user_id})
-        await ack_msg(interaction)
-    else:
-        await not_not_found(interaction)
+    await __update_status_sub_function(db, interaction, user_id, db.admins.delete_one, ({"user_id": user_id},))
