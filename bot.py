@@ -3,7 +3,7 @@ import logging
 import discord
 from discord.ext import commands
 
-import libs.database as database
+from libs.database import DbConnector
 from libs.poll import Poll
 from libs.poll_embedding import get_players_embed
 from libs.poll_view import PollView
@@ -23,27 +23,30 @@ class PersistentViewBot(commands.Bot):
 
     async def setup_hook(self) -> None:
         async def message_refresh_function(poll_key):
-            __poll = await Poll.find(database.db, poll_key)
-            pv = PollView(__poll)
+            poll = await Poll.find(db, poll_key)
+            pv = PollView()
+            await pv.initialize_view(db, poll)
 
-        for _poll in database.polls_collection.find():
-            await message_refresh_function(_poll["key"])
+        for poll in db.polls.find():
+            await message_refresh_function(poll["key"])
 
     async def on_ready(self):
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')
 
 
-database.initialize_db()
+db = DbConnector()
+db.connect()
 bot = PersistentViewBot()
 
 
 @bot.command()
 async def poll(ctx):
-    _poll = await Poll.find_or_create(database.db, ctx.channel)
-    pv = PollView(_poll)
+    poll = await Poll.find_or_create(db, ctx.channel)
+    pv = PollView()
+    await pv.initialize_view(db, poll)
 
-    embed = await get_players_embed(database.db, ctx.channel)
+    embed = await get_players_embed(db, ctx.channel)
 
     await ctx.send("Activités", embed=embed, view=pv)
 

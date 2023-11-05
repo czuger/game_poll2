@@ -24,9 +24,9 @@ class TestPollEmbedding(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         poll = await Poll.find_or_create(self.db, discord_channel)
 
         # Embed with at least one user
-        game_key = list(poll.games.keys())[0]
+        button_id = list(poll.buttons.keys())[0]
         user = MagicMock(id=654321)
-        poll.toggle_button_id(user, game_key)
+        poll.toggle_button_id(user, button_id)
 
         embed = await get_players_embed(self.db, discord_channel)
         self.assertIsInstance(embed, discord.Embed)
