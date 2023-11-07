@@ -1,18 +1,28 @@
-import logging
-
 import discord
 from discord.ext import commands
 
-from libs.database import DbConnector
 from libs.poll import Poll
-from libs.poll_embedding import get_players_embed
-from libs.poll_view import PollView
+from libs.views.poll_view import PollView
 
-
-# Configuration de la connexion MongoDB
 
 class GameBot(commands.Bot):
+    """
+    The main GameBot class.
+    """
     def __init__(self, db):
+        """
+        Initialize the GameBot instance.
+
+        Parameters
+        ----------
+        db : Database
+            Database instance to store and manage game data.
+
+        Returns
+        -------
+        None
+
+        """
         intents = discord.Intents.all()
         intents.message_content = True
         intents.members = True  # This is a privileged intent, must be enabled in the portal too.
@@ -23,6 +33,11 @@ class GameBot(commands.Bot):
         self.db = db
 
     async def setup_hook(self) -> None:
+        """
+        Setup hook for the GameBot.
+
+        This method sets up a hook for the GameBot to refresh messages related to polls.
+        """
         async def message_refresh_function(poll_key):
             refreshing_poll = await Poll.find(self.db, poll_key)
             pv = PollView()
@@ -32,5 +47,10 @@ class GameBot(commands.Bot):
             await message_refresh_function(to_refresh_poll["key"])
 
     async def on_ready(self):
+        """
+        Event handler for when the bot is ready.
+
+        This method is called when the bot is successfully logged in and ready to start receiving events.
+        """
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')

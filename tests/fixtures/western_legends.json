@@ -1,7 +1,6 @@
 {
-  "key": "western_l_1",
-  "short": "Western L",
-  "long": "Western Legends",
-  "desc": "",
-  "type": "Plateau"
+    "key": "GAMB_western_legends_378997693",
+    "long": "Western legends",
+    "short": "Western legends",
+    "type": "Board"
 }

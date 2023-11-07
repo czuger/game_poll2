@@ -1,6 +1,7 @@
 {
-  "key": "frostgrave_2",
-  "short": "Frostgrave",
-  "long": "Frostgrave",
-  "desc": ""
+    "key": "GAMM_frostgrave_927272049",
+    "long": "Frostgrave",
+    "short": "Frostgrave",
+    "type": "Miniatures",
+    "default": true
 }

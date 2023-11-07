@@ -1,6 +1,7 @@
 {
-  "key": "lion_rampant_1",
-  "short": "Lion rampant",
-  "long": "Lion rampant",
-  "desc": ""
+    "key": "GAMM_lion_rampant_248812939",
+    "long": "Lion rampant",
+    "short": "Lion rampant",
+    "type": "Miniatures",
+    "default": true
 }

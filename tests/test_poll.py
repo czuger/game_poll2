@@ -11,13 +11,21 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
     def setUp(self):
         self.set_up()
 
+    async def test_buttons_keys_format(self):
+        # First testing creation
+        discord_channel = MagicMock(id=123456)
+        poll = await Poll.find_or_create(self.db, discord_channel)
+
+        self.assertIn("BTNO_other", [e[0:10] for e in poll.buttons.keys()])
+        self.assertIn("BTNG_lion_rampant", [e[0:17] for e in poll.buttons.keys()])
+
     async def test_poll(self):
         # First testing creation
         discord_channel = MagicMock(id=123456)
         poll = await Poll.find_or_create(self.db, discord_channel)
 
         self.assertEqual("123456", poll.key)
-        self.assertIn("lion_rampant_1", poll.buttons.values())
+        self.assertIn("lion_rampant", [e[5:17] for e in poll.buttons.values()])
 
         # Entry exist, testing find
         poll = await Poll.find_or_create(self.db, discord_channel)

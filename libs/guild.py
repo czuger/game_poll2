@@ -1,3 +1,6 @@
+from libs.games import Games
+
+
 class Guild:
 
     def __init__(self, db, record):
@@ -10,15 +13,14 @@ class Guild:
     async def find_or_create(cls, db, channel):
         key = str(channel.guild.id)
 
-        games_collection = [e["key"] for e in list(db.games.find())]
-
         query = {"key": key}
         existing_record = db.guilds.find_one(query)
 
         if not existing_record:
             existing_record = {
                 "key": key,
-                "games": games_collection
+                "games": (await Games.get_default_games_keys(db))[0:20]
+                # We can't show more than 20 games due to Discord limitations
             }
 
             db.guilds.insert_one(existing_record)

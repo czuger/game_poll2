@@ -1,6 +1,7 @@
 {
-  "key": "malifaux_1",
-  "short": "Malifaux",
-  "long": "Malifaux",
-  "desc": ""
+    "key": "GAMM_malifaux_114042018",
+    "long": "Malifaux",
+    "short": "Malifaux",
+    "type": "Miniatures",
+    "default": true
 }

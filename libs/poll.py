@@ -1,16 +1,8 @@
-import logging
 import random
-import uuid
-from logging.handlers import RotatingFileHandler
 
 import discord
 
 from libs.guild import Guild
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-rotating_handler = RotatingFileHandler("/var/log/gamebot.log", maxBytes=20 * 1024 * 1024, backupCount=2)
-logger.addHandler(rotating_handler)
 
 
 class PollNotFound(RuntimeError):
@@ -41,7 +33,8 @@ class Poll:
 
     @staticmethod
     def make_btn_key(game_key, typ):
-        "BTN" + typ + "_" + game_key[4:-9] + "_" + format(random.randrange(0, 10 ** 9), '09d')
+        tmp_gk = game_key[5:-1] if typ == "G" else game_key
+        return "BTN" + typ + "_" + tmp_gk + "_" + format(random.randrange(0, 10 ** 9), '09d')
 
     @classmethod
     async def find_or_create(cls, db, channel):
@@ -53,11 +46,11 @@ class Poll:
             poll = await cls.find(db, key)
         except PollNotFound:
             buttons = {}
-            for k in guild.games:
-                buttons[cls.make_btn_key(k, "G")] = k
+            for btn_type in ((guild.games, "G"), (cls.OTHER_BUTTONS.keys(), "O")):
+                (btn_list, btn_marker) = btn_type
 
-            for k in cls.OTHER_BUTTONS:
-                buttons[cls.make_btn_key(k, "O")] = k
+                for k in btn_list:
+                    buttons[cls.make_btn_key(k, btn_marker)] = k
 
             record = {"key": key, cls.BUTTONS_KEY: buttons}
             db.polls.insert_one(record)
