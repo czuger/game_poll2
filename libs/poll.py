@@ -1,10 +1,11 @@
+import logging
+import random
 import uuid
+from logging.handlers import RotatingFileHandler
 
 import discord
-import logging
-from logging.handlers import RotatingFileHandler
-from libs.guild import Guild
 
+from libs.guild import Guild
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -38,6 +39,10 @@ class Poll:
 
         self.db = db
 
+    @staticmethod
+    def make_btn_key(game_key, typ):
+        "BTN" + typ + "_" + game_key[4:-9] + "_" + format(random.randrange(0, 10 ** 9), '09d')
+
     @classmethod
     async def find_or_create(cls, db, channel):
         key = str(channel.id)
@@ -49,10 +54,10 @@ class Poll:
         except PollNotFound:
             buttons = {}
             for k in guild.games:
-                buttons[str(uuid.uuid4())] = k
+                buttons[cls.make_btn_key(k, "G")] = k
 
             for k in cls.OTHER_BUTTONS:
-                buttons[str(uuid.uuid4())] = k
+                buttons[cls.make_btn_key(k, "O")] = k
 
             record = {"key": key, cls.BUTTONS_KEY: buttons}
             db.polls.insert_one(record)
