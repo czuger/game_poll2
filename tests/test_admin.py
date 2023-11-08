@@ -22,10 +22,10 @@ class TestAdmin(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_channel = MagicMock(id=123456, guild=discord_guild)
 
         message = AsyncMock(edit=AsyncMock())
-        message.edit.return_value(0)
+        # message.edit.return_value(0)
 
         response = AsyncMock(defer=AsyncMock())
-        response.defer.return_value(0)
+        # response.defer.return_value(0)
 
         interaction = MagicMock(channel=discord_channel, user=user, message=message, response=response)
 

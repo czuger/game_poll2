@@ -1,7 +1,7 @@
 # Byte-compiled / optimized / DLL files
 .idea
-discord_token.txt
-mongo.json
+config/discord_token.txt
+config/mongo.json
 .python-version
 
 __pycache__/

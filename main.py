@@ -32,5 +32,5 @@ if __name__ == "__main__":
         await reset_command(ctx, db)
 
 
-    with open("discord_token.txt", 'r') as f:
+    with open("config/discord_token.txt", 'r') as f:
         bot.run(f.read(), log_level=logging.INFO)
