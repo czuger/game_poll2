@@ -1,8 +1,8 @@
 import discord
 
 from libs.games import Games
-from libs.poll import Poll
-from libs.poll_buttons import PollButton
+from libs.poll.poll import Poll
+from libs.poll.poll_buttons import PollButton
 
 
 class PollView(discord.ui.View):

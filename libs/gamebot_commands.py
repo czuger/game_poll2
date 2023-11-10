@@ -2,9 +2,9 @@ from discord.ext.commands import Context
 
 from libs.admin import is_admin
 from libs.database import DbConnector
-from libs.poll import Poll
-from libs.poll_embedding import get_players_embed
-from libs.views.poll_view import PollView
+from libs.poll.poll import Poll
+from libs.poll.poll_embedding import get_players_embed
+from libs.poll.poll_view import PollView
 
 
 # Configuration de la connexion MongoDB

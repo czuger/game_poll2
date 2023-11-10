@@ -5,9 +5,9 @@ from unittest.mock import Mock
 
 import discord
 
-from libs.poll import Poll
+from libs.poll.poll import Poll
 from tests.base import BotTest
-from libs.poll_embedding import get_players_embed
+from libs.poll.poll_embedding import get_players_embed
 
 
 class TestPollEmbedding(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):

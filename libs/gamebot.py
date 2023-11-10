@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-from libs.poll import Poll
-from libs.views.poll_view import PollView
+from libs.poll.poll import Poll
+from libs.poll.poll_view import PollView
 
 
 class GameBot(commands.Bot):

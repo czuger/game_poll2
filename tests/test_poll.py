@@ -2,7 +2,7 @@ import unittest
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import MagicMock
 
-from libs.poll import Poll
+from libs.poll.poll import Poll
 from tests.base import BotTest
 
 
