@@ -43,7 +43,7 @@ class GameBot(commands.Bot):
             pv = PollView()
             await pv.initialize_view(self.db, refreshing_poll)
 
-        for to_refresh_poll in self.db.polls.find():
+        for to_refresh_poll in self.db.poll_instances.find():
             await message_refresh_function(to_refresh_poll["key"])
 
     async def on_ready(self):
