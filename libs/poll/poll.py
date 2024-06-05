@@ -59,8 +59,8 @@ class Poll:
                        "style": discord.ButtonStyle.danger},
         "other": {"key": "other", "short": "Autre", "long": "Autre activité", "emoji": "♟️",
                   "style": discord.ButtonStyle.success},
-        "ajouter": {"key": "ajouter", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "➕",
-                    "style": discord.ButtonStyle.success},
+        "ajouter": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "➕",
+                    "style": discord.ButtonStyle.success, "action": "add_game"},
     }
 
     BUTTONS_KEY = "buttons"
@@ -202,7 +202,7 @@ class Poll:
 
     def toggle_button_id(self, user: discord.User, button_id: str):
         """
-        Toggles a user's selection for a given button ID.
+        Toggle the buttons status in the poll_instance database object.
 
         Parameters
         ----------
