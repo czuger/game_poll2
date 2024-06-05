@@ -9,6 +9,7 @@ class GameBot(commands.Bot):
     """
     The main GameBot class.
     """
+
     def __init__(self, db):
         """
         Initialize the GameBot instance.
@@ -38,13 +39,20 @@ class GameBot(commands.Bot):
 
         This method sets up a hook for the GameBot to refresh messages related to polls.
         """
-        async def message_refresh_function(poll_key):
-            refreshing_poll = await Poll.find(self.db, poll_key)
-            pv = PollView()
-            await pv.initialize_view(self.db, refreshing_poll)
 
-        for to_refresh_poll in self.db.poll_instances.find():
-            await message_refresh_function(to_refresh_poll["key"])
+        async def message_refresh_function(poll_dict):
+            refreshing_poll = Poll(self.db, poll_dict)
+            pv = PollView()
+            initialized_view = await pv.initialize_view(self.db, refreshing_poll)
+
+            self.add_view(initialized_view)
+            print(initialized_view, initialized_view.id)
+
+        cursor = self.db.poll_instances.find()
+        polls = await cursor.to_list(length=None)
+        for to_refresh_poll in polls:
+            print("Refreshing poll", to_refresh_poll)
+            await message_refresh_function(to_refresh_poll)
 
     async def on_ready(self):
         """

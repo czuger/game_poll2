@@ -34,7 +34,7 @@ async def access_denied(interaction: Interaction):
 
 
 async def __sub_is_admin_function(db: DbConnector, interaction: Interaction, query):
-    existing_user = db.admins.find_one(query)
+    existing_user = await db.admins.find_one(query)
     granted = existing_user is not None
     if not granted:
         await access_denied(interaction)
@@ -52,14 +52,14 @@ async def is_super_admin(db: DbConnector, interaction: Interaction, user_id: int
 
 async def __update_sub_function(interaction: Interaction, update_function, update_params):
     try:
-        update_function(update_params)
+        await update_function(update_params)
         await ack_msg(interaction)
     except Exception as e:
         await error_msg(interaction, e)
 
 
 async def grant(db: DbConnector, interaction: Interaction, user_id: int):
-    existing_user = db.admins.find_one({"user_id": user_id})
+    existing_user = await db.admins.find_one({"user_id": user_id})
     if not existing_user:
         await __update_sub_function(interaction, db.admins.insert_one, {"user_id": user_id, "super_admin": False})
     else:
@@ -71,7 +71,7 @@ async def __update_status_sub_function(db: DbConnector, interaction: Interaction
                                        not_found_message="User already listed"):
     existing_user = db.admins.find_one({"user_id": user_id})
     if existing_user:
-        update_function(*update_params)
+        await update_function(*update_params)
         await ack_msg(interaction)
     else:
         await not_not_found(interaction, not_found_message)

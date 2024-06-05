@@ -33,16 +33,16 @@ class TestPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         interaction = MagicMock(channel=discord_channel, user=user, message=message, response=response)
 
         # Toggle first button (should be game)
-        poll = await Poll.find_or_create(self.db, discord_channel)
-        button_id = list(poll.buttons.keys())[0]
+        poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
+        button_id = list(poll.games.keys())[0]
 
         pb = PollButton(self.db, poll, "foo", button_id, 0)
         await pb.callback(interaction)
         self.assertIsInstance(pb, discord.ui.Button)
 
         # Toggle last button (should be other)
-        poll = await Poll.find_or_create(self.db, discord_channel)
-        button_id = list(poll.buttons.keys())[-1]
+        poll = await Poll.find(self.db, discord_channel)
+        button_id = list(poll.games.keys())[-1]
 
         pb = PollButton(self.db, poll, "foo", button_id, 0)
         await pb.callback(interaction)

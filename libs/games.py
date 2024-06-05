@@ -1,10 +1,15 @@
+import json
+
+from libs.misc.project_root import find_project_root
+
+
 class Games:
     """
     A class used to represent and manage games in a MongoDB collection.
 
     Attributes
     ----------
-    dict : dict
+    games_collection_dict : dict
         A dictionary representing the games collection, where keys are the game keys.
     db : pymongo.database.Database
         The database object.
@@ -19,6 +24,10 @@ class Games:
         Class method to asynchronously retrieve the keys of default games from the database.
     """
 
+    # TODO : there is no real need for this class.
+    # Instead add a dict to guild with two dict : board and miniatures. Only keep short and long param.
+    # See inserts_json2.py
+    # In the guild object add a "refresh_games" method.
     def __init__(self, db, games_collection_dict):
         """
         Initializes the Games class with a database object and a games collection dictionary.
@@ -30,7 +39,7 @@ class Games:
         games_collection_dict : dict
             A dictionary representing the games collection, where keys are the game keys.
         """
-        self.dict = games_collection_dict
+        self.games_collection_dict = games_collection_dict
         self.db = db
 
     @classmethod
@@ -52,18 +61,25 @@ class Games:
         return cls(db, games_collection_dict)
 
     @classmethod
-    async def get_default_games_keys(cls, db):
+    async def get_pre_loaded_games(cls):
         """
         Asynchronously retrieves the keys of default games from the database.
 
         Parameters
         ----------
-        db : pymongo.database.Database
-            The database object.
 
         Returns
         -------
         list
-            A list of keys for the default games.
+            A dict of miniatures, board and default games.
         """
-        return [e["key"] for e in list(db.games.find()) if e.get("default") == True]
+        root_directory = find_project_root()
+
+        with open(root_directory / "games" / "games.json") as f:
+            return json.load(f)
+
+    def get_miniatures_dict(self) -> dict:
+        return {k: v for k, v in self.games_collection_dict.items() if v["type"] == "Miniatures"}
+
+    def get_board_games_dict(self) -> dict:
+        return {k: v for k, v in self.games_collection_dict.items() if v["type"] == "Board"}

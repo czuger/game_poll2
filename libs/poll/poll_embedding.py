@@ -4,7 +4,6 @@ This module mainly create the content of the poll. The part that show the status
 """
 import discord
 
-from libs.games import Games
 from libs.poll.poll import Poll
 
 
@@ -32,85 +31,7 @@ def __get_user_names(users_ids, guild):
             user_names.append(name)
         else:
             print(f"Cant find user for {user_id}")
-    return sorted(user_names)
-
-
-def __get_selection_long_name(db_games_obj: Games, game_key):
-    """
-    Retrieves the long name of a game based on its key.
-
-    Parameters
-    ----------
-    db_games_obj : Games
-        An instance of the Games class.
-    game_key : str
-        The key of the game.
-
-    Returns
-    -------
-    str
-        The long name of the game.
-
-    Raises
-    ------
-    RuntimeError
-        If the game key does not exist in the games collection.
-    """
-    if game_key in Poll.OTHER_BUTTONS:
-        game_name = Poll.OTHER_BUTTONS[game_key]["long"]
-    elif game_key in db_games_obj.dict:
-        game_name = db_games_obj.dict[game_key]["long"]
-    else:
-        raise RuntimeError(f"game {game_key} does not exist in Games collection")
-
-    return game_name
-
-
-def __add_selection(db_games_obj: Games, guild, poll, game_key, users, games, others):
-    """
-    Adds a selection of users for a given game key to the games or others list.
-
-    Parameters
-    ----------
-    db_games_obj : Games
-        An instance of the Games class.
-    guild : discord.Guild
-        The Discord guild object.
-    poll : Poll
-        An instance of the Poll class.
-    game_key : str
-        The key of the game.
-    users : list of str
-        List of user IDs.
-    games : list of tuple
-        List of game selections.
-    others : list of tuple
-        List of other selections.
-
-    Returns
-    -------
-    tuple
-        Updated games and others lists.
-
-    Raises
-    ------
-    RuntimeError
-        If the game key cannot be found.
-    """
-    users_list = __get_user_names(users, guild)
-    if len(users_list) > 0:
-        users_line = ",".join(users_list)
-
-        if game_key in poll.OTHER_BUTTONS:
-            game_name = __get_selection_long_name(db_games_obj, game_key)
-            others.append((game_name, users_line))
-        elif game_key in poll.selections:
-            game_name = __get_selection_long_name(db_games_obj, game_key)
-            games.append((game_name, users_line))
-        else:
-            raise RuntimeError(f"Unable to find {game_key}")
-
-    return games, others
+    return ",".join(sorted(user_names))
 
 
 async def get_players_embed(database, channel):
@@ -132,23 +53,20 @@ async def get_players_embed(database, channel):
         The embed object displaying the poll selections.
     """
     embed = discord.Embed(title="A quoi allez vous jouer ?", color=discord.Color.blue())
-    poll = await Poll.find(database, str(channel.id))
+    poll = await Poll.find(database, channel)
 
-    db_games_obj = await Games.get_games(database)
+    for other in poll.others.values():
+        if other["players"]:
+            embed.add_field(
+                name="", value=other["emoji"] + " **" + other["long"] + "** : " + __get_user_names(other["players"],
+                                                                                                   channel.guild),
+                inline=False)
 
-    games = []
-    others = []
-
-    for selection, users in poll.selections.items():
-        (games, others) = __add_selection(db_games_obj, channel.guild, poll, selection, users, games, others)
-
-    games.sort(key=lambda x: (x[0], x[1]))
-    others.sort(key=lambda x: (x[0], x[1]))
-
-    for label, users_line in others:
-        embed.add_field(name="", value="**" + label + "** : " + users_line, inline=False)
-
-    for label, users_line in games:
-        embed.add_field(name="", value="**" + label + "** : " + users_line, inline=False)
+    for game in poll.games.values():
+        if game["players"]:
+            embed.add_field(
+                name="",
+                value=" **" + game["long"] + "** : " + __get_user_names(game["players"], channel.guild),
+                inline=False)
 
     return embed

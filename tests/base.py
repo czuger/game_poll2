@@ -2,6 +2,7 @@ from libs.database import DbConnector
 import os
 import json
 
+
 class BotTest:
 
     def __init__(self):

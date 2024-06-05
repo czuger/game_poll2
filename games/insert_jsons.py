@@ -32,6 +32,10 @@ def insert_or_update_json_data(data):
 
 base_directory = "."
 
+"""
+Obsolete script. Kept for history.
+"""
+
 # Walk through subdirectories and read JSON files
 for root, dirs, files in os.walk(base_directory):
     for file in files:

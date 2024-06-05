@@ -21,7 +21,7 @@ class TestPollView(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_guild.get_member.return_value = user
         discord_channel = MagicMock(id=123456, guild=discord_guild)
 
-        poll = await Poll.find_or_create(self.db, discord_channel)
+        poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
 
         pv = PollView()
         poll_view = await pv.initialize_view(self.db, poll)

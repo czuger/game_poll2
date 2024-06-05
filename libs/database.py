@@ -1,6 +1,6 @@
 import json
 
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from libs.misc.project_root import find_project_root
 
@@ -75,7 +75,7 @@ class DbConnector:
             mongo = json.load(f)
             mongo = mongo["mongo"]
 
-        self.db_connection = MongoClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
+        self.db_connection = AsyncIOMotorClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
         self.db_name = db_name
         self.__initialize_collections()
 

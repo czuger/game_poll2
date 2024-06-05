@@ -1,9 +1,12 @@
-import random
+import logging
 
 import discord
 import pymongo
 
-from libs.guild import Guild
+from libs.dat.guild import Guild
+from libs.helpers.buttons import make_btn_key
+
+logger = logging.getLogger(__name__)
 
 
 class PollNotFound(RuntimeError):
@@ -16,56 +19,26 @@ class PollNotFound(RuntimeError):
 class Poll:
     """
     A class used to represent and manage polls in a MongoDB collection.
-
-    Attributes
-    ----------
-    OTHER_BUTTONS : dict
-        A dictionary containing predefined button configurations.
-    BUTTONS_KEY : str
-        The key used to access buttons in the poll record.
-    SELECTIONS_KEY : str
-        The key used to access selections in the poll record.
-    MESSAGE_ID_KEY : str
-        The key used to access the message ID in the poll record.
-    key : str
-        The unique identifier for the poll.
-    selections : dict
-        A dictionary containing user selections for the poll.
-    buttons : dict
-        A dictionary containing button configurations for the poll.
-    db : pymongo.database.Database
-        The database object.
-
-    Methods
-    -------
-    __init__(self, db, record)
-        Initializes the Poll class with a database object and a record.
-    make_btn_key(game_key, typ)
-        Static method to create a unique button key.
-    find_or_create(cls, db, channel)
-        Class method to asynchronously find an existing poll in the database or create a new one.
-    find(cls, db, poll_key)
-        Class method to asynchronously find a poll in the database.
-    get_poll_db_object(self)
-        Retrieves the poll record from the database.
-    toggle_button_id(self, user, button_id)
-        Toggles a user's selection for a given button ID.
     """
 
     OTHER_BUTTONS = {
         "present_with_key": {"key": "present_with_key", "short": "Clés", "long": "Présent avec les clés", "emoji": "🔑",
-                             "style": discord.ButtonStyle.success},
+                             "style": discord.ButtonStyle.primary},
         "tournament": {"key": "tournament", "short": "Tournoi", "long": "En tournoi", "emoji": "🏅",
-                       "style": discord.ButtonStyle.danger},
+                       "style": discord.ButtonStyle.success},
+        "orga": {"key": "orga", "short": "Orga", "long": "Organisation", "emoji": "🍺",
+                 "style": discord.ButtonStyle.success},
         "other": {"key": "other", "short": "Autre", "long": "Autre activité", "emoji": "♟️",
                   "style": discord.ButtonStyle.success},
-        "ajouter": {"key": "ajouter", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "➕",
-                    "style": discord.ButtonStyle.success},
+        "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "➕",
+                "style": discord.ButtonStyle.red, "action": "add_game"},
     }
 
     BUTTONS_KEY = "buttons"
-    SELECTIONS_KEY = "selections"
-    MESSAGE_ID_KEY = "message_id"
+    GAMES_KEY = "games"
+    OTHERS_KEY = "others"
+
+    POLL_KEY = "key"
 
     def __init__(self, db: pymongo.database.Database, record: dict):
         """
@@ -78,32 +51,19 @@ class Poll:
         record : dict
             A dictionary containing the poll's record from the database.
         """
-        self.key = record["key"]
-        self.selections = record.get(self.SELECTIONS_KEY, {})
-        self.buttons = record.get(self.BUTTONS_KEY, {})
         self.db = db
+        self.key = record[self.POLL_KEY]
 
-    @staticmethod
-    def make_btn_key(game_key: str, typ: str):
-        """
-        Creates a unique button key.
+        self.games = None
+        self.others = None
 
-        Parameters
-        ----------
-        game_key : str
-            The key of the game.
-        typ : str
-            The type of button (e.g., "G" for game, "O" for other).
+        self.__initialize_buttons_data(record)
 
-        Returns
-        -------
-        str
-            A unique button key.
-        """
-        tmp_gk = game_key[5:-1] if typ == "G" else game_key
-        return "BTN" + typ + "_" + tmp_gk + "_" + format(random.randrange(0, 10 ** 9), '09d')
+    def __initialize_buttons_data(self, poll_dict: dict) -> None:
+        self.games = poll_dict[self.BUTTONS_KEY][self.GAMES_KEY]
+        self.others = poll_dict[self.BUTTONS_KEY][self.OTHERS_KEY]
 
-    async def reset_buttons(self, channel) -> None:
+    async def add_default_games(self, channel) -> None:
         """
         Asynchronously finds an existing poll in the database or creates a new one.
 
@@ -114,21 +74,26 @@ class Poll:
 
         Returns
         -------
+        The new buttons keys
         """
 
+        print("add_default_games called")
         guild = await Guild.find_or_create(self.db, channel)
 
-        buttons = {}
-        for btn_type in ((guild.games, "G"), (self.OTHER_BUTTONS.keys(), "O")):
-            (btn_list, btn_marker) = btn_type
+        for key, game in guild.games["poll_default"].items():
+            game["players"] = []
+            self.games[make_btn_key(key, "g")] = game
 
-            for k in btn_list:
-                buttons[self.make_btn_key(k, btn_marker)] = k
+        for other in self.OTHER_BUTTONS.values():
+            other["players"] = []
+            self.others[make_btn_key(other["key"], "o")] = other
 
-        self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.BUTTONS_KEY: buttons}}, upsert=True)
+        await self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.games": self.games}}, upsert=True)
+        await self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.others": self.others}},
+                                                upsert=True)
 
     @classmethod
-    async def find_or_create(cls, db: pymongo.database.Database, channel):
+    async def find(cls, db: pymongo.database.Database, channel, create_if_not_exist=False):
         """
         Asynchronously finds an existing poll in the database or creates a new one.
 
@@ -138,6 +103,8 @@ class Poll:
             The database object.
         channel : discord.channel.Channel
             The Discord channel object from which the channel ID is extracted.
+        create_if_not_exist : bool
+            If the poll does not exist, then we create it.
 
         Returns
         -------
@@ -145,64 +112,29 @@ class Poll:
             An instance of the Poll class with the poll's data.
         """
         key = str(channel.id)
-        guild = await Guild.find_or_create(db, channel)
 
-        try:
-            poll = await cls.find(db, key)
-        except PollNotFound:
-            record = {"key": key, cls.BUTTONS_KEY: {}}
-            db.poll_instances.insert_one(record)
-            poll = cls(db, record)
+        poll_dict = await db.poll_instances.find_one({cls.POLL_KEY: key})
+        if poll_dict is None:
+            if create_if_not_exist:
+                record = {"key": key, cls.BUTTONS_KEY: {cls.GAMES_KEY: {}, cls.OTHERS_KEY: {}}}
+                await db.poll_instances.insert_one(record)
+                poll = cls(db, record)
 
-            await poll.reset_buttons(channel)
+                await poll.add_default_games(channel)
+            else:
+                raise PollNotFound()
+        else:
+            poll = cls(db, poll_dict)
 
         return poll
 
-    @classmethod
-    async def find(cls, db: pymongo.database.Database, poll_key: str):
+    async def refresh(self):
+        poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
+        self.__initialize_buttons_data(poll_dict)
+
+    async def toggle_button_id(self, user: discord.User, button_id: str):
         """
-        Asynchronously finds a poll in the database.
-
-        Parameters
-        ----------
-        db : pymongo.database.Database
-            The database object.
-        poll_key : str
-            The unique identifier for the poll.
-
-        Returns
-        -------
-        Poll
-            An instance of the Poll class with the poll's data.
-
-        Raises
-        ------
-        PollNotFound
-            If no poll is found with the given key.
-        """
-        query = {"key": poll_key}
-        existing_record = db.poll_instances.find_one(query)
-
-        if not existing_record:
-            raise PollNotFound(f"No poll for {poll_key}")
-
-        return cls(db, existing_record)
-
-    def get_poll_db_object(self):
-        """
-        Retrieves the poll record from the database.
-
-        Returns
-        -------
-        dict
-            The poll record from the database.
-        """
-        poll_db_object = self.db.poll_instances.find_one({"key": self.key})
-        return poll_db_object
-
-    def toggle_button_id(self, user: discord.User, button_id: str):
-        """
-        Toggles a user's selection for a given button ID.
+        Toggle the buttons status in the poll_instance database object.
 
         Parameters
         ----------
@@ -212,14 +144,25 @@ class Poll:
             The button ID to toggle.
         """
         user_key = str(user.id)
-        game_key = self.buttons[button_id]
 
-        if game_key not in self.selections:
-            self.selections[game_key] = [user_key]
+        await self.refresh()
+
+        if button_id[0] == "g":
+            button_data = self.games[button_id]
+            sub_collection = "games"
         else:
-            if user_key in self.selections[game_key]:
-                self.selections[game_key].remove(user_key)
-            else:
-                self.selections[game_key].append(user_key)
+            button_data = self.others[button_id]
+            sub_collection = "others"
 
-        self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})
+        if user_key in button_data['players']:
+            update_result = await self.db.poll_instances.update_one(
+                {'key': self.key}, {'$pull': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
+        else:
+            update_result = await self.db.poll_instances.update_one(
+                {'key': self.key}, {'$push': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
+
+        # Check if the update was successful
+        if update_result.modified_count > 0:
+            logging.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
+        else:
+            logging.debug(f'{user_key} {button_id} modification done for poll {self.key} failed.')
