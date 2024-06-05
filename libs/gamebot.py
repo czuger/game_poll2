@@ -46,8 +46,10 @@ class GameBot(commands.Bot):
             initialized_view = await pv.initialize_view(self.db, refreshing_poll)
 
             self.add_view(initialized_view)
+            print(initialized_view, initialized_view.id)
 
         for to_refresh_poll in self.db.poll_instances.find():
+            print("Refreshing poll", to_refresh_poll)
             await message_refresh_function(to_refresh_poll["key"])
 
     async def on_ready(self):

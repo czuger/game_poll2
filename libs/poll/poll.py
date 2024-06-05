@@ -82,7 +82,7 @@ class Poll:
         self.buttons = record.get(self.BUTTONS_KEY, {})
         self.db = db
 
-    async def reset_buttons(self, channel) -> None:
+    async def reset_buttons(self, channel) -> dict:
         """
         Asynchronously finds an existing poll in the database or creates a new one.
 
@@ -93,8 +93,10 @@ class Poll:
 
         Returns
         -------
+        The new buttons keys
         """
 
+        print("reset_buttons called")
         guild = await Guild.find_or_create(self.db, channel)
 
         buttons = {}
@@ -104,7 +106,10 @@ class Poll:
             for k in btn_list:
                 buttons[make_btn_key(k, btn_marker)] = k
 
+        print(self.key, buttons)
         self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.BUTTONS_KEY: buttons}}, upsert=True)
+
+        return buttons
 
     @classmethod
     async def find_or_create(cls, db: pymongo.database.Database, channel):

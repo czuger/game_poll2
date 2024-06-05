@@ -73,6 +73,7 @@ class PollView(discord.ui.View):
 
         # We create the buttons for other actions
         for other in others:
+            print(other)
             if "action" in other:
                 if "add_game" in other["action"]:
                     button = RespondToAddGameButton(
@@ -83,7 +84,8 @@ class PollView(discord.ui.View):
             else:
                 button = PollButton(db, poll, other["short"], other["key"], row, emoji=other["emoji"],
                                     style=other["style"])
-            print(self.add_item(button))
+            self.add_item(button)
+            print(button, button.custom_id)
 
         # Uncomment the following lines if additional buttons are needed
         # key = OtherButton(label="Ajouter", custom_id="add", emoji='➕', style=discord.ButtonStyle.success, row=2)
