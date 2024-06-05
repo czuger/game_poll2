@@ -59,7 +59,7 @@ class Poll:
                        "style": discord.ButtonStyle.danger},
         "other": {"key": "other", "short": "Autre", "long": "Autre activité", "emoji": "♟️",
                   "style": discord.ButtonStyle.success},
-        "ajouter": {"key": "ajouter", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🏅",
+        "ajouter": {"key": "ajouter", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "➕",
                     "style": discord.ButtonStyle.success},
     }
 
@@ -154,7 +154,7 @@ class Poll:
             db.poll_instances.insert_one(record)
             poll = cls(db, record)
 
-            poll.reset_buttons(channel)
+            await poll.reset_buttons(channel)
 
         return poll
 
