@@ -2,7 +2,7 @@ import unittest
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import MagicMock
 
-from libs.guild import Guild
+from libs.dat.guild import Guild
 from tests.base import BotTest
 
 

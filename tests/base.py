@@ -1,4 +1,4 @@
-from libs.database import DbConnector
+from libs.dat.database import DbConnector
 import os
 import json
 

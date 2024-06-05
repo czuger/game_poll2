@@ -1,10 +1,12 @@
+import json
 import logging
 from logging.handlers import RotatingFileHandler
 
-from libs.database import DbConnector
+from libs.dat.database import DbConnector
 from libs.gamebot import GameBot
 from libs.gamebot_commands import command_poll
 from libs.gamebot_commands import reset_command
+from libs.misc.project_root import find_project_root
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -32,5 +34,8 @@ if __name__ == "__main__":
         await reset_command(ctx, db)
 
 
-    with open("config/discord_token.txt", 'r') as f:
-        bot.run(f.read(), log_level=logging.INFO)
+    root_dir = find_project_root()
+    with open(root_dir / "config.json", 'r') as f:
+        config = json.load(f)
+
+        bot.run(config["discord"]["token"], log_level=logging.INFO)

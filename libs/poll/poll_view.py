@@ -1,6 +1,6 @@
 import discord
 
-from libs.games import Games
+from libs.dat.games import Games
 from libs.poll.poll import Poll
 from libs.poll.poll_buttons import PollButton
 

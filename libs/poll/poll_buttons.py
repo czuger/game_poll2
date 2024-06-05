@@ -5,7 +5,8 @@ from libs.poll.poll_embedding import get_players_embed
 
 
 class PollButton(discord.ui.Button):
-    def __init__(self, db, poll: Poll, label: str, custom_id: str, row: int, emoji=None, style=discord.ButtonStyle.gray):
+    def __init__(self, db, poll: Poll, label: str, custom_id: str, row: int, emoji=None,
+                 style=discord.ButtonStyle.gray):
         super().__init__(label=label, custom_id=custom_id, emoji=emoji, style=style, row=row)
         self.poll = poll
         self.db = db

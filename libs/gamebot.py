@@ -1,14 +1,15 @@
 import discord
 from discord.ext import commands
+from libs.views.poll_view import PollView
 
 from libs.poll.poll import Poll
-from libs.poll.poll_view import PollView
 
 
 class GameBot(commands.Bot):
     """
     The main GameBot class.
     """
+
     def __init__(self, db):
         """
         Initialize the GameBot instance.
@@ -38,6 +39,7 @@ class GameBot(commands.Bot):
 
         This method sets up a hook for the GameBot to refresh messages related to polls.
         """
+
         async def message_refresh_function(poll_key):
             refreshing_poll = await Poll.find(self.db, poll_key)
             pv = PollView()

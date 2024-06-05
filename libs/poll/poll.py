@@ -2,7 +2,7 @@ import random
 
 import discord
 
-from libs.guild import Guild
+from libs.dat.guild import Guild
 
 
 class PollNotFound(RuntimeError):

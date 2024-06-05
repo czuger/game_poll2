@@ -2,7 +2,7 @@ import logging
 
 from discord.interactions import Interaction
 
-from libs.database import DbConnector
+from libs.dat.database import DbConnector
 
 DELETE_TIME = 15
 logger = logging.getLogger(__name__)
