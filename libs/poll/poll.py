@@ -206,4 +206,9 @@ class Poll:
             else:
                 self.selections[game_key].append(user_key)
 
+        # TODO, instead of updating the whole dictionary use
+        # https://www.mongodb.com/docs/manual/reference/operator/update/push/ to add user
+        # https://www.mongodb.com/docs/manual/reference/operator/update/pull/ to remove user
+        # This also may help : https://stackoverflow.com/questions/34431435/mongodb-update-an-object-in-nested-array
+        # To avoid overwriting the database element in case of update conflict.
         self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})

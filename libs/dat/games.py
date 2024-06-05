@@ -19,6 +19,10 @@ class Games:
         Class method to asynchronously retrieve the keys of default games from the database.
     """
 
+    # TODO : there is no real need for this class.
+    # Instead add a dict to guild with two dict : board and miniatures. Only keep short and long param.
+    # See inserts_json2.py
+    # In the guild object add a "refresh_games" method.
     def __init__(self, db, games_collection_dict):
         """
         Initializes the Games class with a database object and a games collection dictionary.
