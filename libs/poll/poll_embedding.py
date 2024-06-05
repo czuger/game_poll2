@@ -1,3 +1,7 @@
+"""
+This module mainly create the content of the poll. The part that show the status of the poll
+(basically what games players have selected).
+"""
 import discord
 
 from libs.games import Games
@@ -31,7 +35,7 @@ def __get_user_names(users_ids, guild):
     return sorted(user_names)
 
 
-def get_selection_long_name(db_games_obj: Games, game_key):
+def __get_selection_long_name(db_games_obj: Games, game_key):
     """
     Retrieves the long name of a game based on its key.
 
@@ -62,7 +66,7 @@ def get_selection_long_name(db_games_obj: Games, game_key):
     return game_name
 
 
-def add_selection(db_games_obj: Games, guild, poll, game_key, users, games, others):
+def __add_selection(db_games_obj: Games, guild, poll, game_key, users, games, others):
     """
     Adds a selection of users for a given game key to the games or others list.
 
@@ -98,10 +102,10 @@ def add_selection(db_games_obj: Games, guild, poll, game_key, users, games, othe
         users_line = ",".join(users_list)
 
         if game_key in poll.OTHER_BUTTONS:
-            game_name = get_selection_long_name(db_games_obj, game_key)
+            game_name = __get_selection_long_name(db_games_obj, game_key)
             others.append((game_name, users_line))
         elif game_key in poll.selections:
-            game_name = get_selection_long_name(db_games_obj, game_key)
+            game_name = __get_selection_long_name(db_games_obj, game_key)
             games.append((game_name, users_line))
         else:
             raise RuntimeError(f"Unable to find {game_key}")
@@ -111,7 +115,9 @@ def add_selection(db_games_obj: Games, guild, poll, game_key, users, games, othe
 
 async def get_players_embed(database, channel):
     """
-    Asynchronously creates a Discord embed showing the current poll selections.
+    Create the status content of the poll.
+      * Show the title
+      * Show each activity / game followed with a list of user that had checked this activity / game
 
     Parameters
     ----------
@@ -134,7 +140,7 @@ async def get_players_embed(database, channel):
     others = []
 
     for selection, users in poll.selections.items():
-        (games, others) = add_selection(db_games_obj, channel.guild, poll, selection, users, games, others)
+        (games, others) = __add_selection(db_games_obj, channel.guild, poll, selection, users, games, others)
 
     games.sort(key=lambda x: (x[0], x[1]))
     others.sort(key=lambda x: (x[0], x[1]))
