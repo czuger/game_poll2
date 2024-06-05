@@ -1,5 +1,5 @@
 import json
-import logging
+import logging.handlers
 from logging.handlers import RotatingFileHandler
 
 from libs.dat.database import DbConnector
@@ -12,6 +12,21 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 rotating_handler = RotatingFileHandler("/var/log/gamebot/gamebot.log", maxBytes=20 * 1024 * 1024, backupCount=2)
 logger.addHandler(rotating_handler)
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+logging.getLogger('discord.http').setLevel(logging.DEBUG)
+
+handler = logging.handlers.RotatingFileHandler(
+    filename='/var/log/gamebot/discord.log',
+    encoding='utf-8',
+    maxBytes=32 * 1024 * 1024,  # 32 MiB
+    backupCount=5,  # Rotate through 5 files
+)
+dt_fmt = '%Y-%m-%d %H:%M:%S'
+formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 # @bot.event
 # async def on_message(message):

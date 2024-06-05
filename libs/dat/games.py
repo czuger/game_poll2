@@ -4,7 +4,7 @@ class Games:
 
     Attributes
     ----------
-    dict : dict
+    games_collection_dict : dict
         A dictionary representing the games collection, where keys are the game keys.
     db : pymongo.database.Database
         The database object.
@@ -30,7 +30,7 @@ class Games:
         games_collection_dict : dict
             A dictionary representing the games collection, where keys are the game keys.
         """
-        self.dict = games_collection_dict
+        self.games_collection_dict = games_collection_dict
         self.db = db
 
     @classmethod
@@ -67,3 +67,9 @@ class Games:
             A list of keys for the default games.
         """
         return [e["key"] for e in list(db.games.find()) if e.get("default") == True]
+
+    def get_miniatures_dict(self) -> dict:
+        return {k: v for k, v in self.games_collection_dict.items() if v["type"] == "Miniatures"}
+
+    def get_board_games_dict(self) -> dict:
+        return {k: v for k, v in self.games_collection_dict.items() if v["type"] == "Board"}

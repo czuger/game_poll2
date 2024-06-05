@@ -13,6 +13,6 @@ class AddToPollButton(discord.ui.Button):
         self.poll = poll
 
     async def callback(self, interaction: discord.Interaction):
-        print(self.label)
+        print(self.label, self.custom_id)
 
         await interaction.response.defer(thinking=False)

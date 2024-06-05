@@ -1,7 +1,7 @@
 import discord
 
-from libs.add_game_to_poll.add_to_poll_button import AddToPollButton
-from libs.dat.games import Games
+from libs.add_game.add_to_poll_button import AddToPollButton
+from libs.helpers.buttons import make_btn_key
 from libs.poll.poll import Poll
 
 
@@ -23,7 +23,7 @@ class AddToPollView(discord.ui.View):
         """
         super().__init__(timeout=None)
 
-    async def initialize_view(self, db, poll: Poll):
+    async def initialize_view(self, db, poll: Poll, chunk):
         """
         Create the view for the poll (buttons + embedded text)
 
@@ -39,14 +39,14 @@ class AddToPollView(discord.ui.View):
         PollView
             The initialized PollView instance.
         """
-        games_db_object = await Games.get_games(db)
+        games_db_object = chunk
 
         games = []
 
         # We create two lists. One for games, one for buttons (because buttons are in a separated line)
-        for game_key in list(games_db_object.dict.keys()):
-            game = {"short": games_db_object.dict[game_key]["short"],
-                    "key": games_db_object.dict[game_key]["short"],
+        for key, game_in in list(games_db_object.items()):
+            game = {"short": game_in["short"],
+                    "key": make_btn_key(key, 'G'),
                     "style": discord.ButtonStyle.primary}
             games.append(game)
 

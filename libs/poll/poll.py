@@ -1,9 +1,8 @@
-import random
-
 import discord
 import pymongo
 
 from libs.dat.guild import Guild
+from libs.helpers.buttons import make_btn_key
 
 
 class PollNotFound(RuntimeError):
@@ -83,26 +82,6 @@ class Poll:
         self.buttons = record.get(self.BUTTONS_KEY, {})
         self.db = db
 
-    @staticmethod
-    def make_btn_key(game_key: str, typ: str):
-        """
-        Creates a unique button key.
-
-        Parameters
-        ----------
-        game_key : str
-            The key of the game.
-        typ : str
-            The type of button (e.g., "G" for game, "O" for other).
-
-        Returns
-        -------
-        str
-            A unique button key.
-        """
-        tmp_gk = game_key[5:-1] if typ == "G" else game_key
-        return "BTN" + typ + "_" + tmp_gk + "_" + format(random.randrange(0, 10 ** 9), '09d')
-
     async def reset_buttons(self, channel) -> None:
         """
         Asynchronously finds an existing poll in the database or creates a new one.
@@ -123,7 +102,7 @@ class Poll:
             (btn_list, btn_marker) = btn_type
 
             for k in btn_list:
-                buttons[self.make_btn_key(k, btn_marker)] = k
+                buttons[make_btn_key(k, btn_marker)] = k
 
         self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.BUTTONS_KEY: buttons}}, upsert=True)
 

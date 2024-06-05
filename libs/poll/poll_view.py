@@ -1,6 +1,6 @@
 import discord
 
-from libs.add_game_to_poll.respond_to_add_game_button import RespondToAddGameButton
+from libs.add_game.respond_to_add_game_button import RespondToAddGameButton
 from libs.dat.games import Games
 from libs.poll.poll import Poll
 from libs.poll.poll_buttons import PollButton
@@ -51,8 +51,8 @@ class PollView(discord.ui.View):
                 other["key"] = button_id
                 others.append(other)
             else:
-                game = {"short": games_db_object.dict[button_key]["short"],
-                        "key": games_db_object.dict[button_key]["short"],
+                game = {"short": games_db_object.games_collection_dict[button_key]["short"],
+                        "key": games_db_object.games_collection_dict[button_key]["short"],
                         "style": discord.ButtonStyle.primary}
                 games.append(game)
 
@@ -75,14 +75,15 @@ class PollView(discord.ui.View):
         for other in others:
             if "action" in other:
                 if "add_game" in other["action"]:
-                    button = RespondToAddGameButton(db, poll, other["short"], other["key"], row,
-                                                    emoji=other["emoji"], style=other["style"])
+                    button = RespondToAddGameButton(
+                        db, poll, other["short"], other["key"], row, emoji=other["emoji"], style=other["style"])
+                    print("Adding 'add_game' button : ", other["key"], button)
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
             else:
                 button = PollButton(db, poll, other["short"], other["key"], row, emoji=other["emoji"],
                                     style=other["style"])
-            self.add_item(button)
+            print(self.add_item(button))
 
         # Uncomment the following lines if additional buttons are needed
         # key = OtherButton(label="Ajouter", custom_id="add", emoji='➕', style=discord.ButtonStyle.success, row=2)

@@ -58,8 +58,8 @@ def __get_selection_long_name(db_games_obj: Games, game_key):
     """
     if game_key in Poll.OTHER_BUTTONS:
         game_name = Poll.OTHER_BUTTONS[game_key]["long"]
-    elif game_key in db_games_obj.dict:
-        game_name = db_games_obj.dict[game_key]["long"]
+    elif game_key in db_games_obj.games_collection_dict:
+        game_name = db_games_obj.games_collection_dict[game_key]["long"]
     else:
         raise RuntimeError(f"game {game_key} does not exist in Games collection")
 
