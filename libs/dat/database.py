@@ -15,7 +15,7 @@ class DbConnector:
         The database object.
     games : pymongo.collection.Collection
         The games collection in the database.
-    polls : pymongo.collection.Collection
+    poll_instances : pymongo.collection.Collection
         The polls collection in the database.
     guilds : pymongo.collection.Collection
         The guilds collection in the database.
@@ -42,7 +42,7 @@ class DbConnector:
         """
         self.db = None
         self.games = None
-        self.polls = None
+        self.poll_instances = None
         self.guilds = None
         self.admins = None
 
@@ -56,7 +56,7 @@ class DbConnector:
         self.db = self.db_connection[self.db_name]
 
         self.games = self.db["games"]
-        self.polls = self.db["poll_instances"]
+        self.poll_instances = self.db["poll_instances"]
         self.guilds = self.db["guilds"]
         self.admins = self.db["admins"]
 

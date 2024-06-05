@@ -59,6 +59,8 @@ class Poll:
                        "style": discord.ButtonStyle.danger},
         "other": {"key": "other", "short": "Autre", "long": "Autre activité", "emoji": "♟️",
                   "style": discord.ButtonStyle.success},
+        "ajouter": {"key": "ajouter", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🏅",
+                    "style": discord.ButtonStyle.success},
     }
 
     BUTTONS_KEY = "buttons"
@@ -101,6 +103,30 @@ class Poll:
         tmp_gk = game_key[5:-1] if typ == "G" else game_key
         return "BTN" + typ + "_" + tmp_gk + "_" + format(random.randrange(0, 10 ** 9), '09d')
 
+    async def reset_buttons(self, channel) -> None:
+        """
+        Asynchronously finds an existing poll in the database or creates a new one.
+
+        Parameters
+        ----------
+        channel : discord.channel.Channel
+            The Discord channel object from which the channel ID is extracted.
+
+        Returns
+        -------
+        """
+
+        guild = await Guild.find_or_create(self.db, channel)
+
+        buttons = {}
+        for btn_type in ((guild.games, "G"), (self.OTHER_BUTTONS.keys(), "O")):
+            (btn_list, btn_marker) = btn_type
+
+            for k in btn_list:
+                buttons[self.make_btn_key(k, btn_marker)] = k
+
+        self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.BUTTONS_KEY: buttons}}, upsert=True)
+
     @classmethod
     async def find_or_create(cls, db: pymongo.database.Database, channel):
         """
@@ -124,16 +150,11 @@ class Poll:
         try:
             poll = await cls.find(db, key)
         except PollNotFound:
-            buttons = {}
-            for btn_type in ((guild.games, "G"), (cls.OTHER_BUTTONS.keys(), "O")):
-                (btn_list, btn_marker) = btn_type
-
-                for k in btn_list:
-                    buttons[cls.make_btn_key(k, btn_marker)] = k
-
-            record = {"key": key, cls.BUTTONS_KEY: buttons}
-            db.polls.insert_one(record)
+            record = {"key": key, cls.BUTTONS_KEY: {}}
+            db.poll_instances.insert_one(record)
             poll = cls(db, record)
+
+            poll.reset_buttons(channel)
 
         return poll
 
@@ -160,7 +181,7 @@ class Poll:
             If no poll is found with the given key.
         """
         query = {"key": poll_key}
-        existing_record = db.polls.find_one(query)
+        existing_record = db.poll_instances.find_one(query)
 
         if not existing_record:
             raise PollNotFound(f"No poll for {poll_key}")
@@ -176,7 +197,7 @@ class Poll:
         dict
             The poll record from the database.
         """
-        poll_db_object = self.db.polls.find_one({"key": self.key})
+        poll_db_object = self.db.poll_instances.find_one({"key": self.key})
         return poll_db_object
 
     def toggle_button_id(self, user: discord.User, button_id: str):
@@ -201,4 +222,4 @@ class Poll:
             else:
                 self.selections[game_key].append(user_key)
 
-        self.db.polls.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})
+        self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})

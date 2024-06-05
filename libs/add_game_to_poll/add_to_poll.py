@@ -1,7 +1,5 @@
 import random
 
-import discord
-
 from libs.guild import Guild
 
 
@@ -10,7 +8,6 @@ class PollNotFound(RuntimeError):
 
 
 class add_to_poll:
-
 
     def __init__(self, db, record):
         self.key = record["key"]
@@ -42,7 +39,7 @@ class add_to_poll:
                     buttons[cls.make_btn_key(k, btn_marker)] = k
 
             record = {"key": key, cls.BUTTONS_KEY: buttons}
-            db.polls.insert_one(record)
+            db.poll_instances.insert_one(record)
             poll = cls(db, record)
 
         return poll
@@ -50,7 +47,7 @@ class add_to_poll:
     @classmethod
     async def find(cls, db, poll_key):
         query = {"key": poll_key}
-        existing_record = db.polls.find_one(query)
+        existing_record = db.poll_instances.find_one(query)
 
         if not existing_record:
             raise PollNotFound(f"No poll for {poll_key}")
@@ -58,7 +55,7 @@ class add_to_poll:
         return cls(db, existing_record)
 
     def get_poll_db_object(self):
-        poll_db_object = self.db.polls.find_one({"key": self.key})
+        poll_db_object = self.db.poll_instances.find_one({"key": self.key})
         return poll_db_object
 
     def toggle_button_id(self, user, button_id):
@@ -74,4 +71,4 @@ class add_to_poll:
             else:
                 self.selections[game_key].append(user_key)
 
-        self.db.polls.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})
+        self.db.poll_instances.update_one({"key": self.key}, {"$set": {self.SELECTIONS_KEY: self.selections}})
