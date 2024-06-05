@@ -1,10 +1,14 @@
-import os
 import json
-from pymongo import MongoClient
-import uuid
+import os
 
-with open("../config/mongo.json", "r") as f:
-    mongo = json.load(f)
+from pymongo import MongoClient
+
+from libs.misc.project_root import find_project_root
+
+root_dir = find_project_root()
+with open(root_dir / "config.json", 'r') as f:
+    config = json.load(f)
+    mongo = config["mongo"]
 
 client = MongoClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
 db = client["games_database"]
