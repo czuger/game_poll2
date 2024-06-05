@@ -2,6 +2,8 @@ import json
 
 from pymongo import MongoClient
 
+from libs.misc.project_root import find_project_root
+
 
 class DbConnector:
     def __init__(self):
@@ -25,8 +27,11 @@ class DbConnector:
         self.admins = self.db["admins"]
 
     def connect(self, db_name="games_database"):
-        with open("mongo.json", "r") as f:
+        root_dir = find_project_root()
+
+        with open(root_dir / "config.json", "r") as f:
             mongo = json.load(f)
+            mongo = mongo["mongo"]
 
         self.db_connection = MongoClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
         self.db_name = db_name

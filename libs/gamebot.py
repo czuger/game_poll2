@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from libs.poll import Poll
+from libs.dat.poll import Poll
 from libs.views.poll_view import PollView
 
 

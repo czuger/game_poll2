@@ -1,7 +1,6 @@
 import discord
 
-import libs.database as database
-from libs.poll import Poll
+from libs.dat.poll import Poll
 from libs.poll_embedding import get_players_embed
 
 

@@ -1,4 +1,4 @@
-from libs.games import Games
+from libs.dat.games import Games
 
 
 class Guild:
