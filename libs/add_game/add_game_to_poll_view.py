@@ -44,9 +44,9 @@ class AddToPollView(discord.ui.View):
         games = []
 
         # We create two lists. One for games, one for buttons (because buttons are in a separated line)
-        for key, game_in in list(games_db_object.items()):
+        for game_in in games_db_object:
             game = {"short": game_in["short"],
-                    "key": make_btn_key(key, 'G'),
+                    "key": make_btn_key(game_in["key"], 'g'),
                     "style": discord.ButtonStyle.primary}
             games.append(game)
 

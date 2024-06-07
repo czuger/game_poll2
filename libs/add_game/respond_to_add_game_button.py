@@ -1,7 +1,7 @@
 import discord
 
 from libs.add_game.add_game_to_poll_view import AddToPollView
-from libs.dat.games import Games
+from libs.dat.guild import Guild
 from libs.helpers.views import sort_and_split_by_chunks
 from libs.poll.poll import Poll
 
@@ -20,20 +20,18 @@ class RespondToAddGameButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         print("In RespondToAddGameButton")
-        games = await Games.get_games(self.db)
+        guild = await Guild.find_or_create(self.db, interaction.channel)
 
-        print("Got games")
-
-        miniatures_dict = games.get_miniatures_dict()
-        chunks = sort_and_split_by_chunks(miniatures_dict)
+        miniatures = guild.games["miniatures"]
+        chunks = sort_and_split_by_chunks(miniatures)
         for index, chunk in enumerate(chunks):
             pv = AddToPollView()
             await pv.initialize_view(self.db, self.poll, chunk)
 
             await interaction.user.send(f"Quel jeu de figurines voulez vous ajouter ? ({index})", view=pv)
 
-        board_dict = games.get_board_games_dict()
-        chunks = sort_and_split_by_chunks(board_dict)
+        board = guild.games["boards"]
+        chunks = sort_and_split_by_chunks(board)
         for index, chunk in enumerate(chunks):
             pv = AddToPollView()
             await pv.initialize_view(self.db, self.poll, chunk)

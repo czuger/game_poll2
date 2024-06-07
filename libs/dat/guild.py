@@ -63,6 +63,6 @@ class Guild:
                 "key": key,
                 "games": (await Games.get_pre_loaded_games())
             }
-            db.guilds.insert_one(existing_record)
+            await db.guilds.insert_one(existing_record)
 
         return cls(db, existing_record)

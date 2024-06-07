@@ -60,7 +60,7 @@ class PollButton(discord.ui.Button):
         interaction : discord.Interaction
             The interaction object representing the button click event.
         """
-        self.poll.toggle_button_id(interaction.user, self.custom_id)
+        await self.poll.toggle_button_id(interaction.user, self.custom_id)
         embed = await get_players_embed(self.db, interaction.channel)
         poll_message = interaction.message
         await poll_message.edit(embed=embed)
