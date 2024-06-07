@@ -1,3 +1,8 @@
+import json
+
+from libs.misc.project_root import find_project_root
+
+
 class Games:
     """
     A class used to represent and manage games in a MongoDB collection.
@@ -56,21 +61,22 @@ class Games:
         return cls(db, games_collection_dict)
 
     @classmethod
-    async def get_default_games_keys(cls, db):
+    async def get_pre_loaded_games(cls):
         """
         Asynchronously retrieves the keys of default games from the database.
 
         Parameters
         ----------
-        db : pymongo.database.Database
-            The database object.
 
         Returns
         -------
         list
-            A list of keys for the default games.
+            A dict of miniatures, board and default games.
         """
-        return [e["key"] for e in list(db.games.find()) if e.get("default") == True]
+        root_directory = find_project_root()
+
+        with open(root_directory / "games" / "games.json") as f:
+            return json.load(f)
 
     def get_miniatures_dict(self) -> dict:
         return {k: v for k, v in self.games_collection_dict.items() if v["type"] == "Miniatures"}

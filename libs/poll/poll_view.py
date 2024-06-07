@@ -40,58 +40,31 @@ class PollView(discord.ui.View):
         PollView
             The initialized PollView instance.
         """
-        games_db_object = await Games.get_games(db)
-
-        games = []
-        others = []
-        # We create two lists. One for games, one for buttons (because buttons are in a separated line)
-        for button_id, button_key in poll.buttons.items():
-            if button_key in poll.OTHER_BUTTONS:
-                other = Poll.OTHER_BUTTONS[button_key]
-                other["key"] = button_id
-                others.append(other)
-            else:
-                game = {"short": games_db_object.games_collection_dict[button_key]["short"],
-                        "key": games_db_object.games_collection_dict[button_key]["short"],
-                        "style": discord.ButtonStyle.primary}
-                games.append(game)
-
-        # games.sort()
-        # others.sort()
+        poll.refresh()
 
         # We need to rearrange buttons in packets of 5
         packet_size = 5
-        packets = [games[i:i + packet_size] for i in range(0, len(games), packet_size)]
+        packets = [poll.games[i:i + packet_size] for i in range(0, len(poll.games), packet_size)]
 
         # We create the poll buttons for selectable games
         row = 0
         for packet in packets:
-            for game in packet:
-                button = PollButton(db, poll, game["short"], game["key"], row)
+            for key, game in packet.items:
+                button = PollButton(db, poll, game["short"], key, row)
                 self.add_item(button)
             row += 1
 
         # We create the buttons for other actions
-        for other in others:
-            print(other)
+        for key, other in poll.others.items():
             if "action" in other:
                 if "add_game" in other["action"]:
                     button = RespondToAddGameButton(
-                        db, poll, other["short"], other["key"], row, emoji=other["emoji"], style=other["style"])
-                    print("Adding 'add_game' button : ", other["key"], button)
+                        db, poll, other["short"], key, row, emoji=other["emoji"], style=other["style"])
+                    print("Adding 'add_game' button : ", key, button)
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
             else:
-                button = PollButton(db, poll, other["short"], other["key"], row, emoji=other["emoji"],
-                                    style=other["style"])
+                button = PollButton(db, poll, other["short"], key, row, emoji=other["emoji"], style=other["style"])
             self.add_item(button)
-            print(button, button.custom_id)
-
-        # Uncomment the following lines if additional buttons are needed
-        # key = OtherButton(label="Ajouter", custom_id="add", emoji='➕', style=discord.ButtonStyle.success, row=2)
-        # self.add_item(key)
-        #
-        # key = OtherButton(label="Plateau", custom_id="board", emoji='👑', style=discord.ButtonStyle.success, row=2)
-        # self.add_item(key)
 
         return self

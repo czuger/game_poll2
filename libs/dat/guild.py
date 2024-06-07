@@ -61,8 +61,7 @@ class Guild:
         if not existing_record:
             existing_record = {
                 "key": key,
-                "games": (await Games.get_default_games_keys(db))[0:20]
-                # We can't show more than 20 games due to Discord limitations
+                "games": (await Games.get_pre_loaded_games())
             }
             db.guilds.insert_one(existing_record)
 

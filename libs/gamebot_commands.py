@@ -26,7 +26,7 @@ async def reset_command(ctx: Context, db: DbConnector):
     # if await is_admin(db, ctx.interaction, ctx.me.id):
     poll = await Poll.find_or_create(db, ctx.channel)
     print(poll.buttons)
-    new_buttons = await poll.reset_buttons(ctx.channel)
+    new_buttons = await poll.add_default_games(ctx.channel)
     poll.buttons = new_buttons
     print(poll.buttons)
     await __show_poll(ctx, db, poll)
