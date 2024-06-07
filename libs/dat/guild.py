@@ -56,7 +56,7 @@ class Guild:
         """
         key = str(channel.guild.id)
         query = {"key": key}
-        existing_record = db.guilds.find_one(query)
+        existing_record = await db.guilds.find_one(query)
 
         if not existing_record:
             existing_record = {

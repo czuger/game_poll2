@@ -86,8 +86,9 @@ class Poll:
             other["players"] = []
             self.others[make_btn_key(other["key"], "o")] = other
 
-        self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.games": self.games}}, upsert=True)
-        self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.others": self.others}}, upsert=True)
+        await self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.games": self.games}}, upsert=True)
+        await self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.others": self.others}},
+                                                upsert=True)
 
     @classmethod
     async def find(cls, db: pymongo.database.Database, channel, create_if_not_exist=False):
@@ -110,11 +111,11 @@ class Poll:
         """
         key = str(channel.id)
 
-        poll_dict = db.poll_instances.find_one({cls.POLL_KEY: key})
+        poll_dict = await db.poll_instances.find_one({cls.POLL_KEY: key})
         if poll_dict is None:
             if create_if_not_exist:
                 record = {"key": key, cls.BUTTONS_KEY: {cls.GAMES_KEY: {}, cls.OTHERS_KEY: {}}}
-                db.poll_instances.insert_one(record)
+                await db.poll_instances.insert_one(record)
                 poll = cls(db, record)
 
                 await poll.add_default_games(channel)
@@ -125,11 +126,11 @@ class Poll:
 
         return poll
 
-    def refresh(self):
-        poll_dict = self.db.poll_instances.find_one({self.POLL_KEY: self.key})
+    async def refresh(self):
+        poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
         self.__initialize_buttons_data(poll_dict)
 
-    def toggle_button_id(self, user: discord.User, button_id: str):
+    async def toggle_button_id(self, user: discord.User, button_id: str):
         """
         Toggle the buttons status in the poll_instance database object.
 
@@ -142,7 +143,7 @@ class Poll:
         """
         user_key = str(user.id)
 
-        self.refresh()
+        await self.refresh()
 
         if button_id[0] == "g":
             button_data = self.games[button_id]
@@ -150,10 +151,10 @@ class Poll:
             button_data = self.others[button_id]
 
         if user_key in button_data['players']:
-            update_result = self.db.poll_instances.update_one(
+            update_result = await self.db.poll_instances.update_one(
                 {'key': self.key}, {'$pull': {f'buttons.games.{button_id}.players': user_key}})
         else:
-            update_result = self.db.poll_instances.update_one(
+            update_result = await self.db.poll_instances.update_one(
                 {'key': self.key}, {'$push': {f'buttons.games.{button_id}.players': user_key}})
 
         # Check if the update was successful

@@ -1,7 +1,6 @@
 import discord
 
 from libs.add_game.respond_to_add_game_button import RespondToAddGameButton
-from libs.dat.games import Games
 from libs.poll.poll import Poll
 from libs.poll.poll_buttons import PollButton
 
@@ -40,16 +39,18 @@ class PollView(discord.ui.View):
         PollView
             The initialized PollView instance.
         """
-        poll.refresh()
+        await poll.refresh()
 
         # We need to rearrange buttons in packets of 5
         packet_size = 5
-        packets = [poll.games[i:i + packet_size] for i in range(0, len(poll.games), packet_size)]
+        keys = list(poll.games.keys())
+        packets_keys = [keys[i:i + packet_size] for i in range(0, len(keys), packet_size)]
 
         # We create the poll buttons for selectable games
         row = 0
-        for packet in packets:
-            for key, game in packet.items:
+        for packet_keys in packets_keys:
+            for key in packet_keys:
+                game = poll.games[key]
                 button = PollButton(db, poll, game["short"], key, row)
                 self.add_item(button)
             row += 1
