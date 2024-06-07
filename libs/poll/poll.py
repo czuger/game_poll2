@@ -147,15 +147,17 @@ class Poll:
 
         if button_id[0] == "g":
             button_data = self.games[button_id]
+            sub_collection = "games"
         else:
             button_data = self.others[button_id]
+            sub_collection = "others"
 
         if user_key in button_data['players']:
             update_result = await self.db.poll_instances.update_one(
-                {'key': self.key}, {'$pull': {f'buttons.games.{button_id}.players': user_key}})
+                {'key': self.key}, {'$pull': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
         else:
             update_result = await self.db.poll_instances.update_one(
-                {'key': self.key}, {'$push': {f'buttons.games.{button_id}.players': user_key}})
+                {'key': self.key}, {'$push': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
 
         # Check if the update was successful
         if update_result.modified_count > 0:
