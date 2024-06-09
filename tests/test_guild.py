@@ -18,4 +18,4 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         guild = await Guild.find_or_create(self.db, discord_channel)
 
         self.assertEqual("123456", guild.key)
-        self.assertIn("adg", [e["key"] for e in guild.games["miniatures"]])
+        self.assertIn("adg", [game["key"] for game in guild.games["miniatures"].values()])

@@ -45,19 +45,43 @@ class PollView(discord.ui.View):
         """
         await poll.refresh()
 
-        # We need to rearrange buttons in packets of 5
         packet_size = 5
         keys = list(poll.games.keys())
-        packets_keys = [keys[i:i + packet_size] for i in range(0, len(keys), packet_size)]
+
+        # Sort keys by the length of game["short"] in descending order
+        keys.sort(key=lambda k: len(poll.games[k]["short"]), reverse=True)
+
+        # Determine the number of rows needed
+        num_rows = (len(keys) + packet_size - 1) // packet_size
+
+        # Initialize the rows, each with an empty list of games, character count, and item count
+        rows = [{'games': [], 'char_count': 0, 'item_count': 0} for _ in range(num_rows)]
+
+        # Distribute the games across rows
+        for key in keys:
+            game = poll.games[key]
+            game_short_length = len(game["short"])
+
+            # Find the row with the minimum character count that has less than 5 items
+            min_row_index = min(
+                (i for i, row in enumerate(rows) if row['item_count'] < packet_size),
+                key=lambda i: rows[i]['char_count'],
+                default=None
+            )
+
+            if min_row_index is not None:
+                # Add the game to the selected row
+                rows[min_row_index]['games'].append((key, game))
+                rows[min_row_index]['char_count'] += game_short_length
+                rows[min_row_index]['item_count'] += 1
 
         # We create the poll buttons for selectable games
-        row = 0
-        for packet_keys in packets_keys:
-            for key in packet_keys:
-                game = poll.games[key]
-                button = PollButton(db, poll, game["short"], key, row)
+        for row_index, row in enumerate(rows):
+            for key, game in row['games']:
+                button = PollButton(db, poll, game["short"], key, row_index)
                 self.add_item(button)
-            row += 1
+
+        row = row_index + 1
 
         # We create the buttons for other actions
         for key, other in poll.others.items():

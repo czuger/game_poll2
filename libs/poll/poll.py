@@ -78,9 +78,9 @@ class Poll:
         print("add_default_games called")
         guild = await Guild.find_or_create(self.db, channel)
 
-        for game in guild.games["poll_default"]:
+        for key, game in guild.games["poll_default"].items():
             game["players"] = []
-            self.games[make_btn_key(game["key"], "g")] = game
+            self.games[make_btn_key(key, "g")] = game
 
         for other in self.OTHER_BUTTONS.values():
             other["players"] = []

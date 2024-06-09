@@ -1,6 +1,7 @@
 import discord
 
 from libs.add_game.add_to_poll_button import AddToPollButton
+from libs.dat.guild import Guild
 from libs.helpers.buttons import make_btn_key
 from libs.poll.poll import Poll
 
@@ -23,7 +24,7 @@ class AddToPollView(discord.ui.View):
         """
         super().__init__(timeout=None)
 
-    async def initialize_view(self, db, poll: Poll, chunk):
+    async def initialize_view(self, db, guild: Guild, poll: Poll, poll_message, chunk):
         """
         Create the view for the poll (buttons + embedded text)
 
@@ -58,7 +59,7 @@ class AddToPollView(discord.ui.View):
         row = 0
         for packet in packets:
             for game in packet:
-                button = AddToPollButton(poll, game["short"], game["key"], row)
+                button = AddToPollButton(db, guild, poll, poll_message, game["short"], game["key"], row)
                 self.add_item(button)
             row += 1
 

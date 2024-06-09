@@ -1,7 +1,5 @@
-import os
 import json
-from pprint import pprint
-
+import os
 import re
 
 
@@ -21,7 +19,7 @@ def replace_spaces_and_non_ansi(input_string):
 
 def process_json_files(directory):
     # Initialize the result dictionary with keys for miniatures and boards
-    result = {"miniatures": [], "boards": [], "poll_default": []}
+    result = {"miniatures": {}, "boards": {}, "poll_default": {}}
 
     # Walk through all directories and subdirectories
     for root, _, files in os.walk(directory):
@@ -43,12 +41,12 @@ def process_json_files(directory):
 
                             if key_param is not None:
                                 if item_type == "Miniatures":
-                                    result["miniatures"].append(data)
+                                    result["miniatures"][key_param] = data
                                 elif item_type == "Board":
-                                    result["boards"].append(data)
+                                    result["boards"][key_param] = data
 
                                 if data.get("default"):
-                                    result["poll_default"].append(data)
+                                    result["poll_default"][key_param] = data
 
                             if "default" in data:
                                 del data["default"]
@@ -60,16 +58,17 @@ def process_json_files(directory):
                     except Exception as e:
                         print(f"An error occurred while processing file {filename}: {e}")
 
-    # Define a sorting function based on the 'short' key
-    def sort_by_short(items):
-        return sorted(items, key=lambda item: item.get("short", ""))
+    # Define a sorting function for dictionaries by the 'short' key
+    def sort_dict_by_short(d):
+        return dict(sorted(d.items(), key=lambda item: item[1].get("short", "")))
 
-    # Sort the lists by their 'short' entries
-    result["miniatures"] = sort_by_short(result["miniatures"])
-    result["boards"] = sort_by_short(result["boards"])
-    result["poll_default"] = sort_by_short(result["poll_default"])
+    # Sort the dictionaries by their 'short' entries
+    result["miniatures"] = sort_dict_by_short(result["miniatures"])
+    result["boards"] = sort_dict_by_short(result["boards"])
+    result["poll_default"] = sort_dict_by_short(result["poll_default"])
 
     return result
+
 
 # Usage
 directory_path = 'data'

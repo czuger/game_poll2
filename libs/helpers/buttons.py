@@ -1,4 +1,5 @@
 import random
+import re
 
 
 def make_btn_key(game_key: str, btn_typ: str):
@@ -19,7 +20,7 @@ def make_btn_key(game_key: str, btn_typ: str):
 
 
 def get_key_from_btn(btn_key: str):
-    modified_string = btn_key[1:]
-    parts = modified_string.split('_')
-
-    return '_'.join(parts[:2])
+    match = re.search(r'[gmbo]_(.+)_\d+', btn_key)
+    if match:
+        return match.group(1)
+    return None

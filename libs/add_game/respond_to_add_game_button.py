@@ -1,3 +1,5 @@
+from copy import copy
+
 import discord
 
 from libs.add_game.add_game_to_poll_view import AddToPollView
@@ -22,18 +24,26 @@ class RespondToAddGameButton(discord.ui.Button):
         print("In RespondToAddGameButton")
         guild = await Guild.find_or_create(self.db, interaction.channel)
 
-        miniatures = guild.games["miniatures"]
+        miniatures = copy(guild.games["miniatures"])
+        for v in self.poll.games.values():
+            if v["key"] in miniatures:
+                del miniatures[v["key"]]
+
         chunks = sort_and_split_by_chunks(miniatures)
         for index, chunk in enumerate(chunks):
             pv = AddToPollView()
-            await pv.initialize_view(self.db, self.poll, chunk)
+            await pv.initialize_view(self.db, guild, self.poll, interaction.message, chunk)
 
             await interaction.user.send(f"Quel jeu de figurines voulez vous ajouter ? ({index})", view=pv)
 
-        board = guild.games["boards"]
-        chunks = sort_and_split_by_chunks(board)
+        boards = copy(guild.games["boards"])
+        for v in self.poll.games.values():
+            if v["key"] in boards:
+                del boards[v["key"]]
+
+        chunks = sort_and_split_by_chunks(boards)
         for index, chunk in enumerate(chunks):
             pv = AddToPollView()
-            await pv.initialize_view(self.db, self.poll, chunk)
+            await pv.initialize_view(self.db, guild, self.poll, interaction.message, chunk)
 
             await interaction.user.send(f"Quel jeu de plateau voulez vous ajouter ? ({index})", view=pv)
