@@ -58,13 +58,15 @@ async def get_players_embed(database, channel):
     for other in poll.others.values():
         if other["players"]:
             embed.add_field(
-                name="", value="**" + other["long"] + "** : " + __get_user_names(other["players"], channel.guild),
+                name="", value=other["emoji"] + " **" + other["long"] + "** : " + __get_user_names(other["players"],
+                                                                                                   channel.guild),
                 inline=False)
 
     for game in poll.games.values():
         if game["players"]:
             embed.add_field(
-                name="", value="**" + game["long"] + "** : " + __get_user_names(game["players"], channel.guild),
+                name="",
+                value=" **" + game["long"] + "** : " + __get_user_names(game["players"], channel.guild),
                 inline=False)
 
     return embed

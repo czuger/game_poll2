@@ -23,13 +23,15 @@ class Poll:
 
     OTHER_BUTTONS = {
         "present_with_key": {"key": "present_with_key", "short": "Clés", "long": "Présent avec les clés", "emoji": "🔑",
-                             "style": discord.ButtonStyle.success},
+                             "style": discord.ButtonStyle.primary},
         "tournament": {"key": "tournament", "short": "Tournoi", "long": "En tournoi", "emoji": "🏅",
-                       "style": discord.ButtonStyle.danger},
+                       "style": discord.ButtonStyle.success},
+        "orga": {"key": "orga", "short": "Orga", "long": "Organisation", "emoji": "🍺",
+                 "style": discord.ButtonStyle.success},
         "other": {"key": "other", "short": "Autre", "long": "Autre activité", "emoji": "♟️",
                   "style": discord.ButtonStyle.success},
         "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "➕",
-                "style": discord.ButtonStyle.success, "action": "add_game"},
+                "style": discord.ButtonStyle.red, "action": "add_game"},
     }
 
     BUTTONS_KEY = "buttons"
