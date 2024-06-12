@@ -22,6 +22,9 @@ class RespondToAddGameButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         print("In RespondToAddGameButton")
+
+        await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=10)
+
         guild = await Guild.find_or_create(self.db, interaction.channel)
 
         miniatures = copy(guild.games["miniatures"])
