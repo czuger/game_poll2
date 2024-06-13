@@ -1,3 +1,4 @@
+import logging
 from copy import copy
 
 import discord
@@ -6,6 +7,8 @@ from libs.add_game.add_game_to_poll_view import AddToPollView
 from libs.dat.guild import Guild
 from libs.helpers.views import sort_and_split_by_chunks
 from libs.poll.poll import Poll
+
+logger = logging.getLogger(__name__)
 
 
 class RespondToAddGameButton(discord.ui.Button):
@@ -16,12 +19,12 @@ class RespondToAddGameButton(discord.ui.Button):
     def __init__(self, db, poll: Poll, label: str, custom_id: str, row: int, emoji=None,
                  style=discord.ButtonStyle.gray):
         super().__init__(label=label, custom_id=custom_id, emoji=emoji, style=style, row=row)
-        print(custom_id)
+        logger.debug(custom_id)
         self.poll = poll
         self.db = db
 
     async def callback(self, interaction: discord.Interaction):
-        print("In RespondToAddGameButton")
+        logger.debug("In RespondToAddGameButton")
 
         await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=10)
 

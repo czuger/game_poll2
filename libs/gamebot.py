@@ -1,8 +1,12 @@
+import logging
+
 import discord
 from discord.ext import commands
 
 from libs.poll.poll import Poll
 from libs.poll.poll_view import PollView
+
+logger = logging.getLogger(__name__)
 
 
 class GameBot(commands.Bot):
@@ -46,12 +50,12 @@ class GameBot(commands.Bot):
             initialized_view = await pv.initialize_view(self.db, refreshing_poll)
 
             self.add_view(initialized_view)
-            print(initialized_view, initialized_view.id)
+            logger.debug(initialized_view, initialized_view.id)
 
         cursor = self.db.poll_instances.find()
         polls = await cursor.to_list(length=None)
         for to_refresh_poll in polls:
-            print("Refreshing poll", to_refresh_poll)
+            logger.debug("Refreshing poll", to_refresh_poll)
             await message_refresh_function(to_refresh_poll)
 
     async def on_ready(self):
@@ -60,5 +64,5 @@ class GameBot(commands.Bot):
 
         This method is called when the bot is successfully logged in and ready to start receiving events.
         """
-        print(f'Logged in as {self.user} (ID: {self.user.id})')
-        print('------')
+        logger.debug(f'Logged in as {self.user} (ID: {self.user.id})')
+        logger.debug('------')
