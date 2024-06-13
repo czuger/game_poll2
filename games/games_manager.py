@@ -1,6 +1,9 @@
 import argparse
+import logging
 
 from pymongo import MongoClient
+
+logger = logging.getLogger(__name__)
 
 
 class GameDatabaseManager:
@@ -25,10 +28,10 @@ class GameDatabaseManager:
                 if variant not in existing_game["variants"]:
                     existing_game["variants"].append(variant)
             self.collection.update_one({'name': game_name}, {'$set': {'variants': existing_game["variants"]}})
-            print(f"Variantes ajoutées pour le jeu '{game_name}'.")
+            logger.debug(f"Variantes ajoutées pour le jeu '{game_name}'.")
         else:
             self.collection.insert_one({'name': game_name, 'variants': variants})
-            print(f"Le jeu '{game_name}' et ses variantes ont été ajoutés avec succès.")
+            logger.debug(f"Le jeu '{game_name}' et ses variantes ont été ajoutés avec succès.")
 
     def delete_game_or_variant(self, game_name, variants=[]):
         """
@@ -39,16 +42,16 @@ class GameDatabaseManager:
         """
         existing_game = self.collection.find_one({'name': game_name})
         if not existing_game:
-            print(f"Le jeu '{game_name}' n'existe pas.")
+            logger.debug(f"Le jeu '{game_name}' n'existe pas.")
             return
 
         if not variants:
             self.collection.delete_one({'name': game_name})
-            print(f"Le jeu '{game_name}' a été supprimé.")
+            logger.debug(f"Le jeu '{game_name}' a été supprimé.")
         else:
             existing_game['variants'] = [v for v in existing_game['variants'] if v not in variants]
             self.collection.update_one({'name': game_name}, {'$set': {'variants': existing_game['variants']}})
-            print(f"Variantes {', '.join(variants)} du jeu '{game_name}' supprimées.")
+            logger.debug(f"Variantes {', '.join(variants)} du jeu '{game_name}' supprimées.")
 
     def list_games(self):
         """
@@ -57,14 +60,14 @@ class GameDatabaseManager:
         all_games = self.collection.find()
 
         if all_games.collection.count_documents({}) == 0:
-            print("Aucun jeu trouvé dans la base de données.")
+            logger.debug("Aucun jeu trouvé dans la base de données.")
             return
 
         for game in all_games:
-            print(f"Nom du jeu: {game['name']}")
+            logger.debug(f"Nom du jeu: {game['name']}")
             if game['variants']:
-                print("Variantes:", ", ".join(game['variants']))
-            print("------")
+                logger.debug("Variantes:", ", ".join(game['variants']))
+            logger.debug("------")
 
 
 def main():
@@ -82,7 +85,7 @@ def main():
         return
 
     if not args.variants:
-        print("Erreur: Vous devez spécifier un nom de jeu.")
+        logger.debug("Erreur: Vous devez spécifier un nom de jeu.")
         return
 
     game_name = args.variants[0]
