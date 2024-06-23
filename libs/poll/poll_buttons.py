@@ -62,6 +62,8 @@ class PollButton(discord.ui.Button):
         """
         await self.poll.toggle_button_id(interaction.user, self.custom_id)
         embed = await get_players_embed(self.db, interaction.channel)
+
+        # TODO : need to update all polls, not only the interaction one.
         poll_message = interaction.message
         await poll_message.edit(embed=embed)
         await interaction.response.defer(thinking=False)
