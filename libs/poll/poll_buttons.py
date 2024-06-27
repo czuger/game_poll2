@@ -49,7 +49,7 @@ class PollButton(discord.ui.Button):
         self.poll = poll
         self.db = db
 
-        print("Creating button", label, custom_id)
+        # print("Creating button", label, custom_id)
 
     async def callback(self, interaction: discord.Interaction):
         """

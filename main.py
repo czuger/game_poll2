@@ -6,6 +6,7 @@ from libs.gamebot import GameBot
 from libs.gamebot_commands import command_poll
 from libs.misc.auto_refresh_poll import auto_refresh_poll
 from libs.misc.project_root import find_project_root
+from libs.misc.schedule_poll import schedule_poll
 from libs.misc.set_logging import set_logging
 
 set_logging()
@@ -24,6 +25,11 @@ if __name__ == "__main__":
     @bot.command()
     async def poll(ctx):
         await command_poll(ctx, db)
+
+
+    @bot.command()
+    async def schedule(ctx, day: int = None):
+        await schedule_poll(db, ctx, day)
 
 
     @bot.event

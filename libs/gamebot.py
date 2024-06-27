@@ -2,11 +2,18 @@ import logging
 
 import discord
 from discord.ext import commands
+from discord.ext import tasks
 
+from libs.misc.schedule_poll import check_schedules_for_polls
 from libs.poll.poll import Poll
 from libs.poll.poll_view import PollView
 
 logger = logging.getLogger(__name__)
+
+
+@tasks.loop(hours=1)
+async def check_schedules(db, bot):
+    await check_schedules_for_polls(db, bot)
 
 
 class GameBot(commands.Bot):
@@ -52,11 +59,17 @@ class GameBot(commands.Bot):
             self.add_view(initialized_view)
             logger.debug(initialized_view, initialized_view.id)
 
+        # print(self.db.poll_instances)
+
         cursor = self.db.poll_instances.find()
         polls = await cursor.to_list(length=None)
+
         for to_refresh_poll in polls:
+            # print(to_refresh_poll)
             logger.debug("Refreshing poll", to_refresh_poll)
             await message_refresh_function(to_refresh_poll)
+
+        check_schedules.start(self.db, self)
 
     async def on_ready(self):
         """
