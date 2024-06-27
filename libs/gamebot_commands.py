@@ -17,6 +17,15 @@ async def __show_poll(ctx: Context, db: DbConnector, poll: Poll):
     await ctx.send("", embed=embed, view=pv)
 
 
+# TODO : merge those two functions
+async def __show_poll_by_channel(channel, db: DbConnector, poll: Poll):
+    pv = PollView()
+
+    await pv.initialize_view(db, poll)
+    embed = await get_players_embed(db, channel)
+    await channel.send("", embed=embed, view=pv)
+
+
 async def command_poll(ctx: Context, db: DbConnector):
     poll = await Poll.find(db, ctx.channel, create_if_not_exist=True)
     await __show_poll(ctx, db, poll)

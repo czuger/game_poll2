@@ -89,7 +89,7 @@ class PollView(discord.ui.View):
                 if "add_game" in other["action"]:
                     button = RespondToAddGameButton(
                         db, poll, other["short"], key, row, emoji=other["emoji"], style=self.get_style_from_poll(other))
-                    print("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
+                    # print("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
             else:
