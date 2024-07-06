@@ -38,7 +38,7 @@ class TestAddToPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         poll = await Poll.find(self.db, poll_discord_channel, create_if_not_exist=True)
 
         guild = await Guild.find_or_create(self.db, chat_discord_channel)
-        game_key = list(guild.games["boards"].keys())[0]
+        game_key = list(guild.poll_default)[0]
         button_id = make_btn_key(game_key, "g")
 
         pb = AddToPollButton(self.db, guild, poll, message, "foo", button_id, 0)

@@ -1,3 +1,5 @@
+from copy import copy
+
 import discord
 
 from libs.dat.guild import Guild
@@ -24,13 +26,7 @@ class AddToPollButton(discord.ui.Button):
         print(self.label, self.custom_id)
 
         game_key = get_key_from_btn(self.custom_id)
-
-        if game_key in self.guild.games["miniatures"]:
-            game = self.guild.games["miniatures"][game_key]
-        elif game_key in self.guild.games["boards"]:
-            game = self.guild.games["boards"][game_key]
-        else:
-            raise RuntimeError(f"{game_key} not found.")
+        game = copy(self.guild.games[game_key])
 
         game["players"] = []
         new_btn_key = make_btn_key(game_key, "g")

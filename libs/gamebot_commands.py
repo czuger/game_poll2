@@ -1,6 +1,7 @@
 from discord.ext.commands import Context
 
 from libs.dat.database import DbConnector
+from libs.dat.guild import Guild
 from libs.poll.poll import Poll
 from libs.poll.poll_embedding import get_players_embed
 from libs.poll.poll_view import PollView
@@ -31,11 +32,16 @@ async def command_poll(ctx: Context, db: DbConnector):
     await __show_poll(ctx, db, poll)
 
 
-async def reset_command(ctx: Context, db: DbConnector):
+async def reset_poll_cmd(ctx: Context, db: DbConnector):
     # if await is_admin(db, ctx.interaction, ctx.me.id):
+    poll = await Poll.find(db, ctx.channel)
+    await poll.remove_poll_from_db()
     poll = await Poll.find(db, ctx.channel, create_if_not_exist=True)
-    print(poll.buttons)
-    new_buttons = await poll.add_default_games(ctx.channel)
-    poll.buttons = new_buttons
-    print(poll.buttons)
     await __show_poll(ctx, db, poll)
+
+
+async def reset_guild_cmd(ctx: Context, db: DbConnector):
+    # if await is_admin(db, ctx.interaction, ctx.me.id):
+    guild = await Guild.find_or_create(db, ctx.channel)
+    await guild.remove_poll_from_db()
+    await Guild.find_or_create(db, ctx.channel)
