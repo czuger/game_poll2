@@ -1,8 +1,10 @@
 import logging
+from copy import copy
 
 import discord
 import pymongo
 
+from libs.dat.database import DbConnector
 from libs.dat.guild import Guild
 from libs.helpers.buttons import make_btn_key
 
@@ -40,7 +42,7 @@ class Poll:
 
     POLL_KEY = "key"
 
-    def __init__(self, db: pymongo.database.Database, record: dict):
+    def __init__(self, db: DbConnector, record: dict):
         """
         Initializes the Poll class with a database object and a record.
 
@@ -63,6 +65,9 @@ class Poll:
         self.games = poll_dict[self.BUTTONS_KEY][self.GAMES_KEY]
         self.others = poll_dict[self.BUTTONS_KEY][self.OTHERS_KEY]
 
+    async def remove_poll_from_db(self):
+        await self.db.poll_instances.delete_one({"key": self.key})
+
     async def add_default_games(self, channel) -> None:
         """
         Asynchronously finds an existing poll in the database or creates a new one.
@@ -80,9 +85,10 @@ class Poll:
         print("add_default_games called")
         guild = await Guild.find_or_create(self.db, channel)
 
-        for key, game in guild.games["poll_default"].items():
+        for game_key in guild.poll_default:
+            game = copy(guild.games[game_key])
             game["players"] = []
-            self.games[make_btn_key(key, "g")] = game
+            self.games[make_btn_key(game_key, "g")] = game
 
         for other in self.OTHER_BUTTONS.values():
             other["players"] = []

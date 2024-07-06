@@ -37,7 +37,7 @@ class TestRespondToAddGameButton(IsolatedAsyncioTestCase, unittest.TestCase, Bot
         # Toggle first button (should be game)
         poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
         guild = await Guild.find_or_create(self.db, discord_channel)
-        game_key = list(guild.games["boards"].keys())[0]
+        game_key = guild.poll_default[0]
         button_id = make_btn_key(game_key, "g")
 
         pb = RespondToAddGameButton(self.db, poll, "foo", button_id, 0)

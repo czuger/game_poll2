@@ -19,8 +19,5 @@ class TestHelpers(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
         guild = await Guild.find_or_create(self.db, discord_channel)
 
-        for k in guild.games["miniatures"].keys():
-            self.assertEqual(k, get_key_from_btn(make_btn_key(k, "m")))
-
-        for k in guild.games["boards"].keys():
-            self.assertEqual(k, get_key_from_btn(make_btn_key(k, "b")))
+        for k in guild.poll_default:
+            self.assertEqual(k, get_key_from_btn(make_btn_key(k, "g")))
