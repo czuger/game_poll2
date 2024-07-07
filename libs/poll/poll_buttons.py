@@ -24,7 +24,7 @@ class PollButton(discord.ui.Button):
     """
 
     def __init__(self, db, poll: Poll, label: str, custom_id: str, row: int, emoji=None,
-                 style=discord.ButtonStyle.gray):
+                 style=discord.ButtonStyle.grey):
         """
         Initializes the PollButton class with a database object, poll instance, and button properties.
 
