@@ -59,6 +59,7 @@ class DbConnector:
         self.poll_instances = self.db["poll_instances"]
         self.guilds = self.db["guilds"]
         self.admins = self.db["admins"]
+        self.votes_history = self.db["votes_history"]
 
     def connect(self, db_name="games_database"):
         """
