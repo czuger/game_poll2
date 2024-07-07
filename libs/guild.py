@@ -1,4 +1,8 @@
+import asyncio
 import logging
+from datetime import datetime
+
+import discord
 
 from libs.dat.database import DbConnector
 from libs.dat.games import Games
@@ -62,6 +66,25 @@ class Guild:
     async def remove_poll_from_db(self):
         await self.db.guilds.delete_one({"key": self.key})
 
+    async def __modify_vote_count(
+            self, interaction: discord.Interaction, game_key: str, vote_diff: int, vote_direction: str):
+        result = await self.db.guilds.update_one({"key": self.key}, {"$inc": {f"games.{game_key}.votes": vote_diff}})
+        assert result
+
+        result = await self.db.votes_history.update_one(
+            {"guild": self.key},
+            {"$push": {
+                f"votes.{interaction.user.id}.{game_key}":
+                    {"d": vote_direction, "t": datetime.now().isoformat(), "c": str(interaction.channel_id)}}},
+            upsert=True)
+        assert result
+
+    async def count_vote(self, interaction: discord.Interaction, game_key: str):
+        await self.__modify_vote_count(interaction, game_key, 1, "up")
+
+    async def un_count_vote(self, interaction: discord.Interaction, game_key: str):
+        await self.__modify_vote_count(interaction, game_key, -1, "down")
+
     @classmethod
     async def find_or_create(cls, db: DbConnector, channel):
         """
@@ -80,8 +103,7 @@ class Guild:
             An instance of the Guild class with the guild's data.
         """
         guild_id = str(channel.guild.id)
-        query = {"key": guild_id}
-        existing_record = await db.guilds.find_one(query)
+        existing_record = await db.guilds.find_one({"key": guild_id})
 
         if not existing_record:
             games, poll_default = await Games.get_pre_loaded_games()
@@ -94,3 +116,18 @@ class Guild:
         logger.debug(f"In Guild#find_or_create, existing_record = {existing_record}")
 
         return cls(db, guild_id, existing_record)
+
+
+async def main():
+    db = DbConnector()
+    db.connect()
+
+    result = await db.votes_history.update_one(
+        {"user": "user1"}, {"$push": {"guild1.adg": {"date": datetime.now().isoformat(), "type": "up"}}}, upsert=True)
+
+    print(result)
+
+
+if __name__ == "__main__":
+    with asyncio.Runner() as runner:
+        runner.run(main())

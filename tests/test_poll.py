@@ -1,9 +1,9 @@
 import unittest
-from pprint import pprint
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
+from libs.dat.guild import Guild
 from libs.poll.poll import Poll
 from tests.base import BotTest
 
@@ -23,7 +23,10 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
     async def test_poll(self):
         # First testing creation
-        discord_channel = MagicMock(id=123456)
+        discord_guild = AsyncMock(id=123456)
+        discord_channel = Mock(id=123456, guild=discord_guild)
+
+        guild = await Guild.find_or_create(self.db, discord_channel)
         poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
 
         self.assertEqual("123456", poll.key)
@@ -33,8 +36,6 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         poll = await Poll.find(self.db, discord_channel)
         self.assertEqual("123456", poll.key)
 
-        pprint(poll)
-
         # No testing button toggle
         button_id = list(poll.games.keys())[0]
         user = Mock(id=654321)
@@ -42,6 +43,10 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         await poll.toggle_button_id(user, button_id)
         await poll.refresh()
         self.assertIn("654321", poll.games[button_id]["players"])
+
+        game_key = poll.games[button_id]["key"]
+        existing_record = await self.db.guilds.find_one({"key": "123456"})
+        self.assertEqual(1, existing_record["games"][game_key]["votes"])
 
         await poll.toggle_button_id(user, button_id)
         await poll.refresh()

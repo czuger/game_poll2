@@ -6,6 +6,7 @@ BACKUP_COUNT = 5
 
 
 def set_logging():
+    print(__name__)
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     rotating_handler = RotatingFileHandler("/var/log/gamebot/gamebot.log", maxBytes=MAX_LOG_FILE_SIZE,

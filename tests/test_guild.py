@@ -51,3 +51,13 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_channel = MagicMock(guild=discord_guild)
 
         await reset_guild_cmd(discord_channel, self.db)
+
+    async def test_guild_vote_count(self):
+        discord_guild = MagicMock(id=123456)
+        discord_channel = MagicMock(guild=discord_guild)
+
+        guild = await Guild.find_or_create(self.db, discord_channel)
+        await guild.count_vote("foo", "adg")
+
+        existing_record = await self.db.guilds.find_one({"key": "123456"})
+        self.assertEqual(1, existing_record["games"]["adg"]["votes"])

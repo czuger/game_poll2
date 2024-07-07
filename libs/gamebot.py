@@ -52,7 +52,7 @@ class GameBot(commands.Bot):
         """
 
         async def message_refresh_function(poll_dict):
-            refreshing_poll = Poll(self.db, poll_dict)
+            refreshing_poll = await Poll.get_bot_at_restart(self, self.db, poll_dict)
             pv = PollView()
             initialized_view = await pv.initialize_view(self.db, refreshing_poll)
 
