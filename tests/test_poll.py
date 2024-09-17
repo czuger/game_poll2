@@ -39,8 +39,9 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         # No testing button toggle
         button_id = list(poll.games.keys())[0]
         user = Mock(id=654321)
+        mock_interaction = Mock(user=user)
 
-        await poll.toggle_button_id(user, button_id)
+        await poll.toggle_button_id(mock_interaction, button_id)
         await poll.refresh()
         self.assertIn("654321", poll.games[button_id]["players"])
 
@@ -48,10 +49,10 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         existing_record = await self.db.guilds.find_one({"key": "123456"})
         self.assertEqual(1, existing_record["games"][game_key]["votes"])
 
-        await poll.toggle_button_id(user, button_id)
+        await poll.toggle_button_id(mock_interaction, button_id)
         await poll.refresh()
         self.assertNotIn("654321", poll.games[button_id]["players"])
 
-        await poll.toggle_button_id(user, button_id)
+        await poll.toggle_button_id(mock_interaction, button_id)
         await poll.refresh()
         self.assertIn("654321", poll.games[button_id]["players"])
