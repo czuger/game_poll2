@@ -9,6 +9,8 @@ from libs.poll.poll import Poll
 
 logger = logging.getLogger(__name__)
 
+add_game_waiting_user = {}
+
 
 class RespondToAddGameButton(discord.ui.Button):
     """
@@ -41,3 +43,6 @@ class RespondToAddGameButton(discord.ui.Button):
             await pv.initialize_view(self.db, guild, self.poll, interaction.message, chunk)
 
             await interaction.user.send(f"Quel jeu voulez vous ajouter ? ({index})", view=pv)
+
+        await interaction.user.send(f"Pour ajouter un jeu qui n'est pas dans a liste, tapez son nom",
+                                    delete_after=10)

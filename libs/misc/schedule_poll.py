@@ -3,8 +3,9 @@ from datetime import datetime
 from datetime import timedelta
 
 from libs.dat.database import DbConnector
-from libs.gamebot_commands import __show_poll_by_channel
 from libs.poll.poll import Poll
+from libs.poll.poll_embedding import get_players_embed
+from libs.poll.poll_view import PollView
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +13,14 @@ logger = logging.getLogger(__name__)
 DAYS_AGO = 5
 
 french_day_names = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+
+
+async def __show_poll_by_channel(channel, db: DbConnector, poll: Poll):
+    pv = PollView()
+
+    await pv.initialize_view(db, poll)
+    embed = await get_players_embed(db, channel)
+    await channel.send("", embed=embed, view=pv)
 
 
 async def schedule_poll(db: DbConnector, ctx, day: int = None):
