@@ -1,8 +1,12 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
+from libs.admin import grant
+from libs.admin import is_admin
+from libs.admin import is_super_admin
+from libs.admin import upgrade
 from libs.dat.guild import Guild
 from libs.guilds.guilds_cog import GuildsCog
 from tests.base import BotTest
@@ -13,29 +17,71 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
     def setUp(self):
         self.set_up()
 
-    async def test_guild_find_or_create(self):
-        discord_guild = MagicMock(id=123456)
-        discord_channel = MagicMock(guild=discord_guild)
+        self.user_id = 94030
+        self.user = Mock(name="Test User", id=self.user_id)
+        self.discord_guild = Mock(name="Test Guild", id=123456)
+        self.discord_channel = AsyncMock(name="Test Channel", guild=self.discord_guild, me=self.user)
+        self.context = Mock(name="Test Context", channel=self.discord_channel, interaction=self.discord_channel,
+                            me=self.user)
 
-        guild = await Guild.find_or_create(self.db, discord_channel)
+        self.bot = Mock(name="Test Bot")
+        self.gc = gc = GuildsCog(self.bot, self.db)
+
+    async def test_guild_find_or_create(self):
+        guild = await Guild.find_or_create(self.db, self.discord_channel)
 
         self.assertEqual("123456", guild.key)
 
         self.assertIn("adg", guild.games.keys())
         self.assertIn("adg", guild.poll_default)
 
-    async def test_guild_reset_command(self):
-        discord_guild = MagicMock(id=123456)
-        discord_channel = MagicMock(guild=discord_guild, me=Mock(id=1))
-
-        await GuildsCog.reset_guild(discord_channel, self.db)
-
     async def test_guild_vote_count(self):
-        discord_guild = MagicMock(id=123456)
-        discord_channel = MagicMock(guild=discord_guild)
-
-        guild = await Guild.find_or_create(self.db, discord_channel)
-        await guild.count_vote(discord_channel, "adg")
+        guild = await Guild.find_or_create(self.db, self.discord_channel)
+        await guild.count_vote(self.discord_channel, "adg")
 
         existing_record = await self.db.guilds.find_one({"key": "123456"})
         self.assertEqual(1, existing_record["games"]["adg"]["votes"])
+
+    async def test_guild_reset_command_not_available_for_common_users(self):
+        await self.gc.reset_guild.callback(self.gc, self.context)
+
+        self.context.interaction.response.send_message.assert_awaited()
+        self.context.interaction.response.send_message.assert_awaited_with(
+            content='You do not have the privilege to do that', ephemeral=True, delete_after=15)
+
+    async def test_guild_reset_command_not_available_for_admin(self):
+        await grant(self.db, self.discord_channel, self.user_id)
+        status = await is_admin(self.db, self.discord_channel, self.user_id)
+        self.assertTrue(status)
+        status = await is_super_admin(self.db, self.discord_channel, self.user_id)
+        self.assertFalse(status)
+
+        await self.gc.reset_guild.callback(self.gc, self.context)
+
+        self.context.interaction.response.send_message.assert_awaited()
+        self.context.interaction.response.send_message.assert_awaited_with(
+            content='You do not have the privilege to do that', ephemeral=True, delete_after=15)
+
+    async def test_guild_reset_command_available_for_super_admin_and_do_actually_reset_guild(self):
+        await Guild.find_or_create(self.db, self.discord_channel)
+
+        filter_condition = {'key': '123456'}
+        update_operation = {'$set': {'games.dune.long': 'foo'}}
+        result = await self.db.guilds.update_many(filter_condition, update_operation)
+        self.assertTrue(result)
+
+        await grant(self.db, self.discord_channel, self.user_id)
+        await upgrade(self.db, self.discord_channel, self.user_id)
+
+        status = await is_admin(self.db, self.discord_channel, self.user_id)
+        self.assertTrue(status)
+        status = await is_super_admin(self.db, self.discord_channel, self.user_id)
+        self.assertTrue(status)
+
+        gc = GuildsCog(Mock(), self.db)
+        await gc.reset_guild.callback(
+            gc, Mock(channel=self.discord_channel, interaction=self.discord_channel, me=self.user))
+
+        filter_condition = {'key': '123456', 'games.dune.long': 'foo'}
+        result = await self.db.guilds.find_one(filter_condition)
+        self.assertFalse(result)
