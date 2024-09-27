@@ -171,14 +171,17 @@ class Poll:
 
         guild = await Guild.find_or_create(self.db, self.channel)
 
+        if user_key in button_data['players']:
+            update_result = await self.db.poll_instances.update_one(
+                {'key': self.key}, {'$pull': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
+        else:
+            update_result = await self.db.poll_instances.update_one(
+                {'key': self.key}, {'$push': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
+
         if sub_collection == "games":
             if user_key in button_data['players']:
-                update_result = await self.db.poll_instances.update_one(
-                    {'key': self.key}, {'$pull': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
                 await guild.un_count_vote(interaction, button_data["key"])
             else:
-                update_result = await self.db.poll_instances.update_one(
-                    {'key': self.key}, {'$push': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
                 await guild.count_vote(interaction, button_data["key"])
 
             # Check if the update was successful

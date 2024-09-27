@@ -17,7 +17,8 @@ class PollButton(discord.ui.Button):
 
     Methods
     -------
-    __init__(self, db, poll, label, custom_id, row, emoji=None, style=discord.ButtonStyle.gray)
+    __init__(self, db, poll, label, custom_i`$=
+    +d, row, emoji=None, style=discord.ButtonStyle.gray)
         Initializes the PollButton class with a database object, poll instance, and button properties.
     callback(self, interaction)
         Asynchronously handles the button click interaction.
@@ -66,4 +67,4 @@ class PollButton(discord.ui.Button):
         # TODO : need to update all polls, not only the interaction one.
         poll_message = interaction.message
         await poll_message.edit(embed=embed)
-        await interaction.response.defer(thinking=False)
+        await interaction.response.defer(thinking=False, ephemeral=True)

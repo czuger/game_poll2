@@ -27,7 +27,8 @@ class RespondToAddGameButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         logger.debug("In RespondToAddGameButton")
 
-        await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=10)
+        await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=30,
+                                                ephemeral=True)
 
         guild = await Guild.find_or_create(self.db, interaction.channel)
 
@@ -44,5 +45,5 @@ class RespondToAddGameButton(discord.ui.Button):
 
             await interaction.user.send(f"Quel jeu voulez vous ajouter ? ({index})", view=pv)
 
-        await interaction.user.send(f"Pour ajouter un jeu qui n'est pas dans a liste, tapez son nom",
-                                    delete_after=10)
+        # await interaction.user.send(f"Pour ajouter un jeu qui n'est pas dans a liste, tapez son nom",
+        #                             delete_after=10)

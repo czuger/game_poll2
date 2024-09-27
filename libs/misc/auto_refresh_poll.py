@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 channel_message_count = {}
 
 # Define a constant for the maximum message count before reset
-MAX_MESSAGE_COUNT = 20
+MAX_MESSAGE_COUNT = 15
 
 
 # Function to update message count and repost poll if it exceeds MAX_MESSAGE_COUNT
