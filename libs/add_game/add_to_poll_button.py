@@ -40,4 +40,4 @@ class AddToPollButton(discord.ui.Button):
         await self.poll_message.edit(view=pv)
         # await interaction.user.send(f"{game['long']} a bien été ajouté.", delete_after=30)
 
-        await interaction.response.send_message(f"{game['long']} a bien été ajouté.", delete_after=30)
+        await interaction.response.send_message(f"{game['long']} a bien été ajouté.", delete_after=30, ephemeral=True)

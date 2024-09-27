@@ -28,4 +28,5 @@ if __name__ == "__main__":
     with open(root_dir / "config.json", 'r') as f:
         config = json.load(f)
 
+        print(config["discord"]["token"])
         bot.run(config["discord"]["token"], log_level=logging.INFO)

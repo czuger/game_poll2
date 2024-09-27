@@ -5,7 +5,6 @@ from discord.ext import commands
 from discord.ext import tasks
 
 from libs.games.games_cog import GamesCog
-from libs.guilds.guilds_cog import GuildsCog
 from libs.misc.schedule_poll import check_schedules_for_polls
 from libs.poll.poll import Poll
 from libs.poll.poll_cog import PollCog
@@ -43,7 +42,7 @@ class GameBot(commands.Bot):
         intents.members = True  # This is a privileged intent, must be enabled in the portal too.
         intents.message_content = True  # This enables the "Message Content" intent
 
-        super().__init__(command_prefix="j2!", intents=intents)
+        super().__init__(command_prefix="g2!", intents=intents)
 
         self.db = db
 
@@ -74,9 +73,9 @@ class GameBot(commands.Bot):
 
         check_schedules.start(self.db, self)
 
-        await self.add_cog(PollCog(self))
-        await self.add_cog(GuildsCog(self))
-        await self.add_cog(GamesCog(self))
+        await self.add_cog(PollCog(self, self.db))
+        # await self.add_cog(GuildsCog(self, self.db))
+        await self.add_cog(GamesCog(self, self.db))
 
     async def on_ready(self):
         """

@@ -85,16 +85,19 @@ class PollView(discord.ui.View):
 
         # We create the buttons for other actions
         for key, other in poll.others.items():
+            print(key, other)
             if "action" in other:
                 if "add_game" in other["action"]:
                     button = RespondToAddGameButton(
                         db, poll, other["short"], key, row, emoji=other["emoji"], style=self.get_style_from_poll(other))
-                    # print("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
+                    print("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
             else:
                 button = PollButton(db, poll, other["short"], key, row, emoji=other["emoji"],
                                     style=self.get_style_from_poll(other))
+
+                print("Adding button : ", key, button, self.get_style_from_poll(other))
             self.add_item(button)
 
         return self

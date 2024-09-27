@@ -31,7 +31,7 @@ def __get_user_names(users_ids, guild):
             user_names.append(name)
         else:
             print(f"Cant find user for {user_id}")
-    return ",".join(sorted(user_names))
+    return ", ".join(sorted(user_names))
 
 
 async def get_players_embed(database, channel):
