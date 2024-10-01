@@ -26,7 +26,7 @@ async def duplicate(interaction: Interaction):
 
 
 async def not_not_found(interaction: Interaction, message="User is not admin"):
-    await send_message(interaction, )
+    await send_message(interaction, message)
 
 
 async def access_denied(interaction: Interaction):

@@ -5,6 +5,7 @@ from libs.add_game.add_temporary_game import GameAlreadyExist
 from libs.add_game.add_temporary_game import add_temporary_game
 from libs.dat.database import DbConnector
 from libs.dat.guild import Guild
+from libs.misc.command_logger import log_command_call
 
 
 class GamesCog(commands.Cog, name="jeux"):
@@ -17,6 +18,8 @@ class GamesCog(commands.Cog, name="jeux"):
     @commands.command(name="ajouter")
     async def add_game(self, ctx: Context, *, game_name: str):
         """Permet d'ajouter un jeu à la liste des jeux disponibles."""
+        log_command_call(ctx.author, ctx.channel, "ajouter")
+
         game_name = game_name[0].upper() + game_name[1:]
         print(game_name)
         guild = await Guild.find_or_create(self.db, ctx.channel)

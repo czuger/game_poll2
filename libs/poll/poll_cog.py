@@ -1,6 +1,7 @@
 from discord.ext import commands
 
 from libs.dat.database import DbConnector
+from libs.misc.command_logger import log_command_call
 from libs.poll.poll import Poll
 from libs.poll.poll_embedding import get_players_embed
 from libs.poll.poll_view import PollView
@@ -31,6 +32,8 @@ class PollCog(commands.Cog, name="sondages"):
     async def jeux(self, ctx: commands.Context):
         """Affiche un sondage lié à un canal."""
         # Fetch or create the poll for the current channel
+        log_command_call(ctx.author, ctx.channel, "jeux")
+
         poll = await Poll.find(self.db, ctx.channel, create_if_not_exist=True)
 
         # Display the poll using the __show_poll method
