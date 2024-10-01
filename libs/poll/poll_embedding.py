@@ -4,6 +4,7 @@ This module mainly create the content of the poll. The part that show the status
 """
 import discord
 
+from libs.dat.database import DbConnector
 from libs.poll.poll import Poll
 
 
@@ -34,7 +35,7 @@ def __get_user_names(users_ids, guild):
     return ", ".join(sorted(user_names))
 
 
-async def get_players_embed(database, channel):
+async def get_players_embed(database: DbConnector, channel):
     """
     Create the status content of the poll.
       * Show the title
@@ -42,7 +43,7 @@ async def get_players_embed(database, channel):
 
     Parameters
     ----------
-    database : pymongo.database.Database
+    database : DbConnector
         The database object.
     channel : discord.abc.GuildChannel
         The Discord channel object.

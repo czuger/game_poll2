@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 
+from libs.admin.admin_cog import AdminManagementCog
 from libs.games.games_cog import GamesCog
 from libs.misc.schedule_poll import check_schedules_for_polls
 from libs.poll.poll import Poll
@@ -76,6 +77,7 @@ class GameBot(commands.Bot):
         await self.add_cog(PollCog(self, self.db))
         # await self.add_cog(GuildsCog(self, self.db))
         await self.add_cog(GamesCog(self, self.db))
+        await self.add_cog(AdminManagementCog(self, self.db))
 
     async def on_ready(self):
         """

@@ -3,10 +3,8 @@ from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
-from libs.admin import grant
-from libs.admin import is_admin
-from libs.admin import is_super_admin
-from libs.admin import upgrade
+from libs.admin.admin import grant
+from libs.admin.admin import super_admin
 from libs.dat.guild import Guild
 from libs.guilds.guilds_cog import GuildsCog
 from tests.base import BotTest
@@ -20,9 +18,9 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         self.user_id = 94030
         self.user = Mock(name="Test User", id=self.user_id)
         self.discord_guild = Mock(name="Test Guild", id=123456)
-        self.discord_channel = AsyncMock(name="Test Channel", guild=self.discord_guild, me=self.user)
-        self.context = Mock(name="Test Context", channel=self.discord_channel, interaction=self.discord_channel,
-                            me=self.user)
+        self.discord_channel = AsyncMock(name="Test Channel", guild=self.discord_guild, me=self.user, author=self.user)
+        self.context = AsyncMock(name="Test Context", channel=self.discord_channel, interaction=self.discord_channel,
+                                 me=self.user, author=self.user)
 
         self.bot = Mock(name="Test Bot")
         self.gc = gc = GuildsCog(self.bot, self.db)
@@ -45,21 +43,17 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
     async def test_guild_reset_command_not_available_for_common_users(self):
         await self.gc.reset_guild.callback(self.gc, self.context)
 
-        self.context.interaction.response.send_message.assert_awaited()
-        self.context.interaction.response.send_message.assert_awaited_with(
+        self.context.send.assert_awaited()
+        self.context.send.assert_awaited_with(
             content='You do not have the privilege to do that', ephemeral=True, delete_after=15)
 
     async def test_guild_reset_command_not_available_for_admin(self):
         await grant(self.db, self.discord_channel, self.user_id)
-        status = await is_admin(self.db, self.discord_channel, self.user_id)
-        self.assertTrue(status)
-        status = await is_super_admin(self.db, self.discord_channel, self.user_id)
-        self.assertFalse(status)
 
         await self.gc.reset_guild.callback(self.gc, self.context)
 
-        self.context.interaction.response.send_message.assert_awaited()
-        self.context.interaction.response.send_message.assert_awaited_with(
+        self.context.send.assert_awaited()
+        self.context.send.assert_awaited_with(
             content='You do not have the privilege to do that', ephemeral=True, delete_after=15)
 
     async def test_guild_reset_command_available_for_super_admin_and_do_actually_reset_guild(self):
@@ -70,17 +64,10 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         result = await self.db.guilds.update_many(filter_condition, update_operation)
         self.assertTrue(result)
 
-        await grant(self.db, self.discord_channel, self.user_id)
-        await upgrade(self.db, self.discord_channel, self.user_id)
-
-        status = await is_admin(self.db, self.discord_channel, self.user_id)
-        self.assertTrue(status)
-        status = await is_super_admin(self.db, self.discord_channel, self.user_id)
-        self.assertTrue(status)
+        await super_admin(self.db, self.context)
 
         gc = GuildsCog(Mock(), self.db)
-        await gc.reset_guild.callback(
-            gc, Mock(channel=self.discord_channel, interaction=self.discord_channel, me=self.user))
+        await gc.reset_guild.callback(gc, self.context)
 
         filter_condition = {'key': '123456', 'games.dune.long': 'foo'}
         result = await self.db.guilds.find_one(filter_condition)

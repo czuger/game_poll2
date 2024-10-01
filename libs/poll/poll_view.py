@@ -1,6 +1,7 @@
 import discord
 
 from libs.add_game.respond_to_add_game_button import RespondToAddGameButton
+from libs.dat.database import DbConnector
 from libs.poll.poll import Poll
 from libs.poll.poll_buttons import PollButton
 
@@ -27,7 +28,7 @@ class PollView(discord.ui.View):
     def get_style_from_poll(other):
         return Poll.OTHER_BUTTONS[other["key"]]["style"]
 
-    async def initialize_view(self, db, poll: Poll):
+    async def initialize_view(self, db: DbConnector, poll: Poll):
         """
         Create the view for the poll (buttons + embedded text)
 

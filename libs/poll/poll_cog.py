@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+from libs.admin.admin_cog import is_admin
 from libs.dat.database import DbConnector
 from libs.misc.command_logger import log_command_call
 from libs.poll.poll import Poll
@@ -8,7 +9,7 @@ from libs.poll.poll_view import PollView
 
 
 class PollCog(commands.Cog, name="sondages"):
-    "Commandes relatives aux sondages"
+    """Commandes relatives aux sondages"""
 
     def __init__(self, bot, db: DbConnector):
         self.bot = bot
@@ -39,17 +40,26 @@ class PollCog(commands.Cog, name="sondages"):
         # Display the poll using the __show_poll method
         await self.__show_poll(ctx, poll)
 
-    # @commands.command(name="sondage_")
-    # async def reset_poll(self, ctx: commands.Context, db: DbConnector):
-    #     """Supprime et recrée les informations relatives à un sondage."""
-    #     # Find the poll for the current channel
-    #     poll = await Poll.find(db, ctx.channel)
-    #
-    #     # Remove the current poll from the database
-    #     await poll.remove_poll_from_db()
-    #
-    #     # Create a new poll after resetting
-    #     poll = await Poll.find(db, ctx.channel, create_if_not_exist=True)
-    #
-    #     # Display the new poll using the __show_poll method
-    #     await self.__show_poll(ctx, db, poll)
+    @commands.command(name="reinit")
+    async def reset_poll(self, ctx: commands.Context):
+        """Supprime et recrée les informations relatives à un sondage."""
+
+        log_command_call(ctx.author, ctx.channel, "reinit")
+
+        if await is_admin(self.db, ctx, ctx.author.id):
+            # Find the poll for the current channel
+            poll = await Poll.find(self.db, ctx.channel)
+
+            # Remove the current poll from the database
+            # TODO : this remove all added games, should remove votes only
+            await poll.remove_poll_from_db()
+
+            # Create a new poll after resetting
+            poll = await Poll.find(self.db, ctx.channel, create_if_not_exist=True)
+
+            # Display the new poll using the __show_poll method
+            await self.__show_poll(ctx, poll)
+
+    # TODO : we need a command to list poll
+
+    # TODO : we need a command to remove a poll
