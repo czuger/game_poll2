@@ -4,6 +4,7 @@ from discord.ext.commands import Context
 from libs.admin import is_super_admin
 from libs.dat.database import DbConnector
 from libs.dat.guild import Guild
+from libs.misc.command_logger import log_command_call
 
 
 class GuildsCog(commands.Cog, name="guildes"):
@@ -16,6 +17,8 @@ class GuildsCog(commands.Cog, name="guildes"):
     @commands.command()
     async def reset_guild(self, ctx: Context):
         """Supprime et recrée les informations relatives au serveur (super admin uniquement)"""
+        log_command_call(ctx.author, ctx.channel, "reset_guild")
+
         if await is_super_admin(self.db, ctx.interaction, ctx.me.id):
             guild = await Guild.find_or_create(self.db, ctx.channel)
             await guild.remove_poll_from_db()
