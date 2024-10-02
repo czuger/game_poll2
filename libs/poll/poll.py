@@ -150,13 +150,6 @@ class Poll:
     async def toggle_button_id(self, interaction: discord.Interaction, button_id: str):
         """
         Toggle the buttons status in the poll_instance database object.
-
-        Parameters
-        ----------
-        user : discord.User
-            The Discord user object.
-        button_id : str
-            The button ID to toggle.
         """
         user_key = str(interaction.user.id)
 

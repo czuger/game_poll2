@@ -5,6 +5,7 @@ MAX_LOG_FILE_SIZE = 20 * 1024 * 1024
 BACKUP_COUNT = 5
 
 COMMANDS_NAME = "commands"
+ADMINS_LOG_NAME = "admins"
 
 
 def set_logging():
@@ -30,5 +31,11 @@ def set_logging():
     logger = logging.getLogger(COMMANDS_NAME)
     logger.setLevel(logging.INFO)
     rotating_handler = RotatingFileHandler("/var/log/gamebot/commands.log", maxBytes=MAX_LOG_FILE_SIZE,
+                                           backupCount=BACKUP_COUNT, encoding='utf-8')
+    logger.addHandler(rotating_handler)
+
+    logger = logging.getLogger(ADMINS_LOG_NAME)
+    logger.setLevel(logging.INFO)
+    rotating_handler = RotatingFileHandler(f"/var/log/gamebot/{ADMINS_LOG_NAME}.log", maxBytes=MAX_LOG_FILE_SIZE,
                                            backupCount=BACKUP_COUNT, encoding='utf-8')
     logger.addHandler(rotating_handler)

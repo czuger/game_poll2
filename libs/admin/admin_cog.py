@@ -1,61 +1,67 @@
 import logging
 
-from discord import Interaction
-from discord import app_commands
 from discord.ext import commands
 
 from libs.dat.database import DbConnector
+from libs.misc.set_logging import ADMINS_LOG_NAME
 
 DELETE_TIME = 15
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(ADMINS_LOG_NAME)
 
 
-async def send_message(interaction: Interaction, content: str):
-    await interaction.response.send_message(content=content, ephemeral=True, delete_after=DELETE_TIME)
+async def send_message(ctx: commands.Context, content: str):
+    await ctx.send(content=content, ephemeral=True, delete_after=DELETE_TIME)
 
 
-async def ack_msg(interaction: Interaction):
-    await send_message(interaction, "Done")
+async def ack_msg(ctx: commands.Context):
+    await send_message(ctx, "Done")
 
 
-async def error_msg(interaction: Interaction, exception: Exception):
+async def error_msg(ctx: commands.Context, exception: Exception):
     logger.error(f"Error during operation: {exception}")
-    await send_message(interaction, "Error happened during operation")
+    await send_message(ctx, "Error happened during operation")
 
 
-async def duplicate(interaction: Interaction):
-    await send_message(interaction, "User already listed")
+async def duplicate(ctx: commands.Context):
+    await send_message(ctx, "User already listed")
 
 
-async def not_found(interaction: Interaction, message="User is not admin"):
-    await send_message(interaction, message)
+async def not_found(ctx: commands.Context, message="User is not admin"):
+    await send_message(ctx, message)
 
 
-async def access_denied(interaction: Interaction):
-    await send_message(interaction, "You do not have the privilege to do that")
+async def access_denied(ctx: commands.Context):
+    author_id = ctx.author.id
+    author_name = ctx.author.name
+    logger.warning(f"Access denied for : {author_id} ({author_name})")
+    await send_message(ctx, "You do not have the privilege to do that")
 
 
-async def update_sub_function(interaction: Interaction, update_function, update_params):
+async def update_sub_function(ctx: commands.Context, update_function, update_params):
     try:
         logger.info(f"Attempting to update database with params: {update_params}")
         await update_function(update_params)
-        await ack_msg(interaction)
+        await ack_msg(ctx)
         logger.info(f"Database updated successfully with params: {update_params}")
     except Exception as e:
-        await error_msg(interaction, e)
+        await error_msg(ctx, e)
 
 
-async def __update_status_sub_function(self, interaction: Interaction, user_id: int, update_function, update_params,
-                                       not_found_message="User already listed"):
-    existing_user = await self.db.admins.find_one({"user_id": user_id})
-    if existing_user:
-        logger.info(f"Updating user {user_id} with params: {update_params}")
-        await update_function(*update_params)
-        await ack_msg(interaction)
-        logger.info(f"User {user_id} updated successfully.")
-    else:
-        logger.info(f"User {user_id} not found for update operation.")
-        await not_found(interaction, not_found_message)
+async def __sub_is_admin_function(db: DbConnector, ctx: commands.Context, query: dict):
+    existing_user = await db.admins.find_one(query)
+    granted = existing_user is not None
+    if not granted:
+        await access_denied(ctx)
+
+    return granted
+
+
+async def is_admin(db: DbConnector, ctx: commands.Context, user_id: int):
+    return await __sub_is_admin_function(db, ctx, {"user_id": user_id})
+
+
+async def is_super_admin(db: DbConnector, ctx: commands.Context, user_id: int):
+    return await __sub_is_admin_function(db, ctx, {"user_id": user_id, "super_admin": True})
 
 
 class AdminManagementCog(commands.Cog):
@@ -63,97 +69,82 @@ class AdminManagementCog(commands.Cog):
         self.bot = bot
         self.db = db
 
-    async def __sub_is_admin_function(self, interaction: Interaction, query: dict):
-        existing_user = await self.db.admins.find_one(query)
-        granted = existing_user is not None
-        if not granted:
-            await access_denied(interaction)
-
-        return granted
-
-    async def __is_admin(self, interaction: Interaction, user_id: int):
-        return await self.__sub_is_admin_function(interaction, {"user_id": user_id})
-
-    async def __is_super_admin(self, interaction: Interaction, user_id: int):
-        return await self.__sub_is_admin_function(interaction, {"user_id": user_id, "super_admin": True})
-
-    async def __check_super_admin(self, interaction: Interaction):
-        user_id = interaction.user.id
-        if not await self.__is_super_admin(interaction, user_id):
-            logger.warning(f"User {user_id} tried to execute a privileged command without sufficient rights.")
-            await access_denied(interaction)
-            return False
-        return True
-
-    async def __update_status_sub_function(self, interaction: Interaction, user_id: int, update_function, update_params,
+    async def __update_status_sub_function(self, ctx: commands.Context, user_id: int, update_function, update_params,
                                            not_found_message="User already listed"):
         existing_user = await self.db.admins.find_one({"user_id": user_id})
         if existing_user:
             logger.info(f"Updating user {user_id} with params: {update_params}")
             await update_function(*update_params)
-            await ack_msg(interaction)
+            await ack_msg(ctx)
             logger.info(f"User {user_id} updated successfully.")
         else:
             logger.info(f"User {user_id} not found for update operation.")
-            await not_found(interaction, not_found_message)
+            await not_found(ctx, not_found_message)
 
-    @app_commands.command(name="grant", description="Grant admin rights to a user")
-    async def grant(self, interaction: Interaction, user_id: int):
-        logger.info(f"Grant command invoked by {interaction.user.id} for user {user_id}.")
-        if not await self.__check_super_admin(interaction):
+    async def __check_super_admin(self, ctx: commands.Context):
+        user_id = ctx.author.id
+        if not await is_super_admin(self.db, ctx, user_id):
+            logger.warning(f"User {user_id} tried to execute a privileged command without sufficient rights.")
+            await access_denied(ctx)
+            return False
+        return True
+
+    @commands.command(name="grant", description="Grant admin rights to a user")
+    async def grant(self, ctx: commands.Context, user_id: int):
+        logger.info(f"Grant command invoked by {ctx.author.id} for user {user_id}.")
+        if not await self.__check_super_admin(ctx):
             return
 
         existing_user = await self.db.admins.find_one({"user_id": user_id})
         if not existing_user:
-            await update_sub_function(interaction, self.db.admins.insert_one,
+            await update_sub_function(ctx, self.db.admins.insert_one,
                                       {"user_id": user_id, "super_admin": False})
             logger.info(f"Granted admin rights to user {user_id}.")
         else:
-            await duplicate(interaction)
+            await duplicate(ctx)
             logger.info(f"Grant command failed: User {user_id} is already listed.")
 
-    @app_commands.command(name="upgrade", description="Upgrade a user to super admin")
-    async def upgrade(self, interaction: Interaction, user_id: int):
-        logger.info(f"Upgrade command invoked by {interaction.user.id} for user {user_id}.")
-        if not await self.__check_super_admin(interaction):
+    @commands.command(name="upgrade", description="Upgrade a user to super admin")
+    async def upgrade(self, ctx: commands.Context, user_id: int):
+        logger.info(f"Upgrade command invoked by {ctx.author.id} for user {user_id}.")
+        if not await self.__check_super_admin(ctx):
             return
 
-        await self.__update_status_sub_function(interaction, user_id, self.db.admins.update_one,
+        await self.__update_status_sub_function(ctx, user_id, self.db.admins.update_one,
                                                 ({"user_id": user_id}, {"$set": {"super_admin": True}}),
                                                 "User is not admin. Grant rights before upgrading")
         logger.info(f"Upgraded user {user_id} to super admin.")
 
-    @app_commands.command(name="downgrade", description="Downgrade a user from super admin to regular admin")
-    async def downgrade(self, interaction: Interaction, user_id: int):
-        logger.info(f"Downgrade command invoked by {interaction.user.id} for user {user_id}.")
-        if not await self.__check_super_admin(interaction):
+    @commands.command(name="downgrade", description="Downgrade a user from super admin to regular admin")
+    async def downgrade(self, ctx: commands.Context, user_id: int):
+        logger.info(f"Downgrade command invoked by {ctx.author.id} for user {user_id}.")
+        if not await self.__check_super_admin(ctx):
             return
 
-        await self.__update_status_sub_function(interaction, user_id, self.db.admins.update_one,
+        await self.__update_status_sub_function(ctx, user_id, self.db.admins.update_one,
                                                 ({"user_id": user_id}, {"$set": {"super_admin": False}}))
         logger.info(f"Downgraded user {user_id} from super admin to regular admin.")
 
-    @app_commands.command(name="revoke", description="Revoke admin rights from a user")
-    async def revoke(self, interaction: Interaction, user_id: int):
-        logger.info(f"Revoke command invoked by {interaction.user.id} for user {user_id}.")
-        if not await self.__check_super_admin(interaction):
+    @commands.command(name="revoke", description="Revoke admin rights from a user")
+    async def revoke(self, ctx: commands.Context, user_id: int):
+        logger.info(f"Revoke command invoked by {ctx.author.id} for user {user_id}.")
+        if not await self.__check_super_admin(ctx):
             return
 
-        await self.__update_status_sub_function(interaction, user_id, self.db.admins.delete_one,
+        await self.__update_status_sub_function(ctx, user_id, self.db.admins.delete_one,
                                                 ({"user_id": user_id},))
         logger.info(f"Revoked admin rights from user {user_id}.")
 
-    @app_commands.command(name="super_admin", description="Create a super admin if none exists")
-    async def super_admin(self, interaction: Interaction, user_id: int):
-        logger.info(f"Super admin command invoked by {interaction.user.id} for user {user_id}.")
+    @commands.command(name="super_admin", description="Create a super admin if none exists")
+    async def super_admin(self, ctx: commands.Context):
+        user_id = ctx.author.id
+        logger.info(f"Super admin command invoked by {user_id} for user {user_id}.")
         existing_super_admin = await self.db.admins.find_one({"super_admin": True})
         if existing_super_admin:
-            logger.info(f"Super admin already defined. Command invoked by {interaction.user.id}.")
-            await send_message(interaction, "Super admin already defined")
+            logger.info(f"Super admin already defined. Command invoked by {user_id}.")
+            await send_message(ctx, "Super admin already defined")
         else:
-            await update_sub_function(interaction, self.db.admins.insert_one,
-                                      {"user_id": user_id, "super_admin": True})
             logger.info(f"Created new super admin with user ID {user_id}.")
-
-# To add this Cog to your bot, you'll use:
-# bot.add_cog(AdminManagementCog(bot, db))
+            await update_sub_function(ctx, self.db.admins.insert_one,
+                                      {"user_id": user_id, "super_admin": True})
+            await send_message(ctx, "You are super admin")
