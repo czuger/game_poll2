@@ -59,3 +59,7 @@ class PollCog(commands.Cog, name="sondages"):
 
             # Display the new poll using the __show_poll method
             await self.__show_poll(ctx, poll)
+
+    # TODO : we need a command to list poll
+
+    # TODO : we need a command to remove a poll
