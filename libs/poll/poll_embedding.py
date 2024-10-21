@@ -2,10 +2,15 @@
 This module mainly create the content of the poll. The part that show the status of the poll
 (basically what games players have selected).
 """
+import logging
+
 import discord
 
 from libs.dat.database import DbConnector
+from libs.misc.set_logging import POLLS_LOG_NAME
 from libs.poll.poll import Poll
+
+logger = logging.getLogger(POLLS_LOG_NAME)
 
 
 def __get_user_names(users_ids, guild):
@@ -56,18 +61,24 @@ async def get_players_embed(database: DbConnector, channel):
     embed = discord.Embed(title="A quoi allez vous jouer ?", color=discord.Color.blue())
     poll = await Poll.find(database, channel)
 
+    logger.debug(f"For poll {poll.key}, votes = {poll.votes}")
+
     for other in poll.others.values():
-        if other["players"]:
+        logger.debug(f"For poll {poll.key}, other = {other}")
+        voters = poll.votes.get(other["key"], [])
+        if voters:
             embed.add_field(
-                name="", value=other["emoji"] + " **" + other["long"] + "** : " + __get_user_names(other["players"],
+                name="", value=other["emoji"] + " **" + other["long"] + "** : " + __get_user_names(voters,
                                                                                                    channel.guild),
                 inline=False)
 
     for game in poll.games.values():
-        if game["players"]:
+        logger.debug(f"For poll {poll.key}, game = {game}")
+        voters = poll.votes.get(game["key"], [])
+        if voters:
             embed.add_field(
                 name="",
-                value=" **" + game["long"] + "** : " + __get_user_names(game["players"], channel.guild),
+                value=" **" + game["long"] + "** : " + __get_user_names(voters, channel.guild),
                 inline=False)
 
     return embed

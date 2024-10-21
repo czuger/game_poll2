@@ -57,10 +57,12 @@ async def __sub_is_admin_function(db: DbConnector, ctx: commands.Context, query:
 
 
 async def is_admin(db: DbConnector, ctx: commands.Context, user_id: int):
+    logger.info(f"Admin check for user : {user_id}")
     return await __sub_is_admin_function(db, ctx, {"user_id": user_id})
 
 
 async def is_super_admin(db: DbConnector, ctx: commands.Context, user_id: int):
+    logger.info(f"Super admin check for user : {user_id}")
     return await __sub_is_admin_function(db, ctx, {"user_id": user_id, "super_admin": True})
 
 

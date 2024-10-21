@@ -6,8 +6,9 @@ import discord
 from libs.dat.database import DbConnector
 from libs.dat.guild import Guild
 from libs.helpers.buttons import make_btn_key
+from libs.misc.set_logging import POLLS_LOG_NAME
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(POLLS_LOG_NAME)
 
 
 class PollNotFound(RuntimeError):
@@ -39,6 +40,7 @@ class Poll:
     BUTTONS_KEY = "buttons"
     GAMES_KEY = "games"
     OTHERS_KEY = "others"
+    VOTES_KEY = "votes"
 
     POLL_KEY = "key"
 
@@ -58,17 +60,29 @@ class Poll:
 
         self.games = None
         self.others = None
+        self.votes = {}
 
         self.channel = channel
 
-        self.__initialize_buttons_data(record)
+        self.__initialize_poll(record)
 
-    def __initialize_buttons_data(self, poll_dict: dict) -> None:
+    def __initialize_poll(self, poll_dict: dict) -> None:
         self.games = poll_dict[self.BUTTONS_KEY][self.GAMES_KEY]
         self.others = poll_dict[self.BUTTONS_KEY][self.OTHERS_KEY]
 
+        if self.VOTES_KEY in poll_dict:
+            self.votes = poll_dict[self.VOTES_KEY]
+
     async def remove_poll_from_db(self):
         await self.db.poll_instances.delete_one({"key": self.key})
+
+    async def reset_votes(self):
+        await self.db.poll_instances.update_one({"key": self.key}, {'$set': {'votes': {}}})
+
+    async def refresh(self):
+        """Refresh data from poll"""
+        poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
+        self.__initialize_poll(poll_dict)
 
     async def add_default_games(self, channel) -> None:
         """
@@ -87,13 +101,11 @@ class Poll:
         print("add_default_games called")
         guild = await Guild.find_or_create(self.db, channel)
 
-        for game_key in guild.poll_default:
-            game = copy(guild.games[game_key])
-            game["players"] = []
-            self.games[make_btn_key(game_key, "g")] = game
+        for element_key in guild.poll_default:
+            game = copy(guild.games[element_key])
+            self.games[make_btn_key(element_key, "g")] = game
 
         for other in self.OTHER_BUTTONS.values():
-            other["players"] = []
             self.others[make_btn_key(other["key"], "o")] = other
 
         await self.db.poll_instances.update_one({"key": self.key}, {"$set": {"buttons.games": self.games}}, upsert=True)
@@ -143,42 +155,52 @@ class Poll:
         print(channel)
         return cls(db, channel, poll_record)
 
-    async def refresh(self):
-        poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
-        self.__initialize_buttons_data(poll_dict)
-
     async def toggle_button_id(self, interaction: discord.Interaction, button_id: str):
         """
-        Toggle the buttons status in the poll_instance database object.
+        Toggle the votes status for a user.
         """
         user_key = str(interaction.user.id)
+        logger.debug(f"For poll {self.key}, toggle_button_call {button_id} by {user_key}")
 
-        await self.refresh()
+        # Define the query to search for the button_id in either buttons.games or buttons.others
+        button_key_query = {
+            '$or': [
+                {f'buttons.games.{button_id}': {'$exists': True}},
+                {f'buttons.others.{button_id}': {'$exists': True}}
+            ]
+        }
+        # Project the results to include only the button data
+        button_key_projection = {
+            f'buttons.games.{button_id}': 1,
+            f'buttons.others.{button_id}': 1
+        }
+        result = await self.db.poll_instances.find_one(button_key_query, button_key_projection)
+        logger.debug(f"For poll {self.key}, button find in poll {result}")
 
-        if button_id[0] == "g":
-            button_data = self.games[button_id]
-            sub_collection = "games"
-        else:
-            button_data = self.others[button_id]
-            sub_collection = "others"
+        if result:
+            guild = await Guild.find_or_create(self.db, self.channel)
 
-        guild = await Guild.find_or_create(self.db, self.channel)
+            element_key = result["buttons"]["games"].get(button_id, {}).get("key") or result["buttons"]["others"].get(
+                button_id, {}).get("key")
 
-        if user_key in button_data['players']:
-            update_result = await self.db.poll_instances.update_one(
-                {'key': self.key}, {'$pull': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
-        else:
-            update_result = await self.db.poll_instances.update_one(
-                {'key': self.key}, {'$push': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
+            query = {f'votes.{element_key}': user_key}
+            game_voted = await self.db.poll_instances.find_one(query)
 
-        if sub_collection == "games":
-            if user_key in button_data['players']:
-                await guild.un_count_vote(interaction, button_data["key"])
+            if game_voted:
+                update_result = await self.db.poll_instances.update_one(
+                    {'key': self.key}, {'$pull': {f'votes.{element_key}': user_key}})
+
+                await guild.un_count_vote(element_key, user_key)
             else:
-                await guild.count_vote(interaction, button_data["key"])
+                update_result = await self.db.poll_instances.update_one(
+                    {'key': self.key}, {'$push': {f'votes.{element_key}': user_key}})
 
-            # Check if the update was successful
+                await guild.count_vote(element_key, user_key)
+
             if update_result.modified_count > 0:
                 logging.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
             else:
                 logging.debug(f'{user_key} {button_id} modification done for poll {self.key} failed.')
+
+        else:
+            logger.critical(f"{button_id} not found for poll {self.key}")

@@ -37,22 +37,23 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         self.assertEqual("123456", poll.key)
 
         # No testing button toggle
-        button_id = list(poll.games.keys())[0]
+        button_id = list(poll.games)[0]
         user = Mock(id=654321)
         mock_interaction = Mock(user=user)
 
         await poll.toggle_button_id(mock_interaction, button_id)
         await poll.refresh()
-        self.assertIn("654321", poll.games[button_id]["players"])
-
         game_key = poll.games[button_id]["key"]
-        existing_record = await self.db.guilds.find_one({"key": "123456"})
-        self.assertEqual(1, existing_record["games"][game_key]["votes"])
+        self.assertIn("654321", poll.votes[game_key])
+
+        query = {"guild_id": "123456", "votes": {"$elemMatch": {"gk": game_key}}}
+        result = await self.db.db.votes.find_one(query)
+        self.assertTrue(result)
 
         await poll.toggle_button_id(mock_interaction, button_id)
         await poll.refresh()
-        self.assertNotIn("654321", poll.games[button_id]["players"])
+        self.assertNotIn("654321", poll.votes[game_key])
 
         await poll.toggle_button_id(mock_interaction, button_id)
         await poll.refresh()
-        self.assertIn("654321", poll.games[button_id]["players"])
+        self.assertIn("654321", poll.votes[game_key])

@@ -2,8 +2,6 @@ import asyncio
 import logging
 from datetime import datetime
 
-import discord
-
 from libs.dat.database import DbConnector
 from libs.dat.games import Games
 
@@ -66,24 +64,26 @@ class Guild:
     async def remove_poll_from_db(self):
         await self.db.guilds.delete_one({"key": self.key})
 
-    async def __modify_vote_count(
-            self, interaction: discord.Interaction, game_key: str, vote_diff: int, vote_direction: str):
-        result = await self.db.guilds.update_one({"key": self.key}, {"$inc": {f"games.{game_key}.votes": vote_diff}})
-        assert result
+    async def __add_vote(self, game_key: str, vote_diff: int, user_key: str):
+        new_vote_document = {
+            "gk": game_key,
+            "vc": vote_diff,
+            "u": user_key,
+            "t": datetime.now().isoformat()
+        }
 
-        result = await self.db.votes_history.update_one(
-            {"guild": self.key},
-            {"$push": {
-                f"votes.{interaction.user.id}.{game_key}":
-                    {"d": vote_direction, "t": datetime.now().isoformat(), "c": str(interaction.channel_id)}}},
-            upsert=True)
-        assert result
+        # Update the guild document by pushing a new vote to the "votes" array
+        await self.db.db.votes.update_one(
+            {"guild_id": self.guild_id},  # Find the document by guild_id
+            {"$push": {"votes": new_vote_document}},  # Append new vote to "votes" array
+            upsert=True  # If the document doesn't exist, create it
+        )
 
-    async def count_vote(self, interaction: discord.Interaction, game_key: str):
-        await self.__modify_vote_count(interaction, game_key, 1, "up")
+    async def count_vote(self, game_key: str, user_key: str):
+        await self.__add_vote(game_key, 1, user_key)
 
-    async def un_count_vote(self, interaction: discord.Interaction, game_key: str):
-        await self.__modify_vote_count(interaction, game_key, -1, "down")
+    async def un_count_vote(self, game_key: str, user_key: str):
+        await self.__add_vote(game_key, -1, user_key)
 
     @classmethod
     async def find_or_create(cls, db: DbConnector, channel):
@@ -103,6 +103,7 @@ class Guild:
             An instance of the Guild class with the guild's data.
         """
         guild_id = str(channel.guild.id)
+        # TODO : may be ineffective to load all the guild record, as the guild contain all votes history. In the future, we need to fix this.
         existing_record = await db.guilds.find_one({"key": guild_id})
 
         if not existing_record:
