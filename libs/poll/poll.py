@@ -70,6 +70,11 @@ class Poll:
     async def remove_poll_from_db(self):
         await self.db.poll_instances.delete_one({"key": self.key})
 
+    async def refresh(self):
+        """Refresh data from poll"""
+        poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
+        self.__initialize_buttons_data(poll_dict)
+
     async def add_default_games(self, channel) -> None:
         """
         Asynchronously finds an existing poll in the database or creates a new one.
@@ -143,42 +148,39 @@ class Poll:
         print(channel)
         return cls(db, channel, poll_record)
 
-    async def refresh(self):
-        poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
-        self.__initialize_buttons_data(poll_dict)
-
     async def toggle_button_id(self, interaction: discord.Interaction, button_id: str):
         """
-        Toggle the buttons status in the poll_instance database object.
+        Toggle the votes status for an user.
         """
         user_key = str(interaction.user.id)
 
-        await self.refresh()
+        button_key_query = {f'buttons.games.{button_id}': {'$exists': True}}
+        button_key_projection = {f'buttons.games.{button_id}': 1}
+        result = await self.db.poll_instances.find_one(button_key_query, button_key_projection)
 
-        if button_id[0] == "g":
-            button_data = self.games[button_id]
-            sub_collection = "games"
-        else:
-            button_data = self.others[button_id]
-            sub_collection = "others"
+        if result:
+            guild = await Guild.find_or_create(self.db, self.channel)
 
-        guild = await Guild.find_or_create(self.db, self.channel)
+            game_dict = result["buttons"]["games"]
+            game_key = game_dict[button_id]["key"]
+            query = {f'votes.{game_key}': user_key}
+            game_voted = await self.db.poll_instances.find_one(query)
 
-        if user_key in button_data['players']:
-            update_result = await self.db.poll_instances.update_one(
-                {'key': self.key}, {'$pull': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
-        else:
-            update_result = await self.db.poll_instances.update_one(
-                {'key': self.key}, {'$push': {f'buttons.{sub_collection}.{button_id}.players': user_key}})
+            if game_voted:
+                update_result = await self.db.poll_instances.update_one(
+                    {'key': self.key}, {'$pull': {f'votes.{game_key}': user_key}})
 
-        if sub_collection == "games":
-            if user_key in button_data['players']:
-                await guild.un_count_vote(interaction, button_data["key"])
+                await guild.un_count_vote(game_dict["key"])
             else:
-                await guild.count_vote(interaction, button_data["key"])
+                update_result = await self.db.poll_instances.update_one(
+                    {'key': self.key}, {'$push': {f'votes.{game_key}': user_key}})
 
-            # Check if the update was successful
+                await guild.count_vote(game_key)
+
             if update_result.modified_count > 0:
                 logging.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
             else:
                 logging.debug(f'{user_key} {button_id} modification done for poll {self.key} failed.')
+
+        else:
+            logger.critical(f"{button_id} not found for poll {self.key}")

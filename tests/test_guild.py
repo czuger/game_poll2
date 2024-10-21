@@ -35,10 +35,15 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
     async def test_guild_vote_count(self):
         guild = await Guild.find_or_create(self.db, self.discord_channel)
-        await guild.count_vote(self.discord_channel, "adg")
+        await guild.count_vote("adg")
 
-        existing_record = await self.db.guilds.find_one({"key": "123456"})
-        self.assertEqual(1, existing_record["games"]["adg"]["votes"])
+        query = {"key": "123456", "votes": {"$elemMatch": {"gk": "foo"}}}
+        result = await self.db.guilds.find_one(query)
+        self.assertFalse(result)
+
+        query = {"key": "123456", "votes": {"$elemMatch": {"gk": "adg"}}}
+        result = await self.db.guilds.find_one(query)
+        self.assertTrue(result)
 
     async def test_guild_reset_command_not_available_for_common_users(self):
         await self.gc.reset_guild.callback(self.gc, self.context)

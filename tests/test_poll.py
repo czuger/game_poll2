@@ -37,7 +37,8 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         self.assertEqual("123456", poll.key)
 
         # No testing button toggle
-        button_id = list(poll.games.keys())[0]
+        game = list(poll.games)[0]
+        button_id = game["key"]
         user = Mock(id=654321)
         mock_interaction = Mock(user=user)
 

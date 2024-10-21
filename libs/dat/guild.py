@@ -2,8 +2,6 @@ import asyncio
 import logging
 from datetime import datetime
 
-import discord
-
 from libs.dat.database import DbConnector
 from libs.dat.games import Games
 
@@ -66,24 +64,24 @@ class Guild:
     async def remove_poll_from_db(self):
         await self.db.guilds.delete_one({"key": self.key})
 
-    async def __modify_vote_count(
-            self, interaction: discord.Interaction, game_key: str, vote_diff: int, vote_direction: str):
-        result = await self.db.guilds.update_one({"key": self.key}, {"$inc": {f"games.{game_key}.votes": vote_diff}})
-        assert result
+    async def __add_vote(self, game_key: str, vote_diff: int):
+        query = {"key": self.guild_id}
 
-        result = await self.db.votes_history.update_one(
-            {"guild": self.key},
-            {"$push": {
-                f"votes.{interaction.user.id}.{game_key}":
-                    {"d": vote_direction, "t": datetime.now().isoformat(), "c": str(interaction.channel_id)}}},
-            upsert=True)
-        assert result
+        update_votes_initialization = {
+            "$setOnInsert": {"votes": []}
+        }
+        await self.db.guilds.update_one(query, update_votes_initialization, upsert=True)
 
-    async def count_vote(self, interaction: discord.Interaction, game_key: str):
-        await self.__modify_vote_count(interaction, game_key, 1, "up")
+        update_vote_push = {
+            "$push": {"votes": {"gk": game_key, "vc": vote_diff}}
+        }
+        await self.db.guilds.update_one(query, update_vote_push)
 
-    async def un_count_vote(self, interaction: discord.Interaction, game_key: str):
-        await self.__modify_vote_count(interaction, game_key, -1, "down")
+    async def count_vote(self, game_key: str):
+        await self.__add_vote(game_key, 1)
+
+    async def un_count_vote(self, game_key: str):
+        await self.__add_vote(game_key, -1)
 
     @classmethod
     async def find_or_create(cls, db: DbConnector, channel):
@@ -103,6 +101,7 @@ class Guild:
             An instance of the Guild class with the guild's data.
         """
         guild_id = str(channel.guild.id)
+        # TODO : may be ineffective to load all the guild record, as the guild contain all votes history. In the future, we need to fix this.
         existing_record = await db.guilds.find_one({"key": guild_id})
 
         if not existing_record:
