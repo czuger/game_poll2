@@ -46,8 +46,8 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         game_key = poll.games[button_id]["key"]
         self.assertIn("654321", poll.votes[game_key])
 
-        query = {"key": "123456", "votes": {"$elemMatch": {"gk": game_key}}}
-        result = await self.db.guilds.find_one(query)
+        query = {"guild_id": "123456", "votes": {"$elemMatch": {"gk": game_key}}}
+        result = await self.db.db.votes.find_one(query)
         self.assertTrue(result)
 
         await poll.toggle_button_id(mock_interaction, button_id)

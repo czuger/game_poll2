@@ -35,15 +35,24 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
     async def test_guild_vote_count(self):
         guild = await Guild.find_or_create(self.db, self.discord_channel)
-        await guild.count_vote("adg")
+        await guild.count_vote("adg", str(self.user_id))
+        await guild.count_vote("congo", str(self.user_id))
 
-        query = {"key": "123456", "votes": {"$elemMatch": {"gk": "foo"}}}
-        result = await self.db.guilds.find_one(query)
+        query = {"guild_id": "123456", "votes": {"$elemMatch": {"gk": "foo"}}}
+        result = await self.db.db.votes.find_one(query)
         self.assertFalse(result)
 
-        query = {"key": "123456", "votes": {"$elemMatch": {"gk": "adg"}}}
-        result = await self.db.guilds.find_one(query)
+        query = {"guild_id": "123456", "votes": {"$elemMatch": {"gk": "adg"}}}
+        result = await self.db.db.votes.find_one(query)
         self.assertTrue(result)
+
+        pipeline = [
+            {"$match": {"guild_id": "123456"}},
+            {"$project": {"votes_count": {"$size": "$votes"}}}
+        ]
+
+        result = await self.db.db.votes.aggregate(pipeline).to_list(length=None)
+        self.assertEqual(2, result[0]['votes_count'])
 
     async def test_guild_reset_command_not_available_for_common_users(self):
         await self.gc.reset_guild.callback(self.gc, self.context)

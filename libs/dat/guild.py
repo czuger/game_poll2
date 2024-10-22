@@ -64,24 +64,26 @@ class Guild:
     async def remove_poll_from_db(self):
         await self.db.guilds.delete_one({"key": self.key})
 
-    async def __add_vote(self, game_key: str, vote_diff: int):
-        query = {"key": self.guild_id}
-
-        update_votes_initialization = {
-            "$setOnInsert": {"votes": []}
+    async def __add_vote(self, game_key: str, vote_diff: int, user_key: str):
+        new_vote_document = {
+            "gk": game_key,
+            "vc": vote_diff,
+            "u": user_key,
+            "t": datetime.now().isoformat()
         }
-        await self.db.guilds.update_one(query, update_votes_initialization, upsert=True)
 
-        update_vote_push = {
-            "$push": {"votes": {"gk": game_key, "vc": vote_diff}}
-        }
-        await self.db.guilds.update_one(query, update_vote_push)
+        # Update the guild document by pushing a new vote to the "votes" array
+        await self.db.db.votes.update_one(
+            {"guild_id": self.guild_id},  # Find the document by guild_id
+            {"$push": {"votes": new_vote_document}},  # Append new vote to "votes" array
+            upsert=True  # If the document doesn't exist, create it
+        )
 
-    async def count_vote(self, game_key: str):
-        await self.__add_vote(game_key, 1)
+    async def count_vote(self, game_key: str, user_key: str):
+        await self.__add_vote(game_key, 1, user_key)
 
-    async def un_count_vote(self, game_key: str):
-        await self.__add_vote(game_key, -1)
+    async def un_count_vote(self, game_key: str, user_key: str):
+        await self.__add_vote(game_key, -1, user_key)
 
     @classmethod
     async def find_or_create(cls, db: DbConnector, channel):

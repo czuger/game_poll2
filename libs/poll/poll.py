@@ -190,12 +190,12 @@ class Poll:
                 update_result = await self.db.poll_instances.update_one(
                     {'key': self.key}, {'$pull': {f'votes.{element_key}': user_key}})
 
-                await guild.un_count_vote(element_key)
+                await guild.un_count_vote(element_key, user_key)
             else:
                 update_result = await self.db.poll_instances.update_one(
                     {'key': self.key}, {'$push': {f'votes.{element_key}': user_key}})
 
-                await guild.count_vote(element_key)
+                await guild.count_vote(element_key, user_key)
 
             if update_result.modified_count > 0:
                 logging.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
