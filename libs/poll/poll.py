@@ -39,6 +39,7 @@ class Poll:
     BUTTONS_KEY = "buttons"
     GAMES_KEY = "games"
     OTHERS_KEY = "others"
+    VOTES_KEY = "votes"
 
     POLL_KEY = "key"
 
@@ -58,6 +59,7 @@ class Poll:
 
         self.games = None
         self.others = None
+        self.votes = []
 
         self.channel = channel
 
@@ -74,6 +76,9 @@ class Poll:
         """Refresh data from poll"""
         poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
         self.__initialize_buttons_data(poll_dict)
+
+        if self.VOTES_KEY in poll_dict:
+            self.votes = poll_dict[self.VOTES_KEY]
 
     async def add_default_games(self, channel) -> None:
         """
@@ -170,7 +175,7 @@ class Poll:
                 update_result = await self.db.poll_instances.update_one(
                     {'key': self.key}, {'$pull': {f'votes.{game_key}': user_key}})
 
-                await guild.un_count_vote(game_dict["key"])
+                await guild.un_count_vote(game_key)
             else:
                 update_result = await self.db.poll_instances.update_one(
                     {'key': self.key}, {'$push': {f'votes.{game_key}': user_key}})
