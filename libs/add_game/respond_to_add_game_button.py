@@ -43,7 +43,7 @@ class RespondToAddGameButton(discord.ui.Button):
             pv = AddToPollView()
             await pv.initialize_view(self.db, guild, self.poll, interaction.message, chunk)
 
-            await interaction.user.send(f"Quel jeu voulez vous ajouter ? ({index})", view=pv)
+            await interaction.user.send(f"Quel jeu voulez vous ajouter ? ({index})", view=pv, delete_after=300)
 
         # await interaction.user.send(f"Pour ajouter un jeu qui n'est pas dans a liste, tapez son nom",
         #                             delete_after=10)

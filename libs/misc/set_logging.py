@@ -8,10 +8,12 @@ BACKUP_COUNT = 5  # Number of backup files to keep
 COMMANDS_NAME = "commands"
 ADMINS_LOG_NAME = "admins"
 POLLS_LOG_NAME = "polls"
+ADD_GAMES_LOG_NAME = "add_games"
 
 
 # Define a utility function to set up a rotating file handler with a formatter
-def setup_rotating_logger(logger_name, log_file_path, log_level, max_bytes, backup_count):
+def setup_rotating_logger(logger_name, log_file_path, log_level=logging.INFO, max_bytes=MAX_LOG_FILE_SIZE,
+                          backup_count=BACKUP_COUNT):
     logger = logging.getLogger(logger_name)
     logger.setLevel(log_level)
 
@@ -30,16 +32,10 @@ def setup_rotating_logger(logger_name, log_file_path, log_level, max_bytes, back
 
 
 def set_logging():
-    setup_rotating_logger(__name__, "/var/log/gamebot/gamebot.log", logging.DEBUG, MAX_LOG_FILE_SIZE, BACKUP_COUNT)
-    setup_rotating_logger('discord', "/var/log/gamebot/discord.log", logging.DEBUG, MAX_LOG_FILE_SIZE, BACKUP_COUNT)
-    setup_rotating_logger('discord.http', "/var/log/gamebot/discord.http.log", logging.DEBUG, MAX_LOG_FILE_SIZE,
-                          BACKUP_COUNT)
-
-    setup_rotating_logger(COMMANDS_NAME, f"/var/log/gamebot/{COMMANDS_NAME}.log", logging.INFO, MAX_LOG_FILE_SIZE,
-                          BACKUP_COUNT)
-
-    setup_rotating_logger(ADMINS_LOG_NAME, f"/var/log/gamebot/{ADMINS_LOG_NAME}.log", logging.INFO, MAX_LOG_FILE_SIZE,
-                          BACKUP_COUNT)
-
-    setup_rotating_logger(POLLS_LOG_NAME, f"/var/log/gamebot/{POLLS_LOG_NAME}.log", logging.DEBUG, MAX_LOG_FILE_SIZE,
-                          BACKUP_COUNT)
+    setup_rotating_logger(__name__, "/var/log/gamebot/gamebot.log")
+    setup_rotating_logger('discord', "/var/log/gamebot/discord.log")
+    setup_rotating_logger('discord.http', "/var/log/gamebot/discord.http.log")
+    setup_rotating_logger(COMMANDS_NAME, f"/var/log/gamebot/{COMMANDS_NAME}.log")
+    setup_rotating_logger(ADMINS_LOG_NAME, f"/var/log/gamebot/{ADMINS_LOG_NAME}.log")
+    setup_rotating_logger(POLLS_LOG_NAME, f"/var/log/gamebot/{POLLS_LOG_NAME}.log", logging.DEBUG)
+    setup_rotating_logger(ADD_GAMES_LOG_NAME, f"/var/log/gamebot/{ADD_GAMES_LOG_NAME}.log", logging.DEBUG)

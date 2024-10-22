@@ -2,8 +2,10 @@ import logging
 
 from discord.ext import commands
 
-from libs.admin.admin import grant, \
-    upgrade, revoke, downgrade
+from libs.admin.admin import downgrade
+from libs.admin.admin import grant
+from libs.admin.admin import revoke
+from libs.admin.admin import upgrade
 from libs.dat.database import DbConnector
 from libs.misc.set_logging import ADMINS_LOG_NAME
 
@@ -11,7 +13,9 @@ DELETE_TIME = 15
 logger = logging.getLogger(ADMINS_LOG_NAME)
 
 
-class AdminManagementCog(commands.Cog):
+class AdminManagementCog(commands.Cog, name="admin"):
+    """Tout ce qui est relatif à l'administration du serveur."""
+
     def __init__(self, bot: commands.Bot, db: DbConnector):
         self.bot = bot
         self.db = db
