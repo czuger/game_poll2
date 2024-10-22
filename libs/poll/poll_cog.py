@@ -1,6 +1,7 @@
 from discord.ext import commands
 
-from libs.admin.admin_cog import is_admin
+from libs.admin.admin import is_admin
+from libs.admin.admin import is_super_admin
 from libs.dat.database import DbConnector
 from libs.misc.command_logger import log_command_call
 from libs.poll.poll import Poll
@@ -42,20 +43,33 @@ class PollCog(commands.Cog, name="sondages"):
 
     @commands.command(name="reinit")
     async def reset_poll(self, ctx: commands.Context):
-        """Supprime et recrée les informations relatives à un sondage."""
-
+        """Supprime et recrée les informations relatives à un sondage (super admin)"""
         log_command_call(ctx.author, ctx.channel, "reinit")
+
+        if await is_super_admin(self.db, ctx, ctx.author.id):
+            # Find the poll for the current channel
+            poll = await Poll.find(self.db, ctx.channel)
+
+            # Remove the current poll from the database
+            await poll.remove_poll_from_db()
+
+            # Create a new poll after resetting
+            poll = await Poll.find(self.db, ctx.channel, create_if_not_exist=True)
+
+            # Display the new poll using the __show_poll method
+            await self.__show_poll(ctx, poll)
+
+    @commands.command(name="supp_votes")
+    async def reset_votes(self, ctx: commands.Context):
+        """Supprime les votes pour un sondage donné (admin)"""
+        log_command_call(ctx.author, ctx.channel, "votes")
 
         if await is_admin(self.db, ctx, ctx.author.id):
             # Find the poll for the current channel
             poll = await Poll.find(self.db, ctx.channel)
 
-            # Remove the current poll from the database
-            # TODO : this remove all added games, should remove votes only
-            await poll.remove_poll_from_db()
-
-            # Create a new poll after resetting
-            poll = await Poll.find(self.db, ctx.channel, create_if_not_exist=True)
+            # Reset votes
+            await poll.reset_votes()
 
             # Display the new poll using the __show_poll method
             await self.__show_poll(ctx, poll)
