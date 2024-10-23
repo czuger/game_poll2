@@ -1,11 +1,12 @@
 # Create a dictionary to store the count of lines per channel
 import logging
 
+from libs.misc.set_logging import AUTO_REFRESH_LOG_NAME
 from libs.poll.poll import Poll
 from libs.poll.poll_embedding import get_players_embed
 from libs.poll.poll_view import PollView
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(AUTO_REFRESH_LOG_NAME)
 
 channel_message_count = {}
 
@@ -34,14 +35,18 @@ async def auto_refresh_poll(db, message):
     if channel_message_count[channel_id] > MAX_MESSAGE_COUNT:
         logger.debug(f'Channel {channel_id} exceeded {MAX_MESSAGE_COUNT} lines. Resetting count and reposting poll.')
 
-        poll = await Poll.find(db, message.channel, create_if_not_exist=True)
-        pv = PollView()
+        poll = await Poll.find(db, message.channel, create_if_not_exist=False)
+        if poll:
+            pv = PollView()
 
-        await pv.initialize_view(db, poll)
-        embed = await get_players_embed(db, message.channel)
-        await message.channel.send("", embed=embed, view=pv)
+            await pv.initialize_view(db, poll)
+            embed = await get_players_embed(db, message.channel)
+            await message.channel.send("", embed=embed, view=pv)
 
-        channel_message_count[channel_id] = 0  # Reset the count
+            channel_message_count[channel_id] = 0  # Reset the count
+        else:
+            logger.debug(
+                f'Channel {channel_id} poll does not exist. Reset aborted.')
 
     # Optionally, print the message count for each channel (for debugging purposes)
     logger.debug(f'Line count for channel {channel_id}: {channel_message_count[channel_id]}')
