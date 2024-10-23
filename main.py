@@ -3,6 +3,7 @@ import logging.handlers
 
 from libs.dat.database import DbConnector
 from libs.gamebot import GameBot
+from libs.misc.auto_refresh_poll import auto_refresh_poll
 from libs.misc.project_root import find_project_root
 from libs.misc.set_logging import set_logging
 
@@ -19,7 +20,7 @@ if __name__ == "__main__":
         if message.author == bot.user:
             return  # Ignore messages sent by the bot itself
 
-        # await auto_refresh_poll(db, message)
+        await auto_refresh_poll(db, message)
         await bot.process_commands(message)  # Process commands if there are any
 
 
