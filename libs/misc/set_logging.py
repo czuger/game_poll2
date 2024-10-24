@@ -29,6 +29,9 @@ def setup_rotating_logger(logger_name, log_file_path, log_level=logging.INFO, ma
     # Add the handler to the logger
     logger.addHandler(rotating_handler)
 
+    # Now no logs will be sent to stderr, only to the file
+    logger.propagate = False
+
     return logger
 
 
