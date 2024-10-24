@@ -36,6 +36,8 @@ async def auto_refresh_poll(db, message):
         logger.debug(f'Channel {channel_id} exceeded {MAX_MESSAGE_COUNT} lines. Resetting count and reposting poll.')
 
         poll = await Poll.find(db, message.channel, create_if_not_exist=False)
+        logger.debug(f'Poll {poll}')
+
         if poll:
             pv = PollView()
 
