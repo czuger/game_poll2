@@ -4,6 +4,7 @@ from libs.admin.admin import is_admin
 from libs.admin.admin import is_super_admin
 from libs.dat.database import DbConnector
 from libs.misc.command_logger import log_command_call
+from libs.misc.schedule_poll import schedule_poll
 from libs.poll.poll import Poll
 from libs.poll.poll_embedding import get_players_embed
 from libs.poll.poll_view import PollView
@@ -73,6 +74,10 @@ class PollCog(commands.Cog, name="sondages"):
 
             # Display the new poll using the __show_poll method
             await self.__show_poll(ctx, poll)
+
+    @commands.command(name="planif_jeux")
+    async def schedule_polls(self, ctx: commands.Context, day: int):
+        await schedule_poll(self.db, ctx, day)
 
     # TODO : we need a command to list poll
 

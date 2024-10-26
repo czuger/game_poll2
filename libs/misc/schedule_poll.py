@@ -3,11 +3,12 @@ from datetime import datetime
 from datetime import timedelta
 
 from libs.dat.database import DbConnector
+from libs.misc.set_logging import SCHEDULE_POLL_LOG_NAME
 from libs.poll.poll import Poll
 from libs.poll.poll_embedding import get_players_embed
 from libs.poll.poll_view import PollView
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(SCHEDULE_POLL_LOG_NAME)
 
 # We will show the poll, n days ago
 DAYS_AGO = 5
@@ -26,6 +27,7 @@ async def __show_poll_by_channel(channel, db: DbConnector, poll: Poll):
 async def schedule_poll(db: DbConnector, ctx, day: int = None):
     """
     You call this function with a number, the number will be the number of the day in the week.
+    0 Is monday
     """
     if day is None:
         day = datetime.today().weekday()
@@ -49,20 +51,6 @@ async def schedule_poll(db: DbConnector, ctx, day: int = None):
         await ctx.send("Jour invalide. Veuillez utiliser un nombre de 0 (Lundi) à 6 (Dimanche).", delete_after=10)
 
 
-async def clear_votes(db, poll):
-    # We need to reset all votes
-    for game in poll["buttons"]["games"].keys():
-        await db.poll_instances.update_one(
-            {'key': poll['key']},
-            {'$set': {f'buttons.games.{game}.players': []}}
-        )
-    for other in poll["buttons"]["others"].keys():
-        await db.poll_instances.update_one(
-            {'key': poll['key']},
-            {'$set': {f'buttons.others.{other}.players': []}}
-        )
-
-
 async def check_schedules_for_polls(db: DbConnector, bot):
     """
     This function is periodically checked. If the date of the poll is now() - DAYS_AGO, then we reset the poll voters.
@@ -83,9 +71,9 @@ async def check_schedules_for_polls(db: DbConnector, bot):
             if discord_channel:
                 logger.debug("Will reset poll")
 
-                await clear_votes(db, poll)
-                db_poll = await Poll.find(db, discord_channel)
-                await __show_poll_by_channel(discord_channel, db, db_poll)
+                poll_object = await Poll.find(db, discord_channel)
+                await poll_object.reset_votes()
+                await __show_poll_by_channel(discord_channel, db, poll_object)
 
                 await db.poll_instances.update_one(
                     {'key': poll['key']},

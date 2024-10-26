@@ -51,4 +51,4 @@ async def auto_refresh_poll(db, message):
                 f'Channel {channel_id} poll does not exist. Reset aborted.')
 
     # Optionally, print the message count for each channel (for debugging purposes)
-    logger.debug(f'Line count for channel {channel_id}: {channel_message_count[channel_id]}')
+    logger.debug(f'Line count for channel {channel_id}({message.channel.name}): {channel_message_count[channel_id]}')

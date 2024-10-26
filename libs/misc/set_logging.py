@@ -10,6 +10,7 @@ ADMINS_LOG_NAME = "admins"
 POLLS_LOG_NAME = "polls"
 ADD_GAMES_LOG_NAME = "add_games"
 AUTO_REFRESH_LOG_NAME = "auto_refresh_poll"
+SCHEDULE_POLL_LOG_NAME = "schedule_poll"
 
 
 # Define a utility function to set up a rotating file handler with a formatter
@@ -44,3 +45,4 @@ def set_logging():
     setup_rotating_logger(POLLS_LOG_NAME, f"/var/log/gamebot/{POLLS_LOG_NAME}.log", logging.DEBUG)
     setup_rotating_logger(ADD_GAMES_LOG_NAME, f"/var/log/gamebot/{ADD_GAMES_LOG_NAME}.log", logging.DEBUG)
     setup_rotating_logger(AUTO_REFRESH_LOG_NAME, f"/var/log/gamebot/{AUTO_REFRESH_LOG_NAME}.log", logging.DEBUG)
+    setup_rotating_logger(SCHEDULE_POLL_LOG_NAME, f"/var/log/gamebot/{SCHEDULE_POLL_LOG_NAME}.log", logging.DEBUG)
