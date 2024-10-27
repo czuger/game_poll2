@@ -11,7 +11,7 @@ from libs.poll.poll_view import PollView
 logger = logging.getLogger(SCHEDULE_POLL_LOG_NAME)
 
 # We will show the poll, n days ago
-DAYS_AGO = 5
+DAYS_AGO = 6
 
 french_day_names = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
 

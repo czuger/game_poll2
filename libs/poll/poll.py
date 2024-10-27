@@ -183,8 +183,11 @@ class Poll:
             element_key = result["buttons"]["games"].get(button_id, {}).get("key") or result["buttons"]["others"].get(
                 button_id, {}).get("key")
 
-            query = {f'votes.{element_key}': user_key}
+            logger.debug(f"For poll {self.key}, element_key = {element_key}")
+
+            query = {f'votes.{element_key}': user_key, 'key': self.key}
             game_voted = await self.db.poll_instances.find_one(query)
+            logger.debug(f"For poll {self.key}, game_voted = {game_voted}")
 
             if game_voted:
                 update_result = await self.db.poll_instances.update_one(
@@ -198,9 +201,10 @@ class Poll:
                 await guild.count_vote(element_key, user_key)
 
             if update_result.modified_count > 0:
-                logging.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
+                logger.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
             else:
-                logging.debug(f'{user_key} {button_id} modification done for poll {self.key} failed.')
+                logger.debug(f'{user_key} {button_id} modification done for poll {self.key} failed.')
+                logger.debug(f'{update_result}')
 
         else:
             logger.critical(f"{button_id} not found for poll {self.key}")
