@@ -77,7 +77,8 @@ class PollCog(commands.Cog, name="sondages"):
 
     @commands.command(name="planif_jeux")
     async def schedule_polls(self, ctx: commands.Context, day: int):
-        await schedule_poll(self.db, ctx, day)
+        if await is_admin(self.db, ctx, ctx.author.id):
+            await schedule_poll(self.db, ctx, day)
 
     # TODO : we need a command to list poll
 
