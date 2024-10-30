@@ -52,6 +52,7 @@ class AddToPollView(discord.ui.View):
         games = []
 
         for game_key in games_db_object:
+            logger.debug(f"In AddToPollView.initialize_view, game_key = {game_key}")
             game_in = copy(guild.games[game_key])
             game = {"short": game_in["short"],
                     "key": make_btn_key(game_in["key"], 'g'),

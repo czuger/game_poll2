@@ -46,6 +46,7 @@ class GameBot(commands.Bot):
         super().__init__(command_prefix="g2!", intents=intents)
 
         self.db = db
+        self.gpt_key = None
 
     async def setup_hook(self) -> None:
         """

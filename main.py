@@ -4,6 +4,7 @@ import logging.handlers
 from libs.dat.database import DbConnector
 from libs.gamebot import GameBot
 from libs.misc.auto_refresh_poll import auto_refresh_poll
+from libs.misc.gpt_test import call_chatgpt_async
 from libs.misc.project_root import find_project_root
 from libs.misc.set_logging import set_logging
 
@@ -21,6 +22,7 @@ if __name__ == "__main__":
             return  # Ignore messages sent by the bot itself
 
         await auto_refresh_poll(db, message)
+        await call_chatgpt_async(db, message, bot.gpt_key)
         await bot.process_commands(message)  # Process commands if there are any
 
 
@@ -29,4 +31,5 @@ if __name__ == "__main__":
         config = json.load(f)
 
         print(config["discord"]["token"])
+        bot.gpt_key = config["gpt"]
         bot.run(config["discord"]["token"], log_level=logging.INFO)

@@ -30,6 +30,8 @@ class AddToPollButton(discord.ui.Button):
         logger.debug(f"In callback : {self.label}, {self.custom_id}")
 
         game_key = get_key_from_btn(self.custom_id)
+        logger.debug(f"In AddToPollButton : game_key = {game_key}")
+
         game = copy(self.guild.games[game_key])
         logger.debug(f"In callback : game = {game}")
 
@@ -38,7 +40,7 @@ class AddToPollButton(discord.ui.Button):
         found = False
         if document and "buttons" in document and "games" in document["buttons"]:
             games = document["buttons"]["games"]
-            for game_key, game_value in games.items():
+            for _, game_value in games.items():
                 if game_value.get("key") == game["key"]:
                     found = True
                     break
@@ -47,6 +49,8 @@ class AddToPollButton(discord.ui.Button):
         if not found:
             game["players"] = []
             new_btn_key = make_btn_key(game_key, "g")
+            logger.debug(f"In AddToPollButton : new_btn_key = {new_btn_key}")
+
             self.poll.games[new_btn_key] = game
             await self.db.poll_instances.update_one({"key": self.poll.key},
                                                     {"$set": {f"buttons.games.{new_btn_key}": game}})
