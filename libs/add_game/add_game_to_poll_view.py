@@ -58,27 +58,30 @@ class AddToPollView(discord.ui.View):
                     "style": discord.ButtonStyle.primary}
             games.append(game)
 
-        pretty_games = json.dumps(games, indent=4)
-        logger.debug(f"In AddToPollView.initialize_view, game = "
-                     f"{pretty_games}")
+        shorts = [item["short"] for item in games]
+        logger.debug(f"In AddToPollView.initialize_view, games before packets = {shorts}")
 
         # We need to rearrange buttons in packets of 5
         packet_size = 5
         packets = [games[i:i + packet_size] for i in range(0, len(games), packet_size)]
 
-        pretty_packets = json.dumps(packets, indent=4)
-        logger.debug(f"In AddToPollView.initialize_view, packets = "
-                     f"{pretty_packets}")
+        shorts_nested = [[item["short"] for item in sublist] for sublist in packets]
+        pretty_shorts_nested = json.dumps(shorts_nested, indent=4)
+        logger.debug(f"In AddToPollView.initialize_view, in packets = "
+                     f"{pretty_shorts_nested}")
 
         # We create the poll buttons for selectable games
         row = 0
         for packet in packets:
             for game in packet:
                 button = AddToPollButton(db, guild, poll, poll_message, game["short"], game["key"], row)
+                logger.debug(f"In AddToPollView.initialize_view, adding button {button}")
                 self.add_item(button)
             row += 1
 
-            if row >= 4:
+            logger.debug(f"In AddToPollView.initialize_view, row = {row}")
+
+            if row >= 5:
                 break
 
         return self
