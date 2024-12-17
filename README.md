@@ -1,4 +1,6 @@
+![Tests workflow](https://github.com/czuger/game_poll2/actions/workflows/code-coverage.yml/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b22b245a1ad285870fa3/maintainability)](https://codeclimate.com/github/czuger/game_poll2/maintainability)
+[![Build](https://api.codeclimate.com/v1/badges/b22b245a1ad285870fa3/test_coverage)](https://codeclimate.com/github/czuger/game_poll2/test_coverage)
 
 # Gamebot
 

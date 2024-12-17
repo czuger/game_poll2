@@ -6,8 +6,8 @@ from unittest.mock import Mock
 
 import discord
 
-from libs.poll.poll import Poll
-from libs.poll.poll_buttons import PollButton
+from poll.libs.poll.poll import Poll
+from poll.libs.poll.poll_buttons import PollButton
 from tests.base import BotTest
 
 
@@ -25,10 +25,10 @@ class TestPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_channel = MagicMock(id=123456, guild=discord_guild)
 
         message = AsyncMock(edit=AsyncMock())
-        # message.edit.return_value(0)
+        message.edit.return_value = 0
 
         response = AsyncMock(defer=AsyncMock())
-        # response.defer.return_value(0)
+        response.defer.return_value = 0
 
         interaction = MagicMock(channel=discord_channel, user=user, message=message, response=response)
 

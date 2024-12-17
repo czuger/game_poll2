@@ -1,6 +1,7 @@
-from libs.database import DbConnector
-import os
 import json
+import os
+
+from poll.libs.dat.database import DbConnector
 
 
 class BotTest:

@@ -2,9 +2,9 @@ import unittest
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import MagicMock
 
-from libs.dat.guild import Guild
-from libs.helpers.buttons import get_key_from_btn
-from libs.helpers.buttons import make_btn_key
+from poll.libs.dat.guild import Guild
+from poll.libs.helpers.buttons import get_key_from_btn
+from poll.libs.helpers.buttons import make_btn_key
 from tests.base import BotTest
 
 

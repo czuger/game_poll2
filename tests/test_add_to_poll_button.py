@@ -6,10 +6,10 @@ from unittest.mock import Mock
 
 import discord
 
-from libs.add_game.add_to_poll_button import AddToPollButton
-from libs.dat.guild import Guild
-from libs.helpers.buttons import make_btn_key
-from libs.poll.poll import Poll
+from poll.libs.add_game.add_to_poll_button import AddToPollButton
+from poll.libs.dat.guild import Guild
+from poll.libs.helpers.buttons import make_btn_key
+from poll.libs.poll.poll import Poll
 from tests.base import BotTest
 
 
@@ -28,10 +28,10 @@ class TestAddToPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         poll_discord_channel = MagicMock(id=654321, guild=discord_guild)
 
         message = AsyncMock(edit=AsyncMock())
-        message.edit.return_value(0)
+        message.edit.return_value = 0
 
         response = AsyncMock(defer=AsyncMock())
-        response.defer.return_value(0)
+        response.defer.return_value = 0
 
         interaction = AsyncMock(channel=chat_discord_channel, user=user, message=message, response=response)
 
