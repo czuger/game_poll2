@@ -2,9 +2,9 @@ import logging
 from datetime import datetime
 from datetime import timedelta
 
-from poll.libs.dat.database import DbConnector
-from poll.libs.misc.set_logging import SCHEDULE_POLL_LOG_NAME
-from poll.libs.poll.poll import Poll
+from poll.libs.objects.database import DbConnector
+from poll.libs.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
+from poll.libs.objects.poll import Poll
 from poll.libs.poll.poll_embedding import get_players_embed
 from poll.libs.poll.poll_view import PollView
 

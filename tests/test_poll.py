@@ -3,8 +3,8 @@ from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
-from poll.libs.dat.guild import Guild
-from poll.libs.poll.poll import Poll
+from poll.libs.objects.guild import Guild
+from poll.libs.objects.poll import Poll
 from tests.base import BotTest
 
 

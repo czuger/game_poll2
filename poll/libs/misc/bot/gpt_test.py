@@ -5,8 +5,8 @@ import aiohttp
 import certifi
 from discord import Message
 
-from poll.libs.dat.database import DbConnector
-from poll.libs.misc.set_logging import GPT_LOG_NAME
+from poll.libs.objects.database import DbConnector
+from poll.libs.misc.logging.set_logging import GPT_LOG_NAME
 
 logger = logging.getLogger(GPT_LOG_NAME)
 # Settings

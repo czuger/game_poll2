@@ -1,12 +1,12 @@
 import json
 import logging.handlers
 
-from poll.libs.dat.database import DbConnector
+from poll.libs.objects.database import DbConnector
 from poll.libs.gamebot import GameBot
-from poll.libs.misc.auto_refresh_poll import auto_refresh_poll
-from poll.libs.misc.gpt_test import call_chatgpt_async
+from poll.libs.misc.bot.auto_refresh_poll import auto_refresh_poll
+from poll.libs.misc.bot.gpt_test import call_chatgpt_async
 from poll.libs.misc.project_root import find_project_root
-from poll.libs.misc.set_logging import set_logging
+from poll.libs.misc.logging.set_logging import set_logging
 
 if __name__ == "__main__":
     set_logging()

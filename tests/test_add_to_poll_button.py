@@ -6,10 +6,10 @@ from unittest.mock import Mock
 
 import discord
 
-from poll.libs.add_game.add_to_poll_button import AddToPollButton
-from poll.libs.dat.guild import Guild
-from poll.libs.helpers.buttons import make_btn_key
-from poll.libs.poll.poll import Poll
+from poll.libs.interfaces.add_game.add_to_poll_button import AddToPollButton
+from poll.libs.objects.guild import Guild
+from poll.libs.interfaces.helpers.buttons import make_btn_key
+from poll.libs.objects.poll import Poll
 from tests.base import BotTest
 
 

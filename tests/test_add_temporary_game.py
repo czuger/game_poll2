@@ -2,9 +2,9 @@ import unittest
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
 
-from poll.libs.add_game.add_temporary_game import GameAlreadyExist
-from poll.libs.add_game.add_temporary_game import add_temporary_game
-from poll.libs.misc.replace_spaces_and_non_ansi import replace_spaces_and_non_ansi
+from poll.libs.interfaces.add_game.add_temporary_game import GameAlreadyExist
+from poll.libs.interfaces.add_game.add_temporary_game import add_temporary_game
+from poll.libs.interfaces.helpers.replace_spaces_and_non_ansi import replace_spaces_and_non_ansi
 
 
 class TestAddTemporaryGame(unittest.IsolatedAsyncioTestCase):

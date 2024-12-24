@@ -3,10 +3,10 @@ from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
-from poll.libs.admin.admin import grant
-from poll.libs.admin.admin import super_admin
-from poll.libs.dat.guild import Guild
-from poll.libs.guilds.guilds_cog import GuildsCog
+from poll.libs.objects.admin import grant
+from poll.libs.objects.admin import super_admin
+from poll.libs.objects.guild import Guild
+from poll.libs.cogs.guilds_cog import GuildsCog
 from tests.base import BotTest
 
 

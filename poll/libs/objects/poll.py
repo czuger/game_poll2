@@ -3,10 +3,10 @@ from copy import copy
 
 import discord
 
-from poll.libs.dat.database import DbConnector
-from poll.libs.dat.guild import Guild
-from poll.libs.helpers.buttons import make_btn_key
-from poll.libs.misc.set_logging import POLLS_LOG_NAME
+from poll.libs.objects.database import DbConnector
+from poll.libs.objects.guild import Guild
+from poll.libs.interfaces.helpers.buttons import make_btn_key
+from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 

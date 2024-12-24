@@ -2,8 +2,8 @@ import asyncio
 import logging
 from datetime import datetime
 
-from poll.libs.dat.database import DbConnector
-from poll.libs.dat.games import Games
+from poll.libs.objects.database import DbConnector
+from poll.libs.objects.games import Games
 
 logger = logging.getLogger(__name__)
 

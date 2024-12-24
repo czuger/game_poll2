@@ -2,7 +2,7 @@ import logging
 
 import discord
 
-from poll.libs.misc.set_logging import COMMANDS_NAME
+from poll.libs.misc.logging.set_logging import COMMANDS_NAME
 
 command_logger = logging.getLogger(COMMANDS_NAME)
 

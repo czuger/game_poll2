@@ -6,9 +6,9 @@ import logging
 
 import discord
 
-from poll.libs.dat.database import DbConnector
-from poll.libs.misc.set_logging import POLLS_LOG_NAME
-from poll.libs.poll.poll import Poll
+from poll.libs.objects.database import DbConnector
+from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.libs.objects.poll import Poll
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 

@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import discord
 
-from poll.libs.poll.poll import Poll
+from poll.libs.objects.poll import Poll
 from poll.libs.poll.poll_embedding import get_players_embed
 from tests.base import BotTest
 

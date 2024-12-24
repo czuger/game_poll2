@@ -1,8 +1,8 @@
 import time
 
-from poll.libs.dat.database import DbConnector
-from poll.libs.dat.guild import Guild
-from poll.libs.misc.replace_spaces_and_non_ansi import replace_spaces_and_non_ansi
+from poll.libs.objects.database import DbConnector
+from poll.libs.objects.guild import Guild
+from poll.libs.interfaces.helpers.replace_spaces_and_non_ansi import replace_spaces_and_non_ansi
 
 
 class GameAlreadyExist(RuntimeError):

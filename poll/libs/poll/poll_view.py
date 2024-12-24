@@ -2,10 +2,10 @@ import logging
 
 import discord
 
-from poll.libs.add_game.respond_to_add_game_button import RespondToAddGameButton
-from poll.libs.dat.database import DbConnector
-from poll.libs.misc.set_logging import POLLS_LOG_NAME
-from poll.libs.poll.poll import Poll
+from poll.libs.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
+from poll.libs.objects.database import DbConnector
+from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.libs.objects.poll import Poll
 from poll.libs.poll.poll_buttons import PollButton
 
 poll_logger = logging.getLogger(POLLS_LOG_NAME)

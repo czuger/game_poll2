@@ -3,11 +3,11 @@ from copy import copy
 
 import discord
 
-from poll.libs.dat.guild import Guild
-from poll.libs.helpers.buttons import get_key_from_btn
-from poll.libs.helpers.buttons import make_btn_key
-from poll.libs.misc.set_logging import ADD_GAMES_LOG_NAME
-from poll.libs.poll.poll import Poll
+from poll.libs.objects.guild import Guild
+from poll.libs.interfaces.helpers.buttons import get_key_from_btn
+from poll.libs.interfaces.helpers.buttons import make_btn_key
+from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
+from poll.libs.objects.poll import Poll
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 

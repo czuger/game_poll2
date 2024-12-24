@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 
 from discord.ext.commands import Context
 
-from poll.libs.games.games_cog import GamesCog
+from poll.libs.cogs.games_cog import GamesCog
 from tests.base import BotTest
 
 

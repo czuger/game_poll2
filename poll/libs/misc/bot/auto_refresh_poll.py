@@ -1,9 +1,9 @@
 # Create a dictionary to store the count of lines per channel
 import logging
 
-from poll.libs.misc.set_logging import AUTO_REFRESH_LOG_NAME
-from poll.libs.poll.poll import Poll
-from poll.libs.poll.poll import PollNotFound
+from poll.libs.misc.logging.set_logging import AUTO_REFRESH_LOG_NAME
+from poll.libs.objects.poll import Poll
+from poll.libs.objects.poll import PollNotFound
 from poll.libs.poll.poll_embedding import get_players_embed
 from poll.libs.poll.poll_view import PollView
 
