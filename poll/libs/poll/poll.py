@@ -98,7 +98,7 @@ class Poll:
         The new buttons keys
         """
 
-        print("add_default_games called")
+        logger.debug("add_default_games called")
         guild = await Guild.find_or_create(self.db, channel)
 
         for element_key in guild.poll_default:
@@ -152,7 +152,7 @@ class Poll:
     async def get_bot_at_restart(cls, bot, db: DbConnector, poll_record):
         print(poll_record[cls.POLL_KEY])
         channel = await bot.fetch_channel(poll_record[cls.POLL_KEY])
-        print(channel)
+        logger.debug(channel)
         return cls(db, channel, poll_record)
 
     async def toggle_button_id(self, interaction: discord.Interaction, button_id: str):

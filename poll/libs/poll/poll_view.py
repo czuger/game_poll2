@@ -1,9 +1,14 @@
+import logging
+
 import discord
 
 from poll.libs.add_game.respond_to_add_game_button import RespondToAddGameButton
 from poll.libs.dat.database import DbConnector
+from poll.libs.misc.set_logging import POLLS_LOG_NAME
 from poll.libs.poll.poll import Poll
 from poll.libs.poll.poll_buttons import PollButton
+
+poll_logger = logging.getLogger(POLLS_LOG_NAME)
 
 
 class PollView(discord.ui.View):
@@ -86,19 +91,19 @@ class PollView(discord.ui.View):
 
         # We create the buttons for other actions
         for key, other in poll.others.items():
-            print(key, other)
+            poll_logger.debug(key, other)
             if "action" in other:
                 if "add_game" in other["action"]:
                     button = RespondToAddGameButton(
                         db, poll, other["short"], key, row, emoji=other["emoji"], style=self.get_style_from_poll(other))
-                    print("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
+                    poll_logger.debug("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
             else:
                 button = PollButton(db, poll, other["short"], key, row, emoji=other["emoji"],
                                     style=self.get_style_from_poll(other))
 
-                print("Adding button : ", key, button, self.get_style_from_poll(other))
+                poll_logger.debug("Adding button : ", key, button, self.get_style_from_poll(other))
             self.add_item(button)
 
         return self
