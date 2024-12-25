@@ -1,0 +1,27 @@
+{
+  "Japon": {
+    "USA": [
+      [["1941", "1942"], "Invasion et occupation des Philippines"],
+      [["1944"], "Bataille des Philippines (reprise de contrôle par les USA)"],
+      [["1945"], "Bataille d'Iwo Jima"],
+      [["1945"], "Bataille d'Okinawa"]
+    ],
+    "Chine": [
+      [["1937", "1945"], "Guerre sino-japonaise (massacre de Nankin en 1937)"]
+    ],
+    "URSS": [
+      [["1939"], "Bataille de Khalkhin Gol (défaite japonaise face à l'URSS)"],
+      [["1945"], "Invasion soviétique de la Mandchourie"]
+    ],
+    "Royaume-Uni": [
+      [["1941", "1942"], "Invasion de la Malaisie et de Singapour"],
+      [["1942"], "Occupation de la Birmanie"]
+    ],
+    "Australie": [
+      [["1942"], "Tentative d'invasion de Port Moresby (Papouasie-Nouvelle-Guinée)"]
+    ],
+    "Pays-bas": [
+      [["1942"], "Occupation des Indes néerlandaises"]
+    ]
+  }
+}

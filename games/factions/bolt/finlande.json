@@ -1,0 +1,11 @@
+{
+  "Finlande": {
+    "URSS": [
+      [["1939", "1940"], "Guerre d'Hiver contre l'URSS"],
+      [["1941", "1944"], "Guerre de Continuation aux côtés de l'Allemagne"]
+    ],
+    "Allemagne": [
+      [["1944", "1945"], "Conflits contre l'Allemagne après l'armistice avec l'URSS"]
+    ]
+  }
+}

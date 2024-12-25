@@ -1,0 +1,45 @@
+{
+  "Allemagne": {
+    "Pologne": [
+      [["1939"], "Invasion (début de la guerre)"]
+    ],
+    "France": [
+      [["1940"], "Invasion et capitulation après la bataille de France"],
+      [["1945"], "Participation à l'invasion de l'Allemagne avec les Alliés"]
+    ],
+    "Belgique": [
+      [["1940"], "Invasion durant la campagne de France"]
+    ],
+    "Pays-Bas": [
+      [["1940"], "Invasion durant la campagne de France"]
+    ],
+    "Norvège": [
+      [["1940"], "Invasion pour sécuriser les ports et le fer suédois"]
+    ],
+    "Angleterre": [
+      [["1940"], "Bataille de France (évacuation de Dunkerque)"],
+      [["1944"], "Bataille des Ardennes (contre-offensive majeure)"],
+      [["1941", "1943"], "Campagne d'Afrique du Nord menée par Rommel (Afrika Korps)"],
+      [["1945"], "Participation à l'invasion de l'Allemagne avec les Alliés"]
+    ],
+    "URSS": [
+      [["1941"], "Opération Barbarossa (invasion massive de l'URSS)"],
+      [["1942", "1943"], "Bataille de Stalingrad (défaite majeure)"],
+      [["1943", "1944"], "Bataille de Koursk (plus grande bataille de chars de l'histoire)"],
+      [["1945"], "Offensive finale sur Berlin"]
+    ],
+    "USA": [
+      [["1944"], "Débarquement de Normandie (opération Overlord)"],
+      [["1944"], "Bataille des Ardennes (contre-offensive)"],
+      [["1945"], "Participation à l'invasion de l'Allemagne avec les Alliés"]
+    ],
+    "Grèce": [
+      [["1941"], "Invasion pour soutenir l'Italie"]
+    ],
+    "Partisans": [
+      [["1941", "1945"], "Guérilla en Yougoslavie"],
+      [["1940", "1944"], "Guérilla en France (résistance française)"],
+      [["1941", "1945"], "Guérilla en URSS (partisans soviétiques)"]
+    ]
+  }
+}

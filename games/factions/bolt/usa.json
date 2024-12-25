@@ -1,0 +1,19 @@
+{
+  "USA": {
+    "Japon": [
+      [["1941", "1942"], "Guerre dans le Pacifique après l'attaque de Pearl Harbor"],
+      [["1944"], "Bataille des Philippines (reprise de contrôle par les USA)"],
+      [["1945"], "Bataille d'Iwo Jima"],
+      [["1945"], "Bataille d'Okinawa"]
+    ],
+    "Allemagne": [
+      [["1944"], "Débarquement de Normandie (opération Overlord)"],
+      [["1944", "1945"], "Bataille des Ardennes"],
+      [["1945"], "Invasion de l'Allemagne avec les Alliés"]
+    ],
+    "Italie": [
+      [["1943"], "Débarquement en Sicile (opération Husky)"],
+      [["1943", "1945"], "Campagne d'Italie avec les Alliés"]
+    ]
+  }
+}

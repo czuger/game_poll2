@@ -1,0 +1,22 @@
+{
+  "Italie": {
+    "Grèce": [
+      [["1940", "1941"], "Tentative d'invasion, suivie d'une intervention allemande"]
+    ],
+    "Royaume-Uni": [
+      [["1940", "1943"], "Conflits en Afrique du Nord (campagne du désert)"],
+      [["1943"], "Débarquement allié en Sicile (opération Husky)"],
+      [["1943", "1945"], "Campagne d'Italie après le changement de camp"]
+    ],
+    "France": [
+      [["1940"], "Offensive sur les Alpes durant la bataille de France"]
+    ],
+    "Yougoslavie": [
+      [["1941", "1943"], "Occupation de territoires après l'invasion conjointe avec l'Allemagne"],
+      [["1941", "1945"], "Conflits avec les partisans yougoslaves"]
+    ],
+    "Allemagne": [
+      [["1943", "1945"], "Conflits après le changement de camp"]
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "URSS": {
+    "Pologne": [
+      [["1939"], "Invasion de l'est de la Pologne après le pacte germano-soviétique"]
+    ],
+    "Finlande": [
+      [["1939", "1940"], "Guerre d'Hiver (tentative d'annexion)"],
+      [["1941", "1944"], "Guerre de Continuation (affrontements contre la Finlande alliée de l'Allemagne)"]
+    ],
+    "Allemagne": [
+      [["1941"], "Opération Barbarossa (invasion massive de l'URSS par l'Allemagne)"],
+      [["1942", "1943"], "Bataille de Stalingrad (victoire décisive de l'URSS)"],
+      [["1943", "1944"], "Bataille de Koursk (plus grande bataille de chars)"],
+      [["1944", "1945"], "Offensive soviétique sur l'Europe de l'Est"],
+      [["1945"], "Prise de Berlin (fin de la guerre en Europe)"]
+    ],
+    "Roumanie": [
+      [["1944"], "Invasion et renversement de l'alliance roumaine avec l'Allemagne"]
+    ],
+    "Hongrie": [
+      [["1944", "1945"], "Conquête de Budapest et combats pour la libération de la Hongrie"]
+    ],
+    "Japon": [
+      [["1939"], "Bataille de Khalkhin Gol (défaite japonaise en Mongolie)"],
+      [["1945"], "Invasion soviétique de la Mandchourie"]
+    ]
+  }
+}

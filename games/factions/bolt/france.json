@@ -1,0 +1,20 @@
+{
+  "France": {
+    "Allemagne": [
+      [["1940"], "Invasion de la France et capitulation après la bataille de France"],
+      [["1944", "1945"], "Participation à la libération de la France et à l'invasion de l'Allemagne"]
+    ],
+    "Italie": [
+      [["1940"], "Conflits dans les Alpes durant l'offensive italienne"]
+    ],
+    "Royaume-Uni": [
+      [["1940"], "Conflit à Dakar (tentative britannique et française libre de prendre le contrôle de la colonie tenue par Vichy)"]
+    ],
+    "Japon": [
+      [["1940", "1945"], "Conflits en Indochine française (occupation japonaise)"]
+    ],
+    "Partisans": [
+      [["1940", "1944"], "Résistance intérieure française contre les forces d'occupation allemandes"]
+    ]
+  }
+}

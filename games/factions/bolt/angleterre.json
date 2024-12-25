@@ -1,0 +1,19 @@
+{
+  "Angleterre": {
+    "Allemagne": [
+      [["1940"], "Bataille de France (évacuation de Dunkerque)"],
+      [["1940", "1943"], "Campagne d'Afrique du Nord contre les forces allemandes et italiennes"],
+      [["1944"], "Bataille des Ardennes (soutien aux Alliés)"],
+      [["1945"], "Invasion de l'Allemagne avec les Alliés"]
+    ],
+    "Italie": [
+      [["1940", "1943"], "Campagne d'Afrique du Nord contre les forces italiennes et allemandes"],
+      [["1943"], "Débarquement en Sicile (opération Husky)"],
+      [["1943", "1945"], "Campagne d'Italie avec les Alliés"]
+    ],
+    "Japon": [
+      [["1941", "1942"], "Défaite en Malaisie et chute de Singapour"],
+      [["1944", "1945"], "Reconquête de la Birmanie avec les Alliés"]
+    ]
+  }
+}

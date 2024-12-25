@@ -1,0 +1,11 @@
+{
+  "Hongrie": {
+    "URSS": [
+      [["1941", "1944"], "Participation aux combats contre l'URSS aux côtés de l'Allemagne"],
+      [["1942", "1943"], "Engagement à la bataille de Stalingrad"]
+    ],
+    "Allemagne": [
+      [["1944", "1945"], "Conflits contre l'Allemagne après le changement de camp"]
+    ]
+  }
+}
