@@ -9,7 +9,7 @@ def find_project_root(current_dir=None):
     while True:
         # Check if the current directory contains a known project file or directory (e.g., setup.py, .git, etc.)
         if any(os.path.exists(os.path.join(current_dir, marker)) for marker in
-               ['setup.py', '.git', 'requirements.txt']):
+               ['setup.py', '.git']):
             return Path(current_dir)
 
         # Move up one level in the directory hierarchy

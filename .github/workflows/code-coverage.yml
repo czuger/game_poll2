@@ -6,6 +6,10 @@ on:
       - main
       - dev
   pull_request:
+    branches:
+      - main
+      - dev
+
 
 jobs:
   test-coverage:
@@ -30,7 +34,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
+          pip install . ".[dev]"
 
       - name: Verify MongoDB Connection
         run: |
