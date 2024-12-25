@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my_project"
+version = "0.1.0"
+description = "A project using Discord, MongoDB, and testing tools"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+
+dependencies = [
+    "discord~=2.3.2",
+    "pymongo~=4.8.0",
+    "motor~=3.5.1",
+    "aiohttp~=3.10.11",
+    "certifi~=2024.12.14"
+]
+
+[tool.setuptools]
+packages = ["poll"]
+
+[tool.coverage]
+# Configuration for coverage.py
+
+[tool.coverage.run]
+branch = true
+source = ["poll"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.pytest.ini_options]
+# Configuration for pytest
+addopts = "--cov=poll --cov-report=html --cov-report=term"
+testpaths = ["tests"]
+
+[project.optional-dependencies]
+dev = [
+    "coverage~=7.6.9",
+    "pytest-cov~=6.0.0",
+    "pytest~=8.3.4"
+]

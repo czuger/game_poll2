@@ -1,0 +1,60 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: foo
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          pip install . ".[dev]"
+
+      - name: Verify MongoDB Connection
+        run: |
+          echo "Verifying MongoDB connection with auth..."
+          python -c "from pymongo import MongoClient; \
+          client = MongoClient('mongodb://root:foo@localhost:27017/admin'); \
+          print('Databases:', client.list_database_names())"        
+
+      - name: Setup
+        run: |
+          cp config.json.template config.json
+          cp games/games.json.template games/games.json
+
+      - name: Run Tests and Generate Coverage Report
+        run: |
+          coverage run -m pytest
+          coverage xml --omit="*/test*"
+
+      - name: Upload Coverage to Code Climate
+        uses: aktions/codeclimate-test-reporter@v1
+        with:
+          codeclimate-test-reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
+          command: after-build
