@@ -1,0 +1,54 @@
+{
+  "factions": [
+    {
+      "name": "Maison Stark",
+      "strengths": ["Rapidité", "Bonus liés au moral"],
+      "playstyle": "Attaque rapide, soutien mutuel entre unités"
+    },
+    {
+      "name": "Maison Lannister",
+      "strengths": ["Contrôle du terrain", "Manipulation de l'adversaire"],
+      "playstyle": "Morale ennemie faible, capacités de panique"
+    },
+    {
+      "name": "Maison Baratheon",
+      "strengths": ["Soldats robustes", "Spécialisations (Stannis ou Renly)"],
+      "playstyle": "Défensif avec de fortes capacités offensives"
+    },
+    {
+      "name": "Maison Greyjoy",
+      "strengths": ["Piraterie", "Pillage pour renforcer leurs troupes"],
+      "playstyle": "Augmentation de puissance grâce au pillage des ennemis"
+    },
+    {
+      "name": "Maison Targaryen",
+      "strengths": ["Mobilité extrême", "Dragons"],
+      "playstyle": "Tactiques de harcèlement et destruction rapide"
+    },
+    {
+      "name": "Maison Martell",
+      "strengths": ["Tactiques de contournement", "Affaiblissement des adversaires"],
+      "playstyle": "Dommages progressifs et utilisation de conditions"
+    },
+    {
+      "name": "La Garde de Nuit",
+      "strengths": ["Discipline", "Adaptabilité"],
+      "playstyle": "Tactiques défensives avec un potentiel d'attaques bien planifiées"
+    },
+    {
+      "name": "Les Sauvageons (Free Folk)",
+      "strengths": ["Nombre écrasant", "Attaques en masse"],
+      "playstyle": "Débordement par des vagues d'unités peu coûteuses"
+    }
+  ],
+  "subfactions": [
+    {
+      "faction": "Maison Baratheon",
+      "subgroups": ["Loyaux de Stannis", "Loyaux de Renly"]
+    }
+  ],
+  "mercenaries": {
+    "name": "Mercenaires (Neutres)",
+    "description": "Peuvent être recrutés par d'autres factions pour ajouter de la flexibilité"
+  }
+}

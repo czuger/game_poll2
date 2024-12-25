@@ -1,0 +1,73 @@
+{
+  "Carthaginois": {
+    "République de Rome": [
+      [["264", "241"], "Première guerre punique"],
+      [["218", "201"], "Deuxième guerre punique (Hannibal, bataille de Cannes)"],
+      [["149", "146"], "Troisième guerre punique (destruction de Carthage)"]
+    ],
+    "Gaulois": [
+      [["218"], "Alliés dans les Alpes pendant la campagne d'Hannibal"]
+    ],
+    "Ibères": [
+      [["237", "219"], "Conquête de la péninsule ibérique par Carthage"]
+    ],
+    "Numides": [
+      [["203"], "Défections numides en faveur de Rome pendant la Deuxième guerre punique"]
+    ]
+  },
+  "République de Rome": {
+    "Carthaginois": [
+      [["264", "241"], "Première guerre punique"],
+      [["218", "201"], "Deuxième guerre punique (victoires décisives de Zama)"],
+      [["149", "146"], "Troisième guerre punique"]
+    ],
+    "Gaulois": [
+      [["390"], "Saccage de Rome par les Gaulois"],
+      [["121"], "Conquête de la Gaule narbonnaise"],
+      [["58", "50"], "Guerre des Gaules menée par César"]
+    ],
+    "Graeculi": [
+      [["146"], "Destruction de Corinthe et soumission des cités grecques"],
+      [["200", "146"], "Conflits contre la Macédoine et les cités-États grecques"]
+    ],
+    "Ibères": [
+      [["195"], "Répression des révoltes ibériques"],
+      [["154", "133"], "Guerre celtibère (prise de Numance)"]
+    ],
+    "Numides": [
+      [["111", "105"], "Guerre de Jugurtha"]
+    ]
+  },
+  "Gaulois": {
+    "République de Rome": [
+      [["390"], "Saccage de Rome"],
+      [["58", "50"], "Guerre des Gaules (résistance à César)"]
+    ],
+    "Ibères": [
+      [["300", "200"], "Conflits frontaliers dans la péninsule ibérique"]
+    ]
+  },
+  "Graeculi": {
+    "République de Rome": [
+      [["200", "146"], "Guerres macédoniennes"],
+      [["146"], "Conquête et destruction de Corinthe"]
+    ]
+  },
+  "Ibères": {
+    "Carthaginois": [
+      [["237", "219"], "Domination de la péninsule ibérique par Carthage"]
+    ],
+    "République de Rome": [
+      [["154", "133"], "Guerre celtibère"],
+      [["195"], "Répression des révoltes locales"]
+    ]
+  },
+  "Numides": {
+    "Carthaginois": [
+      [["203"], "Alliance avec Rome contre Carthage"]
+    ],
+    "République de Rome": [
+      [["111", "105"], "Guerre de Jugurtha"]
+    ]
+  }
+}

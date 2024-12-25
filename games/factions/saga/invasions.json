@@ -1,0 +1,52 @@
+{
+  "Romains (Bas-Empire)": {
+    "Huns": [["376", "Attaques dans les Balkans"], ["451", "Bataille des Champs Catalauniques"]],
+    "Goths": [["376", "Bataille d'Andrinople"], ["410", "Sac de Rome par les Wisigoths"]],
+    "Vandales": [["429", "Invasion de l'Afrique du Nord"], ["455", "Sac de Rome"]],
+    "Sassanides": [["337", "Conflits dans la région de l'Arménie"], ["363", "Campagne de Julien"]]
+  },
+  "Huns": {
+    "Romains (Bas-Empire)": [["376", "Attaques dans les Balkans"], ["451", "Bataille des Champs Catalauniques"]],
+    "Goths": [["376", "Conflits menant à la migration gothique"]],
+    "Francs": [["451", "Conflits en Gaule pendant les campagnes d'Attila"]]
+  },
+  "Goths": {
+    "Romains (Bas-Empire)": [["376", "Bataille d'Andrinople"], ["410", "Sac de Rome par les Wisigoths"]],
+    "Huns": [["376", "Conflits pendant leur migration"]],
+    "Vandales": [["419", "Conflits en Hispanie avant la migration des Vandales en Afrique"]]
+  },
+  "Britons": {
+    "Saxons": [["449", "Arrivée des Saxons en Grande-Bretagne"]],
+    "Pictes": [["400", "Conflits dans le nord de la Bretagne"]]
+  },
+  "Saxons": {
+    "Britons": [["449", "Conflits lors de la migration saxonne"]],
+    "Pictes": [["400", "Occasionnels affrontements sur le contrôle de territoires"]]
+  },
+  "Pictes": {
+    "Britons": [["400", "Conflits pour le contrôle des terres de Bretagne"]],
+    "Romains (Bas-Empire)": [["367", "Grande Conspiration (invasion de la Bretagne romaine)"]]
+  },
+  "Francs": {
+    "Romains (Bas-Empire)": [["355", "Conflits sur le Rhin"], ["451", "Alliés contre les Huns à la bataille des Champs Catalauniques"]],
+    "Huns": [["451", "Conflits en Gaule"]]
+  },
+  "Sassanides": {
+    "Romains (Bas-Empire)": [["337", "Conflits sur l'Arménie"], ["363", "Campagne de Julien"]]
+  },
+  "Scotti": {
+    "Britons": [["400", "Raids dans les territoires des Britons"]]
+  },
+  "Alt Clut (Strathclyde)": {
+    "Saxons": [["500", "Conflits dans le cadre des guerres de l'Âge des ténèbres"]],
+    "Britons": [["400", "Affrontements pour le contrôle des terres en Écosse"]]
+  },
+  "Cymry (Pays de Galles)": {
+    "Saxons": [["500", "Conflits après l'arrivée des Saxons en Bretagne"]],
+    "Pictes": [["400", "Affrontements dans le nord"]]
+  },
+  "Vandales": {
+    "Romains (Bas-Empire)": [["429", "Invasion de l'Afrique du Nord"], ["455", "Sac de Rome"]],
+    "Goths": [["419", "Conflits en Hispanie avant leur départ pour l'Afrique"]]
+  }
+}

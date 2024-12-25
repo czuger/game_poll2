@@ -1,0 +1,80 @@
+{
+  "Anglo-Saxons": {
+    "Vikings": [["793", "Raid de Lindisfarne"], ["865", "Invasions de la Grande Armée danoise"]],
+    "Normands": [["1066", "Bataille de Hastings"]],
+    "Gallois": [["500", "Conflits continus pour la domination des frontières occidentales"]],
+    "Anglos-Danois": [["1013", "Invasion de Sweyn Forkbeard"]]
+  },
+  "Gallois": {
+    "Anglo-Saxons": [["500", "Conflits pour la défense des royaumes gallois"]],
+    "Normands": [["1094", "Conflits après l'arrivée des Normands au Pays de Galles"]]
+  },
+  "Normands": {
+    "Anglo-Saxons": [["1066", "Bataille de Hastings"]],
+    "Vikings": [["911", "Concession de la Normandie aux Vikings par Charles le Simple"]],
+    "Gallois": [["1094", "Conquête partielle du Pays de Galles"]]
+  },
+  "Vikings": {
+    "Anglo-Saxons": [["793", "Raid de Lindisfarne"], ["865", "Invasions de la Grande Armée danoise"]],
+    "Hiberno-Nordiques": [["980", "Conflits pour le contrôle des ports irlandais"]],
+    "Carolingiens": [["845", "Saccage de Paris"]],
+    "Byzantins": [["860", "Raid de Constantinople par les Rus"]],
+    "Rus Païens": [["970", "Conflits dans la région de Kiev"]]
+  },
+  "Anglos-Danois": {
+    "Anglo-Saxons": [["1013", "Invasion de Sweyn Forkbeard"]],
+    "Normands": [["1066", "Affrontements après la conquête normande"]]
+  },
+  "Romains Byzantins": {
+    "Vikings": [["860", "Raid de Constantinople"]],
+    "Peuples des Steppes": [["600", "Conflits avec les Avars"], ["900", "Raids des Magyars"]],
+    "Omeyyades": [["717", "Siège de Constantinople"]]
+  },
+  "Hiberno-Nordiques": {
+    "Irlandais": [["980", "Bataille de Tara"]],
+    "Vikings": [["980", "Conflits pour le contrôle des ports irlandais"]],
+    "Scots": [["900", "Conflits en Écosse"]]
+  },
+  "Irlandais": {
+    "Hiberno-Nordiques": [["980", "Bataille de Tara"]],
+    "Vikings": [["800", "Raids sur les monastères irlandais"]],
+    "Scots": [["600", "Conflits pour le contrôle de l'Ulster"]]
+  },
+  "Rus Païens": {
+    "Byzantins": [["860", "Raid de Constantinople"]],
+    "Peuples Germains": [["900", "Conflits frontaliers"]],
+    "Peuples des Steppes": [["800", "Raids contre les Khazars"]]
+  },
+  "Scots": {
+    "Anglo-Saxons": [["600", "Conflits dans le nord de la Bretagne"]],
+    "Hiberno-Nordiques": [["900", "Conflits en Écosse"]],
+    "Irlandais": [["600", "Conflits pour le contrôle de l'Ulster"]]
+  },
+  "Carolingiens": {
+    "Vikings": [["845", "Saccage de Paris"]],
+    "Peuples Germains": [["800", "Conflits contre les Saxons"]],
+    "Peuples des Steppes": [["800", "Conflits contre les Avars"]]
+  },
+  "Jomsvikings": {
+    "Peuples Germains": [["1000", "Raids dans le nord de l'Allemagne"]],
+    "Vikings": [["980", "Conflits avec d'autres clans vikings"]]
+  },
+  "Peuples Germains": {
+    "Romains Byzantins": [["500", "Conflits dans l'Italie byzantine"]],
+    "Lombards": [["600", "Conflits pour le contrôle de l'Italie"]],
+    "Carolingiens": [["800", "Conflits contre les Francs"]]
+  },
+  "Lombards": {
+    "Romains Byzantins": [["600", "Conflits pour l'Italie"]],
+    "Peuples Germains": [["600", "Conflits frontaliers"]]
+  },
+  "Peuples des Steppes": {
+    "Romains Byzantins": [["600", "Raids des Avars"], ["900", "Raids des Magyars"]],
+    "Rus Païens": [["800", "Raids contre les Khazars"]],
+    "Carolingiens": [["800", "Conflits avec les Francs"]]
+  },
+  "Omeyyades": {
+    "Romains Byzantins": [["717", "Siège de Constantinople"]],
+    "Carolingiens": [["732", "Bataille de Poitiers"]]
+  }
+}

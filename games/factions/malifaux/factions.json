@@ -1,0 +1,36 @@
+{
+  "factions": [
+    {
+      "name": "The Guild",
+      "description": "Une force de police autoritaire et corrompue, qui maintient un contrôle strict sur Malifaux. Ils luttent pour réprimer la magie non autorisée et imposer leur ordre."
+    },
+    {
+      "name": "The Resurrectionists",
+      "description": "Des nécromanciens et utilisateurs de magie noire qui manipulent les morts. Cette faction est connue pour ses pratiques morbides."
+    },
+    {
+      "name": "The Arcanists",
+      "description": "Un groupe secret de mages et d'ingénieurs cherchant à exploiter la magie pour des objectifs personnels ou révolutionnaires. Ils défient souvent le contrôle du Guild."
+    },
+    {
+      "name": "The Neverborn",
+      "description": "Les habitants indigènes de Malifaux, qui sont des créatures surnaturelles et cauchemardesques cherchant à chasser les humains de leur monde."
+    },
+    {
+      "name": "The Outcasts",
+      "description": "Une faction variée d'individus marginaux, mercenaires, et groupes divers qui ne s'intègrent pas dans les autres factions."
+    },
+    {
+      "name": "The Ten Thunders",
+      "description": "Une organisation criminelle secrète d'inspiration asiatique, avec des liens à la fois sur Terre et à Malifaux, manipulant les événements en coulisses."
+    },
+    {
+      "name": "The Gremlins (Bayou)",
+      "description": "Une faction chaotique et comique composée de Gremlins vivant dans le Bayou. Ils mêlent l'absurde et la violence."
+    },
+    {
+      "name": "The Explorers' Society",
+      "description": "Une faction plus récente dédiée à l'exploration et à la découverte de trésors et de secrets dans les terres de Malifaux."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "Cités Grecques": {
+    "Perses": [["490", "Bataille de Marathon"], ["480", "Bataille de Salamine"], ["479", "Bataille de Platées"]],
+    "Macédoniens": [["338", "Bataille de Chéronée"]],
+    "Thraces": [["429", "Conflits lors de la guerre du Péloponnèse"]],
+    "Diadoques": [["322", "Révolte de Lamia contre Antipater"]]
+  },
+  "Perses": {
+    "Cités Grecques": [["490", "Première guerre médique"], ["480", "Seconde guerre médique"]],
+    "Macédoniens": [["334", "Bataille du Granique"], ["333", "Bataille d'Issos"], ["331", "Bataille de Gaugamèles"]],
+    "Indiens": [["326", "Conflits contre les forces d'Alexandre en Inde"]]
+  },
+  "Thraces": {
+    "Cités Grecques": [["429", "Conflits avec Athènes pendant la guerre du Péloponnèse"]],
+    "Macédoniens": [["335", "Soumission par Alexandre avant la campagne asiatique"]],
+    "Perses": [["500", "Alliés lors des révoltes ioniennes"]]
+  },
+  "Macédoniens": {
+    "Cités Grecques": [["338", "Bataille de Chéronée"]],
+    "Perses": [["334", "Bataille du Granique"], ["333", "Bataille d'Issos"], ["331", "Bataille de Gaugamèles"]],
+    "Indiens": [["326", "Bataille de l'Hydaspe contre le roi Porus"]],
+    "Thraces": [["335", "Conflits pour sécuriser les Balkans avant la campagne asiatique"]]
+  },
+  "Indiens": {
+    "Macédoniens": [["326", "Bataille de l'Hydaspe contre Alexandre"]],
+    "Diadoques": [["305", "Conflits contre Séleucos I"]],
+    "Perses": [["500", "Incorporation dans l'empire achéménide"]]
+  },
+  "Diadoques": {
+    "Cités Grecques": [["322", "Révolte de Lamia contre Antipater"]],
+    "Macédoniens": [["301", "Bataille d'Ipsos entre les Diadoques"]],
+    "Indiens": [["305", "Conflits entre Séleucos I et Chandragupta Maurya"]],
+    "Perses": [["330", "Déclin final après la chute de Darius III"]]
+  }
+}

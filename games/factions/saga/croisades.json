@@ -1,0 +1,76 @@
+{
+  "Byzantins": {
+    "Croisés": [["1204", "Sack of Constantinople during the Fourth Crusade"]],
+    "Sarrasins": [["1071", "Battle of Manzikert"]],
+    "Mongols": [["1241", "Incursions mongoles en Europe de l'Est"]],
+    "Princes de l'Est": [["1185", "Bataille de Strymon contre les Bulgares"]],
+    "Cumans": [["1200", "Conflits sur les Balkans"]]
+  },
+  "Croisés": {
+    "Sarrasins": [["1099", "Prise de Jérusalem"], ["1187", "Défaite à Hattin"]],
+    "Maures": [["1212", "Bataille de Las Navas de Tolosa"]],
+    "Byzantins": [["1204", "Sack of Constantinople"]],
+    "Arméniens de Cilicie": [["1190", "Alliance temporaire durant la Troisième Croisade"]]
+  },
+  "Ordenstaat": {
+    "Peuples Païens": [["1236", "Croisades baltes"]],
+    "Polonais": [["1410", "Bataille de Grunwald"]],
+    "Princes de l'Est": [["1300", "Conflits pour le contrôle des territoires baltes"]]
+  },
+  "Maures": {
+    "Espagnols": [["711", "Conquête de la péninsule ibérique"], ["1492", "Reconquista et chute de Grenade"]],
+    "Croisés": [["1212", "Bataille de Las Navas de Tolosa"]]
+  },
+  "Milites Christi": {
+    "Peuples Païens": [["1100", "Premiers combats contre les païens en Europe du Nord"]],
+    "Sarrasins": [["1099", "Participation à la prise de Jérusalem"]],
+    "Cumans": [["1200", "Conflits dans les Balkans"]]
+  },
+  "Mutatawwi'a": {
+    "Croisés": [["1099", "Défense contre les Croisés à Jérusalem"]],
+    "Espagnols": [["1200", "Conflits dans Al-Andalus"]]
+  },
+  "Peuples Païens": {
+    "Ordenstaat": [["1236", "Croisades baltes"]],
+    "Milites Christi": [["1100", "Conflits pour la conversion"]]
+  },
+  "Polonais": {
+    "Ordenstaat": [["1410", "Bataille de Grunwald"]],
+    "Mongols": [["1241", "Bataille de Legnica"]]
+  },
+  "Princes de l'Est": {
+    "Mongols": [["1240", "Chute de Kiev"]],
+    "Cumans": [["1200", "Conflits frontaliers"]]
+  },
+  "Sarrasins": {
+    "Croisés": [["1099", "Défaite à Jérusalem"], ["1187", "Victoire à Hattin"]],
+    "Milites Christi": [["1200", "Conflits sporadiques au Moyen-Orient"]]
+  },
+  "Espagnols": {
+    "Maures": [["711", "Début de la conquête musulmane"], ["1492", "Chute de Grenade"]],
+    "Mutatawwi'a": [["1200", "Conflits dans Al-Andalus"]]
+  },
+  "Mongols": {
+    "Polonais": [["1241", "Bataille de Legnica"]],
+    "Princes de l'Est": [["1240", "Chute de Kiev"]],
+    "Byzantins": [["1241", "Incursions mongoles en Europe de l'Est"]],
+    "Cumans": [["1237", "Conquête des steppes européennes"]]
+  },
+  "Cumans": {
+    "Mongols": [["1237", "Défaite contre les Mongols"]],
+    "Princes de l'Est": [["1200", "Conflits pour le contrôle des steppes"]],
+    "Milites Christi": [["1200", "Conflits dans les Balkans"]]
+  },
+  "Pillards Païens": {
+    "Ordenstaat": [["1230", "Croisades baltes"]],
+    "Milites Christi": [["1150", "Raids dans le nord de l'Europe"]]
+  },
+  "Arméniens de Cilicie": {
+    "Croisés": [["1190", "Alliance temporaire durant la Troisième Croisade"]],
+    "Mongols": [["1243", "Soumission temporaire aux Mongols"]]
+  },
+  "Hongrois Arpad": {
+    "Mongols": [["1241", "Défaite à la bataille de Mohi"]],
+    "Byzantins": [["1100", "Conflits pour le contrôle des Balkans"]]
+  }
+}
