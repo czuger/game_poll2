@@ -86,3 +86,6 @@ class DbConnector:
         """
         self.db_connection.drop_database(self.db_name)
         self.__initialize_collections()
+
+    def close(self):
+        self.db_connection.close()

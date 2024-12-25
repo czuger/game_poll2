@@ -1,6 +1,8 @@
 import discord
 
+from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll import Poll
+from poll.libs.objects.voters_engine import VotersEngine
 from poll.libs.poll.poll_embedding import get_players_embed
 
 
@@ -24,14 +26,14 @@ class PollButton(discord.ui.Button):
         Asynchronously handles the button click interaction.
     """
 
-    def __init__(self, db, poll: Poll, label: str, custom_id: str, row: int, emoji=None,
+    def __init__(self, db: DbConnector, poll: Poll, label: str, custom_id: str, row: int, emoji=None,
                  style=discord.ButtonStyle.grey):
         """
         Initializes the PollButton class with a database object, poll instance, and button properties.
 
         Parameters
         ----------
-        db : pymongo.database.Database
+        db : DbConnector
             The database object.
         poll : Poll
             An instance of the Poll class associated with this button.
@@ -61,7 +63,9 @@ class PollButton(discord.ui.Button):
         interaction : discord.Interaction
             The interaction object representing the button click event.
         """
-        await self.poll.toggle_button_id(interaction, self.custom_id)
+        ve = VotersEngine(self.poll)
+
+        await ve.toggle_vote(interaction.user, self.custom_id)
         embed = await get_players_embed(self.db, interaction.channel)
 
         # TODO : need to update all polls, not only the interaction one.

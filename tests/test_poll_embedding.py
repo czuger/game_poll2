@@ -6,6 +6,7 @@ from unittest.mock import Mock
 import discord
 
 from poll.libs.objects.poll import Poll
+from poll.libs.objects.voters_engine import VotersEngine
 from poll.libs.poll.poll_embedding import get_players_embed
 from tests.base import BotTest
 
@@ -26,8 +27,9 @@ class TestPollEmbedding(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         # Embed with at least one user
         button_id = list(poll.games.keys())[0]
         user = MagicMock(id=654321)
-        mock_interaction = Mock(user=user)
-        await poll.toggle_button_id(mock_interaction, button_id)
+
+        ve = VotersEngine(poll)
+        await ve.toggle_vote(user, button_id)
 
         embed = await get_players_embed(self.db, discord_channel)
         self.assertIsInstance(embed, discord.Embed)

@@ -22,7 +22,7 @@ if __name__ == "__main__":
             return  # Ignore messages sent by the bot itself
 
         await auto_refresh_poll(db, message)
-        await call_chatgpt_async(db, message, bot.gpt_key)
+        # await call_chatgpt_async(db, message, bot.gpt_key)
         await bot.process_commands(message)  # Process commands if there are any
 
 

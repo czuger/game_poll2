@@ -29,3 +29,6 @@ class BotTest:
                             self.db.games.insert_one(json_data)
                         except Exception as e:
                             print(f"Error inserting data from {file_path}: {str(e)}")
+
+    def close(self):
+        self.db.close()

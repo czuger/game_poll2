@@ -76,8 +76,6 @@ class Poll:
     async def remove_poll_from_db(self):
         await self.db.poll_instances.delete_one({"key": self.key})
 
-    async def reset_votes(self):
-        await self.db.poll_instances.update_one({"key": self.key}, {'$set': {'votes': {}}})
 
     async def refresh(self):
         """Refresh data from poll"""
@@ -154,57 +152,3 @@ class Poll:
         channel = await bot.fetch_channel(poll_record[cls.POLL_KEY])
         logger.debug(channel)
         return cls(db, channel, poll_record)
-
-    async def toggle_button_id(self, interaction: discord.Interaction, button_id: str):
-        """
-        Toggle the votes status for a user.
-        """
-        user_key = str(interaction.user.id)
-        logger.debug(f"For poll {self.key}, toggle_button_call {button_id} by {user_key}")
-
-        # Define the query to search for the button_id in either buttons.games or buttons.others
-        button_key_query = {
-            '$or': [
-                {f'buttons.games.{button_id}': {'$exists': True}},
-                {f'buttons.others.{button_id}': {'$exists': True}}
-            ]
-        }
-        # Project the results to include only the button data
-        button_key_projection = {
-            f'buttons.games.{button_id}': 1,
-            f'buttons.others.{button_id}': 1
-        }
-        result = await self.db.poll_instances.find_one(button_key_query, button_key_projection)
-        logger.debug(f"For poll {self.key}, button find in poll {result}")
-
-        if result:
-            guild = await Guild.find_or_create(self.db, self.channel)
-
-            element_key = result["buttons"]["games"].get(button_id, {}).get("key") or result["buttons"]["others"].get(
-                button_id, {}).get("key")
-
-            logger.debug(f"For poll {self.key}, element_key = {element_key}")
-
-            query = {f'votes.{element_key}': user_key, 'key': self.key}
-            game_voted = await self.db.poll_instances.find_one(query)
-            logger.debug(f"For poll {self.key}, game_voted = {game_voted}")
-
-            if game_voted:
-                update_result = await self.db.poll_instances.update_one(
-                    {'key': self.key}, {'$pull': {f'votes.{element_key}': user_key}})
-
-                await guild.un_count_vote(element_key, user_key)
-            else:
-                update_result = await self.db.poll_instances.update_one(
-                    {'key': self.key}, {'$push': {f'votes.{element_key}': user_key}})
-
-                await guild.count_vote(element_key, user_key)
-
-            if update_result.modified_count > 0:
-                logger.debug(f'{user_key} {button_id} modification done for poll {self.key} success.')
-            else:
-                logger.debug(f'{user_key} {button_id} modification done for poll {self.key} failed.')
-                logger.debug(f'{update_result}')
-
-        else:
-            logger.critical(f"{button_id} not found for poll {self.key}")

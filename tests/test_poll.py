@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 from poll.libs.objects.guild import Guild
 from poll.libs.objects.poll import Poll
+from poll.libs.objects.voters_engine import VotersEngine
 from tests.base import BotTest
 
 
@@ -39,9 +40,10 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         # No testing button toggle
         button_id = list(poll.games)[0]
         user = Mock(id=654321)
-        mock_interaction = Mock(user=user)
 
-        await poll.toggle_button_id(mock_interaction, button_id)
+        ve = VotersEngine(poll)
+
+        await ve.toggle_vote(user, button_id)
         await poll.refresh()
         game_key = poll.games[button_id]["key"]
         self.assertIn("654321", poll.votes[game_key])
@@ -50,10 +52,10 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         result = await self.db.db.votes.find_one(query)
         self.assertTrue(result)
 
-        await poll.toggle_button_id(mock_interaction, button_id)
+        await ve.toggle_vote(user, button_id)
         await poll.refresh()
         self.assertNotIn("654321", poll.votes[game_key])
 
-        await poll.toggle_button_id(mock_interaction, button_id)
+        await ve.toggle_vote(user, button_id)
         await poll.refresh()
         self.assertIn("654321", poll.votes[game_key])

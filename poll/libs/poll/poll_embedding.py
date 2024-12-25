@@ -5,6 +5,7 @@ This module mainly create the content of the poll. The part that show the status
 import logging
 
 import discord
+from pymongo.database import Database
 
 from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME

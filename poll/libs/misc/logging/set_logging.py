@@ -12,7 +12,7 @@ ADD_GAMES_LOG_NAME = "add_games"
 AUTO_REFRESH_LOG_NAME = "auto_refresh_poll"
 SCHEDULE_POLL_LOG_NAME = "schedule_poll"
 GPT_LOG_NAME = "gpt_log"
-
+VOTERS_ENGINE_LOG_NAME = "voters_engine_log"
 
 # Define a utility function to set up a rotating file handler with a formatter
 def setup_rotating_logger(logger_name, log_file_path, log_level=logging.INFO):
@@ -47,3 +47,4 @@ def set_logging():
     setup_rotating_logger(AUTO_REFRESH_LOG_NAME, f"/var/log/gamebot/{AUTO_REFRESH_LOG_NAME}.log", logging.DEBUG)
     setup_rotating_logger(SCHEDULE_POLL_LOG_NAME, f"/var/log/gamebot/{SCHEDULE_POLL_LOG_NAME}.log", logging.DEBUG)
     setup_rotating_logger(GPT_LOG_NAME, f"/var/log/gamebot/{GPT_LOG_NAME}.log", logging.DEBUG)
+    setup_rotating_logger(VOTERS_ENGINE_LOG_NAME, f"/var/log/gamebot/{VOTERS_ENGINE_LOG_NAME}.log", logging.DEBUG)

@@ -47,7 +47,7 @@ jobs:
       - name: Run Tests and Generate Coverage Report
         run: |
           coverage run -m pytest
-          coverage xml
+          coverage xml --omit="*/test*"
 
       - name: Upload Coverage to Code Climate
         uses: aktions/codeclimate-test-reporter@v1

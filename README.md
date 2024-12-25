@@ -7,3 +7,7 @@
 A bot to help games associations to schedule gaming session.
 
 https://discord.com/oauth2/authorize?client_id=893236694466326538&scope=bot&permissions=562952101251136
+
+## tests
+
+`pytest --cov-report html --cov=poll tests/`
