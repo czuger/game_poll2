@@ -20,6 +20,6 @@ class GuildsCog(commands.Cog, name="guildes"):
         log_command_call(ctx.author, ctx.channel, "reset_guild")
 
         if await is_super_admin(self.db, ctx, ctx.me.id):
-            guild = await Guild.find_or_create(self.db, ctx.channel)
+            guild = await Guild.find_or_create_by_channel(self.db, ctx.channel)
             await guild.remove_poll_from_db()
-            await Guild.find_or_create(self.db, ctx.channel)
+            await Guild.find_or_create_by_channel(self.db, ctx.channel)

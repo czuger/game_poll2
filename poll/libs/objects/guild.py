@@ -2,10 +2,16 @@ import asyncio
 import logging
 from datetime import datetime
 
+from discord import TextChannel
+
 from poll.libs.objects.database import DbConnector
 from poll.libs.objects.games import Games
 
 logger = logging.getLogger(__name__)
+
+
+class GuildNotFound(RuntimeError):
+    pass
 
 
 class Guild:
@@ -86,37 +92,80 @@ class Guild:
         await self.__add_vote(game_key, -1, user_key)
 
     @classmethod
-    async def find_or_create(cls, db: DbConnector, channel):
+    async def find(cls, db: DbConnector, guild_id: str) -> "Guild":
         """
-        Asynchronously finds an existing guild in the database or creates a new one.
+        Asynchronously finds an existing guild in the database by guild ID.
 
         Parameters
         ----------
-        db : pymongo.database.Database
-            The database object.
-        channel : discord.channel.Channel
-            The Discord channel object from which the guild ID is extracted.
+        db : DbConnector
+            The database connector instance used for interacting with the database.
+        guild_id : str
+            The unique identifier of the guild (Discord server).
 
         Returns
         -------
         Guild
-            An instance of the Guild class with the guild's data.
+            An instance of the `Guild` class initialized with the guild's data.
         """
-        guild_id = str(channel.guild.id)
-        # TODO : may be ineffective to load all the guild record, as the guild contain all votes history. In the future, we need to fix this.
-        existing_record = await db.guilds.find_one({"key": guild_id})
+        guild = await db.guilds.find_one({"key": guild_id})
 
-        if not existing_record:
+        if not guild:
+            raise GuildNotFound
+
+        logger.debug(f"In Guild#find, existing_record = {guild}")
+
+        return cls(db, guild_id, guild)
+
+    @classmethod
+    async def find_or_create_by_guild_id(cls, db: DbConnector, guild_id: str) -> "Guild":
+        """
+        Asynchronously finds an existing guild in the database by guild ID or creates a new one.
+
+        Parameters
+        ----------
+        db : DbConnector
+            The database connector instance used for interacting with the database.
+        guild_id : str
+            The unique identifier of the guild (Discord server).
+
+        Returns
+        -------
+        Guild
+            An instance of the `Guild` class initialized with the guild's data.
+        """
+        try:
+            guild = await cls.find(db, guild_id)
+        except GuildNotFound:
             games, poll_default = await Games.get_pre_loaded_games()
-            existing_record = {
+            new_record = {
                 "key": guild_id,
                 "games": games, "poll_default": poll_default
             }
-            await db.guilds.insert_one(existing_record)
+            await db.guilds.insert_one(new_record)
+            guild = cls(db, guild_id, new_record)
 
-        logger.debug(f"In Guild#find_or_create, existing_record = {existing_record}")
+        return guild
 
-        return cls(db, guild_id, existing_record)
+    @classmethod
+    async def find_or_create_by_channel(cls, db: DbConnector, channel: TextChannel) -> "Guild":
+        """
+        Call find_or_create_by_guild_id extracting guild_id from channel
+
+        Parameters
+        ----------
+        db : DbConnector
+            The database object.
+        channel : discord.channel.Channel
+            The Discord channel object from which the guild ID is extracted.
+
+         Returns
+        -------
+        Guild
+            An instance of the `Guild` class initialized with the guild's data.
+        """
+        guild_id = str(channel.guild.id)
+        return await cls.find_or_create_by_guild_id(db, guild_id)
 
 
 async def main():

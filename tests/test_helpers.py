@@ -17,7 +17,7 @@ class TestHelpers(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_guild = MagicMock(id=123456)
         discord_channel = MagicMock(guild=discord_guild)
 
-        guild = await Guild.find_or_create(self.db, discord_channel)
+        guild = await Guild.find_or_create_by_channel(self.db, discord_channel)
 
         for k in guild.poll_default:
             self.assertEqual(k, get_key_from_btn(make_btn_key(k, "g")))

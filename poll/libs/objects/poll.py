@@ -1,12 +1,14 @@
 import logging
 from copy import copy
+from typing import Optional
 
 import discord
 
+from poll.libs.interfaces.helpers.buttons import make_btn_key
+from poll.libs.misc.constants import KEY, LONG_NAME
+from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 from poll.libs.objects.database import DbConnector
 from poll.libs.objects.guild import Guild
-from poll.libs.interfaces.helpers.buttons import make_btn_key
-from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 
@@ -16,6 +18,16 @@ class PollNotFound(RuntimeError):
     Exception raised when a poll is not found in the database.
     """
     pass
+
+
+class ButtonIdNotInPoll(RuntimeError):
+    """
+    Exception raised when a button id is not found in the poll other or games dictionaries.
+    """
+
+    def __init__(self, button_id: str, games: dict):
+        message = f"{button_id} not found in {games}"
+        super().__init__(message)
 
 
 class Poll:
@@ -76,11 +88,100 @@ class Poll:
     async def remove_poll_from_db(self):
         await self.db.poll_instances.delete_one({"key": self.key})
 
-
     async def refresh(self):
-        """Refresh data from poll"""
+        """
+        Refreshes the poll data from the database. Mostly used in tests.
+
+        Fetches the latest poll data associated with the current poll key and
+        reinitializes the poll instance with the updated data.
+        """
         poll_dict = await self.db.poll_instances.find_one({self.POLL_KEY: self.key})
         self.__initialize_poll(poll_dict)
+
+    def get_games_keys_set(self) -> set:
+        """
+        Retrieves a set of all game keys associated with the current poll. Mostly used in tests.
+
+        Returns
+        -------
+        set of str
+            A set containing the unique keys of all games in the poll, in the format of game identifiers,
+            e.g., {'adg', 'bolt_action', 'frostgrave', 'malifaux', 'saga'}.
+
+        """
+        return set([e[KEY] for e in self.games.values()])
+
+    def get_games_button_ids_list(self) -> list:
+        """
+        Retrieves a list of all button IDs associated with the current poll. Mostly used for tests.
+
+        Returns
+        -------
+        list of str
+            A list containing the button IDs of all games in the poll, in the format of unique
+            identifiers, e.g., ['g_adg_009828688', 'g_bolt_action_871796500',
+            'g_frostgrave_839799436', 'g_malifaux_594148779', 'g_saga_084217325'].
+        """
+        return list(self.games.keys())
+
+    def button_id_to_element_key(self, button_id: str) -> str:
+        """
+        Converts a button ID to its corresponding element key.
+
+        Parameters
+        ----------
+        button_id : str
+            The button ID to be mapped to an element key.
+
+        Returns
+        -------
+        str
+            The element key associated with the given button ID.
+
+        Raises
+        ------
+        ButtonIdNotPoll
+            If the button ID is not found in the poll's data.
+        """
+        data_dict = self.others if button_id in self.others else self.games
+        if button_id not in data_dict:
+            raise ButtonIdNotInPoll(button_id, self.games)
+
+        return data_dict[button_id][KEY]
+
+    async def add_game(self, game_key: str) -> (bool, Optional[str]):
+        """
+        Adds a game to the poll, allowing users to vote for it.
+
+        Parameters
+        ----------
+        game_key : str
+            The unique identifier for the game to be added to the poll.
+
+        Returns
+        -------
+        tuple
+            A tuple containing:
+            - bool: True if the game was successfully added, False if it already exists in the poll.
+            - Optional[str]: The long name of the game if added, or None if the game already exists.
+
+        """
+        if game_key not in self.get_games_keys_set():
+            guild = await Guild.find(self.db, str(self.channel.guild.id))
+
+            game = copy(guild.games[game_key])
+            logger.debug(f"In Poll#add_game : game = {game}")
+
+            new_btn_key = make_btn_key(game_key, "g")
+            logger.debug(f"In Poll#add_game : new_btn_key = {new_btn_key}")
+
+            self.games[new_btn_key] = game
+            await self.db.poll_instances.update_one({"key": self.key},
+                                                    {"$set": {f"buttons.games.{new_btn_key}": game}})
+
+            return True, game[LONG_NAME]
+        else:
+            return False, None
 
     async def add_default_games(self, channel) -> None:
         """
@@ -97,7 +198,7 @@ class Poll:
         """
 
         logger.debug("add_default_games called")
-        guild = await Guild.find_or_create(self.db, channel)
+        guild = await Guild.find_or_create_by_channel(self.db, channel)
 
         for element_key in guild.poll_default:
             game = copy(guild.games[element_key])

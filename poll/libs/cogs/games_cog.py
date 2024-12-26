@@ -22,7 +22,7 @@ class GamesCog(commands.Cog, name="jeux"):
 
         game_name = game_name[0].upper() + game_name[1:]
         print(game_name)
-        guild = await Guild.find_or_create(self.db, ctx.channel)
+        guild = await Guild.find_or_create_by_channel(self.db, ctx.channel)
 
         try:
             await add_temporary_game(guild, self.db, game_name)

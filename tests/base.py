@@ -32,3 +32,13 @@ class BotTest:
 
     def close(self):
         self.db.close()
+
+    async def set_admin(self, user_id: int, super_admin=False):
+        await self.db.admins.update_one(
+            {"user_id": user_id},  # Filter to match the document
+            {"$set": {"super_admin": super_admin}},  # Update operation
+            upsert=True  # Insert a new document if no matching document exists
+        )
+
+    async def set_super_admin(self, user_id: int):
+        await self.set_admin(user_id, True)

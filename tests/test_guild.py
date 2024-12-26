@@ -26,7 +26,7 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         self.gc = gc = GuildsCog(self.bot, self.db)
 
     async def test_guild_find_or_create(self):
-        guild = await Guild.find_or_create(self.db, self.discord_channel)
+        guild = await Guild.find_or_create_by_channel(self.db, self.discord_channel)
 
         self.assertEqual("123456", guild.key)
 
@@ -34,7 +34,7 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         self.assertIn("adg", guild.poll_default)
 
     async def test_guild_vote_count(self):
-        guild = await Guild.find_or_create(self.db, self.discord_channel)
+        guild = await Guild.find_or_create_by_channel(self.db, self.discord_channel)
         await guild.count_vote("adg", str(self.user_id))
         await guild.count_vote("congo", str(self.user_id))
 
@@ -71,7 +71,7 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
             content='You do not have the privilege to do that', ephemeral=True, delete_after=15)
 
     async def test_guild_reset_command_available_for_super_admin_and_do_actually_reset_guild(self):
-        await Guild.find_or_create(self.db, self.discord_channel)
+        await Guild.find_or_create_by_channel(self.db, self.discord_channel)
 
         filter_condition = {'key': '123456'}
         update_operation = {'$set': {'games.dune.long': 'foo'}}

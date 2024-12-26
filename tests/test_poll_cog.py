@@ -3,12 +3,15 @@ from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
 
-from discord.ext.commands import Context
+from discord import TextChannel, User
+from discord.ext.commands import Context, Author
 
-from poll.libs.objects.admin import is_super_admin
-from poll.libs.objects.admin import super_admin
-from poll.libs.objects.poll import Poll
 from poll.libs.cogs.poll_cog import PollCog
+from poll.libs.misc.constants import KEY
+from poll.libs.objects.admin import is_super_admin, is_admin
+from poll.libs.objects.guild import Guild
+from poll.libs.objects.poll import Poll
+from poll.libs.objects.voters_engine import VotersEngine, ElementNotInVotesDict
 from tests.base import BotTest
 
 
@@ -26,8 +29,9 @@ class TestPollCog(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
                                      'Ajouter'}
 
     def __set_context(self):
-        channel = MagicMock(id="123456", name="channel")
-        author = MagicMock(id="bob")
+        channel = MagicMock(specs=TextChannel, id="123456", name="channel")
+        author = MagicMock(specs=Author, id="bob")
+        self.user = MagicMock(specs=User, id="alice")
         self.send = AsyncMock()
 
         self.ctx = AsyncMock(specs=Context, channel=channel, author=author, send=self.send)
@@ -63,7 +67,7 @@ class TestPollCog(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
     async def test_reset_poll_super_admin_poll_does_not_exist(self):
         """Test the reset_poll command with a super admin."""
         # Ensure the user has super admin rights
-        await super_admin(self.db, self.ctx)
+        await self.set_super_admin(self.ctx.author.id)
         self.assertTrue(await is_super_admin(self.db, self.ctx, self.ctx.author.id))
 
         # Reset the context to remove super admin messages
@@ -78,53 +82,94 @@ class TestPollCog(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
     async def test_reset_poll_super_admin_poll_does_exist(self):
         """Test the reset_poll command with a super admin."""
         # Ensure the user has super admin rights
-        await super_admin(self.db, self.ctx)
+        await self.set_super_admin(self.ctx.author.id)
         self.assertTrue(await is_super_admin(self.db, self.ctx, self.ctx.author.id))
 
         # Reset the context to remove super admin messages
         self.__set_context()
 
         # Ensure that a poll exist for this channel
-        await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
+        await Guild.find_or_create_by_channel(self.db, self.ctx.channel)
+        poll = await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
+
+        current_games_set = poll.get_games_keys_set()
+        self.assertNotIn("congo", current_games_set)
+
+        await poll.add_game("congo")
+        await poll.refresh()
+        current_games_set = poll.get_games_keys_set()
+        self.assertIn("congo", current_games_set)
 
         # Call the command
         await self.cog.reset_poll(self.cog, self.ctx)
 
-        # Assertions
-        calls = self.ctx.method_calls[0]
+        await poll.refresh()
 
-        embed_title = calls.kwargs["embed"].title
-        self.assertEqual(self.expected_embed_title, embed_title)
+        current_games_set = poll.get_games_keys_set()
+        self.assertNotIn("congo", current_games_set)
 
-        view_items = set([e.label for e in calls.kwargs["view"].children])
-        self.assertEqual(self.expected_views_items, view_items)
+    async def test_reset_votes_admin(self):
+        """Test the reset_votes command with an admin."""
+        # Ensure the user has admin rights
+        await self.set_admin(self.ctx.author.id)
+        self.assertTrue(await is_admin(self.db, self.ctx, self.ctx.author.id))
 
-    # async def test_reset_votes_admin(self):
-    #     """Test the reset_votes command with an admin."""
-    #     # Ensure the user has admin rights
-    #     await super_admin(self.db, self.ctx)
-    #     self.assertTrue(await is_admin(self.db, self.ctx, self.ctx.author.id))
-    #
-    #     # Find the poll and reset votes
-    #     poll = await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
-    #     await self.cog.reset_votes(self.ctx)
-    #
-    #     # Assertions
-    #     self.assertIsNotNone(poll)
-    #     self.assertEqual(len(await poll.get_votes()), 0)  # Ensure votes were reset
-    #
-    # async def test_schedule_polls(self):
-    #     """Test the schedule_polls command with an admin."""
-    #     # Ensure the user has admin rights
-    #     self.assertTrue(await is_admin(self.db, self.ctx, self.ctx.author.id))
-    #
-    #     # Schedule the poll
-    #     day = 3
-    #     await self.cog.schedule_polls(self.ctx, day)
-    #
-    #     # Assertions
-    #     # No exceptions mean the poll was scheduled correctly. Add specific checks for scheduling if needed.
-    #     self.assertTrue(True)  # Placeholder assertion for successful scheduling
+        # Find the poll and reset votes
+        poll = await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
+
+        button_id = poll.get_games_button_ids_list()[0]
+        element_key = poll.button_id_to_element_key(button_id)
+
+        ve = VotersEngine(poll)
+        await ve.toggle_vote(self.user, button_id)
+        await poll.refresh()
+        self.assertIn("alice", ve.get_votes_for_element(element_key))
+
+        await self.cog.reset_votes(self.cog, self.ctx)
+
+        await poll.refresh()
+        with self.assertRaises(ElementNotInVotesDict):
+            ve.get_votes_for_element(element_key)
+
+    async def test_reset_votes_non_admin(self):
+        """Test the reset_votes command with a non admin."""
+        self.assertFalse(await is_admin(self.db, self.ctx, self.ctx.author.id))
+        # Reset the context to remove super admin messages
+        self.__set_context()
+
+        # Find the poll and reset votes
+        poll = await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
+
+        button_id = poll.get_games_button_ids_list()[0]
+        element_key = poll.button_id_to_element_key(button_id)
+
+        ve = VotersEngine(poll)
+        await ve.toggle_vote(self.user, button_id)
+        await poll.refresh()
+        self.assertIn("alice", ve.get_votes_for_element(element_key))
+
+        await self.cog.reset_votes(self.cog, self.ctx)
+
+        await poll.refresh()
+        self.assertIn("alice", ve.get_votes_for_element(element_key))
+
+        self.send.assert_called_once_with(content="You do not have the privilege to do that", ephemeral=True,
+                                          delete_after=15)
+
+    async def test_schedule_polls_admin(self):
+        """Test the schedule_polls command with an admin."""
+        # Ensure the user has admin rights
+        await self.set_admin(self.ctx.author.id)
+        self.assertTrue(await is_admin(self.db, self.ctx, self.ctx.author.id))
+
+        poll = await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
+
+        # Schedule the poll
+        day = 3
+        await self.cog.schedule_polls(self.cog, self.ctx, day)
+
+        poll_dict = await self.db.poll_instances.find_one({KEY: poll.key})
+        self.assertEqual(3, poll_dict["misc"]["schedule"])
 
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import discord
 
@@ -10,6 +9,16 @@ from poll.libs.objects.poll import Poll
 
 # Configure the logger for the voters engine
 logger = logging.getLogger(VOTERS_ENGINE_LOG_NAME)
+
+
+class ElementNotInVotesDict(RuntimeError):
+    """
+    Exception raised when an element is not found in the poll.votes dictionary.
+    """
+
+    def __init__(self, element_key: str, votes: dict):
+        message = f"{element_key} not found in {votes}"
+        super().__init__(message)
 
 
 class VotersEngine:
@@ -42,27 +51,6 @@ class VotersEngine:
             {'$set': {'votes': {}}}
         )
 
-    async def __button_id_to_element_key(self, button_id: str) -> Optional[str]:
-        """
-        Find a button in the poll's button groups (games or others) using its ID.
-
-        Args:
-            button_id (str): The ID of the button to search for.
-
-        Returns:
-            dict: The database entry containing the button details, or None if not found.
-        """
-        if button_id in self.poll.games:
-            return self.poll.games[button_id]["key"]
-        elif button_id in self.poll.others:
-            return self.poll.others[button_id]["key"]
-        else:
-            logger.error(f"For poll {self.poll_key}, button {button_id} not found in "
-                         f"{self.poll.games}, {self.poll.others}")
-
-
-        return None
-
     async def toggle_vote(self, user: discord.User, button_id: str):
         """
         Toggle a user's vote for a button in the poll.
@@ -79,11 +67,11 @@ class VotersEngine:
         logger.debug(f"For poll {self.poll_key}, toggle_button_call {button_id} by {user_key}")
 
         # Find the button in the poll
-        element_key = await self.__button_id_to_element_key(button_id)
+        element_key = self.poll.button_id_to_element_key(button_id)
 
         if element_key:
             # Retrieve or create the guild associated with the poll's channel
-            guild = await Guild.find_or_create(self.poll.db, self.poll.channel)
+            guild = await Guild.find_or_create_by_channel(self.poll.db, self.poll.channel)
 
             logger.debug(f"For poll {self.poll_key}, element_key = {element_key}")
 
@@ -111,7 +99,7 @@ class VotersEngine:
                 logger.debug(f'{user_key} {button_id} modification done for poll {self.poll_key} failed.')
                 logger.debug(f'{update_result}')
 
-    def get_votes(self):
+    def get_votes(self) -> dict:
         """
         Retrieve and organize the votes for the current poll.
 
@@ -130,3 +118,16 @@ class VotersEngine:
             votes[Poll.GAMES_KEY][game[KEY]] = voters
 
         return votes
+
+    def get_votes_for_element(self, element_key: str) -> dict:
+        """
+        Retrieve and organize the votes for the current poll.
+
+        Returns:
+            dict: A dictionary mapping poll options (games and others) to their voters.
+        """
+
+        if element_key not in self.poll.votes:
+            raise ElementNotInVotesDict(element_key, self.poll.votes)
+
+        return self.poll.votes[element_key]

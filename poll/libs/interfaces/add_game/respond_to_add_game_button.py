@@ -31,7 +31,7 @@ class RespondToAddGameButton(discord.ui.Button):
         await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=30,
                                                 ephemeral=True)
 
-        guild = await Guild.find_or_create(self.db, interaction.channel)
+        guild = await Guild.find_or_create_by_channel(self.db, interaction.channel)
 
         games_keys = list(guild.games.keys())
         logger.debug(f"In RespondToAddGameButton, games_keys = {games_keys}")

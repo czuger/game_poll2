@@ -2,8 +2,8 @@ import logging
 from datetime import datetime
 from datetime import timedelta
 
-from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
+from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll import Poll
 from poll.libs.poll.poll_embedding import get_players_embed
 from poll.libs.poll.poll_view import PollView
@@ -34,7 +34,7 @@ async def schedule_poll(db: DbConnector, ctx, day: int = None):
 
     if 0 <= day <= 6:
         record = await db.poll_instances.find_one({Poll.POLL_KEY: str(ctx.channel.id)})
-        print(ctx.channel.id, record)
+        logger.debug(ctx.channel.id, record)
         if record:
             result = await db.poll_instances.update_one(
                 {'_id': record['_id']},

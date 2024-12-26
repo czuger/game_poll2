@@ -27,7 +27,7 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         discord_guild = AsyncMock(id=123456)
         discord_channel = Mock(id=123456, guild=discord_guild)
 
-        guild = await Guild.find_or_create(self.db, discord_channel)
+        guild = await Guild.find_or_create_by_channel(self.db, discord_channel)
         poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
 
         self.assertEqual("123456", poll.key)
