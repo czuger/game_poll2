@@ -3,8 +3,9 @@ import asyncio
 from unittest.mock import Mock
 
 import discord
-from poll.libs.objects.poll import Poll
-from poll.libs.objects.voters_engine import VotersEngine
+
+from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_votes import PollVotes
 from tests.base import BotTest
 
 
@@ -20,7 +21,7 @@ class TestVotersEngine(unittest.IsolatedAsyncioTestCase, unittest.TestCase, BotT
 
     async def __set_voters_engine(self):
         self.poll = await Poll.find(self.db, self.channel, create_if_not_exist=True)
-        self.voters_engine = VotersEngine(self.poll)
+        self.voters_engine = PollVotes(self.poll)
 
     async def test_reset_votes(self):
         await self.__set_voters_engine()

@@ -10,8 +10,9 @@ from poll.libs.cogs.poll_cog import PollCog
 from poll.libs.misc.constants import KEY
 from poll.libs.objects.admin import is_super_admin, is_admin
 from poll.libs.objects.guild import Guild
-from poll.libs.objects.poll import Poll
-from poll.libs.objects.voters_engine import VotersEngine, ElementNotInVotesDict
+from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_votes import PollVotes
+from poll.libs.objects.voters_engine import ElementNotInVotesDict
 from tests.base import BotTest
 
 
@@ -120,7 +121,7 @@ class TestPollCog(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         button_id = poll.get_games_button_ids_list()[0]
         element_key = poll.button_id_to_element_key(button_id)
 
-        ve = VotersEngine(poll)
+        ve = PollVotes(poll)
         await ve.toggle_vote(self.user, button_id)
         await poll.refresh()
         self.assertIn("alice", ve.get_votes_for_element(element_key))

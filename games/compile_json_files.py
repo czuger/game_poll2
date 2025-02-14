@@ -1,7 +1,7 @@
 import json
 import os
 
-from libs.misc.replace_spaces_and_non_ansi import replace_spaces_and_non_ansi
+from poll.libs.interfaces.helpers.replace_spaces_and_non_ansi import replace_spaces_and_non_ansi
 
 
 def process_json_files(directory):

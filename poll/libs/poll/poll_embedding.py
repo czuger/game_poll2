@@ -9,7 +9,7 @@ from pymongo.database import Database
 
 from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
-from poll.libs.objects.poll import Poll
+from poll.libs.objects.poll.poll import Poll
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 

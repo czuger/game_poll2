@@ -1,3 +1,5 @@
+import discord
+
 from poll.libs.objects.poll.poll_games import PollGames
 
 

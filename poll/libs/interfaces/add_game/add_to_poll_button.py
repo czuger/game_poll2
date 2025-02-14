@@ -5,7 +5,7 @@ import discord
 from poll.libs.interfaces.helpers.buttons import get_key_from_btn
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
 from poll.libs.objects.guild import Guild
-from poll.libs.objects.poll import Poll
+from poll.libs.objects.poll.poll import Poll
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 

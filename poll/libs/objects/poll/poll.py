@@ -7,7 +7,7 @@ from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll.poll_votes import PollVotes
 
-basic_methods = __import__("0_basic_methods")
+# basic_methods = __import__("0_basic_methods")
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 

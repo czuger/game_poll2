@@ -5,8 +5,8 @@ from unittest.mock import Mock
 
 import discord
 
-from poll.libs.objects.poll import Poll
-from poll.libs.objects.voters_engine import VotersEngine
+from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_votes import PollVotes
 from poll.libs.poll.poll_embedding import get_players_embed
 from tests.base import BotTest
 
@@ -28,7 +28,7 @@ class TestPollEmbedding(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         button_id = list(poll.games.keys())[0]
         user = MagicMock(id=654321)
 
-        ve = VotersEngine(poll)
+        ve = PollVotes(poll)
         await ve.toggle_vote(user, button_id)
 
         embed = await get_players_embed(self.db, discord_channel)

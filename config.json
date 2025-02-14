@@ -1,0 +1,10 @@
+{
+  "discord": {
+    "token": "foo"
+  },
+  "mongo": {
+    "user": "root",
+    "pass": "foo",
+    "server": "localhost"
+  }
+}

@@ -9,9 +9,9 @@ from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 from poll.libs.objects.admin import is_admin
 from poll.libs.objects.admin import is_super_admin
 from poll.libs.objects.database import DbConnector
-from poll.libs.objects.poll import Poll
-from poll.libs.objects.poll import PollNotFound
-from poll.libs.objects.voters_engine import VotersEngine
+from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_base import PollNotFound
+from poll.libs.objects.poll.poll_votes import PollVotes
 from poll.libs.poll.poll_embedding import get_players_embed
 from poll.libs.poll.poll_view import PollView
 
@@ -81,7 +81,7 @@ class PollCog(commands.Cog, name="sondages"):
             poll = await Poll.find(self.db, ctx.channel)
 
             # Reset votes
-            ve = VotersEngine(poll)
+            ve = PollVotes(poll)
             await ve.reset_votes()
 
             # Display the new poll using the __show_poll method

@@ -4,8 +4,8 @@ from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
 from poll.libs.objects.guild import Guild
-from poll.libs.objects.poll import Poll
-from poll.libs.objects.voters_engine import VotersEngine
+from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_votes import PollVotes
 from tests.base import BotTest
 
 
@@ -41,7 +41,7 @@ class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
         button_id = list(poll.games)[0]
         user = Mock(id=654321)
 
-        ve = VotersEngine(poll)
+        ve = PollVotes(poll)
 
         await ve.toggle_vote(user, button_id)
         await poll.refresh()

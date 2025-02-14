@@ -1,8 +1,8 @@
 import discord
 
 from poll.libs.objects.database import DbConnector
-from poll.libs.objects.poll import Poll
-from poll.libs.objects.voters_engine import VotersEngine
+from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_votes import PollVotes
 from poll.libs.poll.poll_embedding import get_players_embed
 
 
@@ -63,7 +63,7 @@ class PollButton(discord.ui.Button):
         interaction : discord.Interaction
             The interaction object representing the button click event.
         """
-        ve = VotersEngine(self.poll)
+        ve = PollVotes(self.poll)
 
         await ve.toggle_vote(interaction.user, self.custom_id)
         embed = await get_players_embed(self.db, interaction.channel)
