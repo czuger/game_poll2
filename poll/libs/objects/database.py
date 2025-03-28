@@ -78,7 +78,7 @@ class DbConnector:
 
         self.db_connection = AsyncIOMotorClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
         self.db_name = db_name
-        self.__initialize_collections()
+        # self.__initialize_collections()
 
     def clear_db(self):
         """
