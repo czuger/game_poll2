@@ -1,5 +1,7 @@
 # Create a dictionary to store the count of lines per channel
 import logging
+from dataclasses import dataclass
+from datetime import datetime, timedelta
 
 from poll.libs.misc.logging.set_logging import AUTO_REFRESH_LOG_NAME
 from poll.libs.objects.poll import Poll
@@ -9,52 +11,69 @@ from poll.libs.poll.poll_view import PollView
 
 logger = logging.getLogger(AUTO_REFRESH_LOG_NAME)
 
+
+@dataclass
+class ChannelInfo:
+    lines_count: int
+    last_message: datetime
+
+
 channel_message_count = {}
 
-# Define a constant for the maximum message count before reset
 MAX_MESSAGE_COUNT = 15
 
 
-# Function to update message count and repost poll if it exceeds MAX_MESSAGE_COUNT
-async def auto_refresh_poll(db, message):
-    """
-    Update the message count for the given channel and repost the poll if it exceeds MAX_MESSAGE_COUNT.
-
-    Parameters:
-    message (discord.Message): The message object containing the channel and content information.
-    """
+async def track_channel_activity(message):
+    """Called each time a user type a message in a channel."""
     channel_id = message.channel.id
-    lines = message.content.count('\n') + 1  # Count the number of lines in the message
+    lines = message.content.count('\n') + 1
+    current_time = datetime.now()
 
-    # Update the message count for the channel
     if channel_id in channel_message_count:
-        channel_message_count[channel_id] += lines
+        channel_info = channel_message_count[channel_id]
+        channel_info.lines_count += lines
+        channel_info.last_message = current_time
     else:
-        channel_message_count[channel_id] = lines
+        channel_message_count[channel_id] = ChannelInfo(lines_count=lines, last_message=current_time)
 
-    # Optionally, print the message count for each channel (for debugging purposes)
-    logger.debug(f'Line count for channel {channel_id}({message.channel.name}): {channel_message_count[channel_id]}')
+    logger.debug(
+        f'Line count for channel {channel_id}({message.channel.name}): {channel_message_count[channel_id].lines_count}')
 
-    # Check if the count exceeds the max value
-    if channel_message_count[channel_id] > MAX_MESSAGE_COUNT:
-        logger.debug(f'Channel {channel_id} exceeded {MAX_MESSAGE_COUNT} lines. Resetting count and reposting poll.')
 
-        try:
-            poll = await Poll.find(db, message.channel, create_if_not_exist=False)
-            logger.debug(f'Poll= {poll}')
+async def check_channel_refresh(db, bot):
+    """Called each 30 minutes. Add a new poll if people stopped talking."""
+    now = datetime.now()
+    ten_minutes = timedelta(minutes=30)
 
-            pv = PollView()
-            logger.debug(f'PollView= {pv}')
+    for channel_id in channel_message_count.keys():
+        channel_info = channel_message_count[channel_id]
 
-            await pv.initialize_view(db, poll)
-            embed = await get_players_embed(db, message.channel)
-            logger.debug(f'embed= {embed}')
-
-            result = await message.channel.send("", embed=embed, view=pv)
-            logger.debug(f'send_result= {result}')
-
-            channel_message_count[channel_id] = 0  # Reset the count
-        except PollNotFound:
+        if (channel_info.lines_count > MAX_MESSAGE_COUNT and
+                channel_info.last_message < now - ten_minutes):
             logger.debug(
-                f'Channel {channel_id} poll does not exist. Reset aborted.')
-            channel_message_count[channel_id] = -100
+                f'Channel {channel_id} exceeded {MAX_MESSAGE_COUNT} lines and has been inactive for 10+ minutes. '
+                f'Resetting count and reposting poll.')
+
+            try:
+                channel = bot.get_channel(int(channel_id))
+                if not channel:
+                    logger.error(f'Could not find channel with ID {channel_id}')
+                    continue
+
+                poll = await Poll.find(db, channel, create_if_not_exist=False)
+                logger.debug(f'Poll= {poll}')
+
+                pv = PollView()
+                logger.debug(f'PollView= {pv}')
+
+                await pv.initialize_view(db, poll)
+                embed = await get_players_embed(db, channel)
+                logger.debug(f'embed= {embed}')
+
+                result = await channel.send("", embed=embed, view=pv)
+                logger.debug(f'send_result= {result}')
+
+                channel_info.lines_count = 0
+            except PollNotFound:
+                logger.debug(f'Channel {channel_id} poll does not exist. Reset aborted.')
+                channel_info.lines_count = -100

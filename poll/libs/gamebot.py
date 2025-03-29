@@ -1,4 +1,5 @@
 import logging
+from datetime import time
 
 import discord
 from discord.ext import commands
@@ -6,17 +7,23 @@ from discord.ext import tasks
 
 from poll.libs.cogs.admin_cog import AdminManagementCog
 from poll.libs.cogs.games_cog import GamesCog
+from poll.libs.cogs.poll_cog import PollCog
+from poll.libs.misc.bot.auto_refresh_poll import check_channel_refresh
 from poll.libs.misc.bot.schedule_poll import check_schedules_for_polls
 from poll.libs.objects.poll import Poll
-from poll.libs.cogs.poll_cog import PollCog
 from poll.libs.poll.poll_view import PollView
 
 logger = logging.getLogger(__name__)
 
 
-@tasks.loop(hours=1)
+@tasks.loop(time=time(hour=12, minute=0))
 async def check_schedules(db, bot):
     await check_schedules_for_polls(db, bot)
+
+
+@tasks.loop(minutes=30)
+async def check_channel_refresh_call(db, bot):
+    await check_channel_refresh(db, bot)
 
 
 class GameBot(commands.Bot):
@@ -74,6 +81,7 @@ class GameBot(commands.Bot):
             await message_refresh_function(to_refresh_poll)
 
         check_schedules.start(self.db, self)
+        check_channel_refresh_call.start(self.db, self)
 
         await self.add_cog(PollCog(self, self.db))
         # await self.add_cog(GuildsCog(self, self.db))

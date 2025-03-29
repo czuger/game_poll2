@@ -61,7 +61,7 @@ class DbConnector:
         self.admins = self.db["admins"]
         self.votes_history = self.db["votes_history"]
 
-    def connect(self, db_name="games_database"):
+    def connect(self):
         """
         Connects to the MongoDB database with the given database name.
 
@@ -77,7 +77,7 @@ class DbConnector:
             mongo = mongo["mongo"]
 
         self.db_connection = AsyncIOMotorClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
-        self.db_name = db_name
+        self.db_name = mongo["db_name"]
         self.__initialize_collections()
 
     def clear_db(self):

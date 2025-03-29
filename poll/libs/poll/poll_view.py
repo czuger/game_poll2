@@ -3,8 +3,8 @@ import logging
 import discord
 
 from poll.libs.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
-from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll import Poll
 from poll.libs.poll.poll_buttons import PollButton
 
@@ -51,43 +51,33 @@ class PollView(discord.ui.View):
         """
         await poll.refresh()
 
-        packet_size = 5
         keys = list(poll.games.keys())
+        keys.sort(key=lambda k: poll.games[k]["short"].lower())
 
-        # Sort keys by the length of game["short"] in descending order
-        keys.sort(key=lambda k: len(poll.games[k]["short"]), reverse=True)
+        grid = []
+        row = []
+        for i, key in enumerate(keys):
+            row.append(key)
 
-        # Determine the number of rows needed
-        num_rows = (len(keys) + packet_size - 1) // packet_size
+            # Start a new row after every 5 items
+            if (i + 1) % 5 == 0:
+                grid.append(row)
+                row = []
 
-        # Initialize the rows, each with an empty list of games, character count, and item count
-        rows = [{'games': [], 'char_count': 0, 'item_count': 0} for _ in range(num_rows)]
+            # Break if we've reached the maximum allowed items (5x4 = 20)
+            if i + 1 >= 20:
+                break
 
-        # Distribute the games across rows
-        for key in keys:
-            game = poll.games[key]
-            game_short_length = len(game["short"])
-
-            # Find the row with the minimum character count that has less than 5 items
-            min_row_index = min(
-                (i for i, row in enumerate(rows) if row['item_count'] < packet_size),
-                key=lambda i: rows[i]['char_count'],
-                default=None
-            )
-
-            if min_row_index is not None:
-                # Add the game to the selected row
-                rows[min_row_index]['games'].append((key, game))
-                rows[min_row_index]['char_count'] += game_short_length
-                rows[min_row_index]['item_count'] += 1
+        # Add the last row if it's not empty and we haven't reached the maximum number of rows
+        if row and len(grid) < 5:
+            grid.append(row)
 
         # We create the poll buttons for selectable games
-        for row_index, row in enumerate(rows):
-            for key, game in row['games']:
-                button = PollButton(db, poll, game["short"], key, row_index)
-                self.add_item(button)
-
-        row = row_index + 1
+        for row_index, row in enumerate(grid):
+            for col in row:
+                for key in col:
+                    button = PollButton(db, poll, poll.games[key]["short"], key, row_index)
+                    self.add_item(button)
 
         # We create the buttons for other actions
         for key, other in poll.others.items():
@@ -95,7 +85,8 @@ class PollView(discord.ui.View):
             if "action" in other:
                 if "add_game" in other["action"]:
                     button = RespondToAddGameButton(
-                        db, poll, other["short"], key, row, emoji=other["emoji"], style=self.get_style_from_poll(other))
+                        db, poll, other["short"], key, row_index + 1, emoji=other["emoji"],
+                        style=self.get_style_from_poll(other))
                     poll_logger.debug("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
