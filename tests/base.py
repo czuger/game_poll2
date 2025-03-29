@@ -1,6 +1,7 @@
 import json
 import os
 
+from poll.libs.misc.config import ConfigReader
 from poll.libs.objects.database import DbConnector
 
 
@@ -10,8 +11,9 @@ class BotTest:
         self.db = None
 
     def set_up(self):
+        config = ConfigReader("config_tests.json")
         self.db = DbConnector()
-        self.db.connect("games_database_tests")
+        self.db.connect(config)
         self.db.clear_db()
 
         if os.path.exists("fixtures"):

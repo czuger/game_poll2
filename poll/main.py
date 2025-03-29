@@ -1,17 +1,17 @@
-import json
-import logging.handlers
-
 from poll.libs.gamebot import GameBot
 from poll.libs.misc.bot.auto_refresh_poll import track_channel_activity
+from poll.libs.misc.config import ConfigReader
 from poll.libs.misc.logging.set_logging import set_logging
-from poll.libs.misc.project_root import find_project_root
 from poll.libs.objects.database import DbConnector
 
 if __name__ == "__main__":
-    set_logging()
+
+    config = ConfigReader("config.json")
+
+    set_logging(config)
 
     db = DbConnector()
-    db.connect()
+    db.connect(config)
     bot = GameBot(db)
 
 
@@ -24,9 +24,4 @@ if __name__ == "__main__":
         await bot.process_commands(message)  # Process commands if there are any
 
 
-    root_dir = find_project_root()
-    with open(root_dir / "config.json", 'r') as f:
-        config = json.load(f)
-
-        print(config["discord"]["token"])
-        bot.run(config["discord"]["token"], log_level=logging.INFO)
+    bot.run(config.get_discord_token(), log_level=config.get_logging_level())

@@ -69,13 +69,13 @@ class GameBot(commands.Bot):
             self.add_view(initialized_view)
             logger.debug(initialized_view, initialized_view.id)
 
-        # print(self.db.poll_instances)
+        logger.debug(self.db.poll_instances)
 
         cursor = self.db.poll_instances.find()
         polls = await cursor.to_list(length=None)
 
         for to_refresh_poll in polls:
-            # print(to_refresh_poll)
+            logger.debug(to_refresh_poll)
             logger.debug("Refreshing poll", to_refresh_poll)
             await message_refresh_function(to_refresh_poll)
 

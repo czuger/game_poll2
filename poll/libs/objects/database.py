@@ -1,8 +1,6 @@
-import json
-
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from poll.libs.misc.project_root import find_project_root
+from poll.libs.misc.config import ConfigReader
 
 
 class DbConnector:
@@ -61,20 +59,16 @@ class DbConnector:
         self.admins = self.db["admins"]
         self.votes_history = self.db["votes_history"]
 
-    def connect(self):
+    def connect(self, config: ConfigReader):
         """
         Connects to the MongoDB database with the given database name.
 
         Parameters
         ----------
-        db_name : str, optional
-            The name of the database to connect to (default is "games_database").
+        config : ConfigReader
+            The config object.
         """
-        root_dir = find_project_root()
-
-        with open(root_dir / "config.json", "r") as f:
-            mongo = json.load(f)
-            mongo = mongo["mongo"]
+        mongo = config.get_mongo_config()
 
         self.db_connection = AsyncIOMotorClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
         self.db_name = mongo["db_name"]

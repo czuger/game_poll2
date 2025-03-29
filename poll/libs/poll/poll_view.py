@@ -74,10 +74,10 @@ class PollView(discord.ui.View):
 
         # We create the poll buttons for selectable games
         for row_index, row in enumerate(grid):
-            for col in row:
-                for key in col:
-                    button = PollButton(db, poll, poll.games[key]["short"], key, row_index)
-                    self.add_item(button)
+            print(row)
+            for key in row:
+                button = PollButton(db, poll, poll.games[key]["short"], key, row_index)
+                self.add_item(button)
 
         # We create the buttons for other actions
         for key, other in poll.others.items():
@@ -87,14 +87,14 @@ class PollView(discord.ui.View):
                     button = RespondToAddGameButton(
                         db, poll, other["short"], key, row_index + 1, emoji=other["emoji"],
                         style=self.get_style_from_poll(other))
-                    poll_logger.debug("Adding 'add_game' button : ", key, button, self.get_style_from_poll(other))
+                    poll_logger.debug(f"Adding 'add_game' button : {key}, {button}, {self.get_style_from_poll(other)}")
                 else:
                     raise RuntimeError(f"Unknown action : {other['action']}")
             else:
-                button = PollButton(db, poll, other["short"], key, row, emoji=other["emoji"],
+                button = PollButton(db, poll, other["short"], key, row_index + 1, emoji=other["emoji"],
                                     style=self.get_style_from_poll(other))
 
-                poll_logger.debug("Adding button : ", key, button, self.get_style_from_poll(other))
+                poll_logger.debug(f"Adding button : {key}, {button}, {self.get_style_from_poll(other)}")
             self.add_item(button)
 
         return self

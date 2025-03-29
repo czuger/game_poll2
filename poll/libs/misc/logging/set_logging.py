@@ -1,6 +1,8 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
+from poll.libs.misc.config import ConfigReader
+
 # Constants for log file sizes and backups (you should replace these with actual values)
 MAX_LOG_FILE_SIZE = 10 * 1024 * 1024  # Example: 10 MB
 BACKUP_COUNT = 5  # Number of backup files to keep
@@ -36,14 +38,25 @@ def setup_rotating_logger(logger_name, log_file_path, log_level=logging.INFO):
     return logger
 
 
-def set_logging():
-    setup_rotating_logger(__name__, "/var/log/gamebot/gamebot.log")
-    setup_rotating_logger('discord', "/var/log/gamebot/discord.log")
-    setup_rotating_logger('discord.http', "/var/log/gamebot/discord.http.log")
-    setup_rotating_logger(COMMANDS_NAME, f"/var/log/gamebot/{COMMANDS_NAME}.log")
-    setup_rotating_logger(ADMINS_LOG_NAME, f"/var/log/gamebot/{ADMINS_LOG_NAME}.log")
-    setup_rotating_logger(POLLS_LOG_NAME, f"/var/log/gamebot/{POLLS_LOG_NAME}.log", logging.DEBUG)
-    setup_rotating_logger(ADD_GAMES_LOG_NAME, f"/var/log/gamebot/{ADD_GAMES_LOG_NAME}.log", logging.DEBUG)
-    setup_rotating_logger(AUTO_REFRESH_LOG_NAME, f"/var/log/gamebot/{AUTO_REFRESH_LOG_NAME}.log", logging.DEBUG)
-    setup_rotating_logger(SCHEDULE_POLL_LOG_NAME, f"/var/log/gamebot/{SCHEDULE_POLL_LOG_NAME}.log", logging.DEBUG)
-    setup_rotating_logger(VOTERS_ENGINE_LOG_NAME, f"/var/log/gamebot/{VOTERS_ENGINE_LOG_NAME}.log", logging.DEBUG)
+def set_logging(config: ConfigReader):
+    log_directory = config.get_log_directory()
+
+    setup_rotating_logger(__name__, f"/var/log/{log_directory}/gamebot.log")
+    setup_rotating_logger('discord', f"/var/log/{log_directory}/discord.log")
+    setup_rotating_logger('discord.http', f"/var/log/{log_directory}/discord.http.log")
+    setup_rotating_logger(COMMANDS_NAME,
+                          f"/var/log/{log_directory}/{COMMANDS_NAME}.log")
+    setup_rotating_logger(ADMINS_LOG_NAME,
+                          f"/var/log/{log_directory}/{ADMINS_LOG_NAME}.log")
+    setup_rotating_logger(POLLS_LOG_NAME,
+                          f"/var/log/{log_directory}/{POLLS_LOG_NAME}.log", logging.DEBUG)
+    setup_rotating_logger(ADD_GAMES_LOG_NAME,
+                          f"/var/log/{log_directory}/{ADD_GAMES_LOG_NAME}.log", logging.DEBUG)
+    setup_rotating_logger(AUTO_REFRESH_LOG_NAME,
+                          f"/var/log/{log_directory}/{AUTO_REFRESH_LOG_NAME}.log", logging.DEBUG)
+    setup_rotating_logger(SCHEDULE_POLL_LOG_NAME,
+                          f"/var/log/{log_directory}/{SCHEDULE_POLL_LOG_NAME}.log",
+                          logging.DEBUG)
+    setup_rotating_logger(VOTERS_ENGINE_LOG_NAME,
+                          f"/var/log/{log_directory}/{VOTERS_ENGINE_LOG_NAME}.log",
+                          logging.DEBUG)
