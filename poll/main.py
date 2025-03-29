@@ -29,5 +29,4 @@ if __name__ == "__main__":
         config = json.load(f)
 
         print(config["discord"]["token"])
-        bot.gpt_key = config["gpt"]
         bot.run(config["discord"]["token"], log_level=logging.INFO)
