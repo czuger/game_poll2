@@ -1,3 +1,8 @@
-rsync -rv . --exclude ".git" --exclude ".idea" --exclude "config.json" --exclude "__pycache__" --exclude ".python_version" --exclude "docker-compose.yml" pw:~/python/gamebot/
-
-ssh pw "supervisorctl restart gamebot2"
+cat << 'EOF' | ssh pw
+cd python/game_bot2_prod
+git pull
+pip install --upgrade pip
+pip install .
+supervisorctl restart game_bot2_prod
+pyenv version
+EOF
