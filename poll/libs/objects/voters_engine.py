@@ -60,7 +60,6 @@ class VotersEngine:
             logger.error(f"For poll {self.poll_key}, button {button_id} not found in "
                          f"{self.poll.games}, {self.poll.others}")
 
-
         return None
 
     async def toggle_vote(self, user: discord.User, button_id: str):
@@ -85,10 +84,18 @@ class VotersEngine:
             # Retrieve or create the guild associated with the poll's channel
             guild = await Guild.find_or_create(self.poll.db, self.poll.channel)
 
-            logger.debug(f"For poll {self.poll_key}, element_key = {element_key}")
-
             # Check if the user has already voted for the element
-            votes_for_key = self.poll.votes.get(element_key)
+            logger.debug(f"For poll {self.poll_key}, element_key = {element_key}")
+            poll_document = await self.poll_instances.find_one(
+                {'key': self.poll_key},
+                {'votes': 1}  # Project only the votes field
+            )
+            logger.debug(f"For poll {self.poll_key}, poll_document = {poll_document}")
+            votes = poll_document.get('votes', {})
+            logger.debug(f"For poll {self.poll_key}, votes = {votes}")
+            votes_for_key = votes.get(element_key, [])
+            logger.debug(f"For poll {self.poll_key}, votes_for_key = {votes_for_key}")
+            logger.debug(f"For poll {self.poll_key}, user_key = {user_key}")
             game_voted = user_key in (votes_for_key or [])
             logger.debug(f"For poll {self.poll_key}, game_voted = {game_voted}")
 

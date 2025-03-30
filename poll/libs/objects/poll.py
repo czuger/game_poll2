@@ -3,10 +3,10 @@ from copy import copy
 
 import discord
 
-from poll.libs.objects.database import DbConnector
-from poll.libs.objects.guild import Guild
 from poll.libs.interfaces.helpers.buttons import make_btn_key
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.libs.objects.database import DbConnector
+from poll.libs.objects.guild import Guild
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 
@@ -33,8 +33,8 @@ class Poll:
                   "style": discord.ButtonStyle.blurple},
         "away": {"key": "away", "short": "Absent", "long": "Absent", "emoji": "⛱️",
                  "style": discord.ButtonStyle.blurple},
-        "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🧩",
-                "style": discord.ButtonStyle.grey, "action": "add_game"},
+        # "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🧩",
+        #         "style": discord.ButtonStyle.grey, "action": "add_game"},
     }
 
     BUTTONS_KEY = "buttons"
@@ -75,7 +75,6 @@ class Poll:
 
     async def remove_poll_from_db(self):
         await self.db.poll_instances.delete_one({"key": self.key})
-
 
     async def refresh(self):
         """Refresh data from poll"""

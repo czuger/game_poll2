@@ -41,6 +41,7 @@ def setup_rotating_logger(logger_name, log_file_path, log_level=logging.INFO):
 def set_logging(config: ConfigReader):
     log_directory = config.get_log_directory()
 
+    # TODO : use the config variable logging level.
     setup_rotating_logger(__name__, f"/var/log/{log_directory}/gamebot.log")
     setup_rotating_logger('discord', f"/var/log/{log_directory}/discord.log")
     setup_rotating_logger('discord.http', f"/var/log/{log_directory}/discord.http.log")
