@@ -1,0 +1,15 @@
+{
+  "discord": {
+    "token": "foo"
+  },
+  "mongo": {
+    "user": "root",
+    "pass": "foo",
+    "server": "localhost",
+    "db_name": "game_poll2_tests"
+  },
+  "logging": {
+    "log_direcory": "gamebot",
+    "logging_level": "INFO"
+  }
+}

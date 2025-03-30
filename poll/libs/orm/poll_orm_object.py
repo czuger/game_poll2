@@ -1,36 +1,48 @@
-import asyncio
+from dataclasses import field
 from datetime import datetime
+from typing import Optional
 
-from beanie import Document, init_beanie
+from beanie import Document
+from beanie.odm.operators.update.array import AddToSet, Pull
+from beanie.odm.operators.update.general import Set
 from pydantic import BaseModel
 
-from poll.libs.objects.database import DbConnector
+default_misc = {"schedule": None, "last_schedule": datetime.now()}
 
 
 class Misc(BaseModel):
-    schedule: int
-    last_schedule: datetime
+    schedule: Optional[int] = None
+    last_schedule: datetime = datetime.now()
 
 
 class PollOrmObject(Document):
     key: str
-    buttons: dict
-    misc: Misc
-    votes: dict
+
+    # Button id, game_key
+    buttons: dict[str, str] = field(default_factory=lambda: {})
+
+    misc: Misc = Misc(schedule=None, last_schedule=datetime.now())
+
+    # Game key, user list
+    votes: dict[str, list] = field(default_factory=lambda: {})
+
+    # If we need optional other buttons, use booleans. If no boolean associated, then the buttons are mandatory.
+    # others: boolean
+    # add: boolean
 
     class Settings:
-        name = "poll_instances"
+        name = "polls"
 
+    async def add_vote(self, game_key: str, user_key: str):
+        current_votes = self.votes.get(game_key, None)
+        if not current_votes:
+            await self.update(Set({PollOrmObject.votes[game_key]: []}))
+            current_votes = []
 
-async def main():
-    client = DbConnector()
-    client.connect()
+        if user_key not in current_votes:
+            await self.update(AddToSet({PollOrmObject.votes[game_key]: user_key}))
 
-    await init_beanie(database=client.db_connection.games_database, document_models=[PollOrmObject])
-
-    product = await PollOrmObject.find_one(PollOrmObject.key == "487195843091365888")
-    print(product.buttons["games"].keys())
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    async def remove_vote(self, game_key: str, user_key: str):
+        current_votes = self.votes.get(game_key, [])
+        if user_key in current_votes:
+            await self.update(Pull({PollOrmObject.votes[game_key]: user_key}))

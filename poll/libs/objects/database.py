@@ -1,8 +1,12 @@
 import json
 
+from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from poll.libs.misc.project_root import find_project_root
+from poll.libs.orm.game_orm_object import GameOrmObject
+from poll.libs.orm.guild_orm_object import GuildOrmObject
+from poll.libs.orm.poll_orm_object import PollOrmObject
 
 
 class DbConnector:
@@ -61,7 +65,7 @@ class DbConnector:
         self.admins = self.db["admins"]
         self.votes_history = self.db["votes_history"]
 
-    def connect(self, db_name="games_database"):
+    async def connect(self, db_name="games_database"):
         """
         Connects to the MongoDB database with the given database name.
 
@@ -78,14 +82,16 @@ class DbConnector:
 
         self.db_connection = AsyncIOMotorClient(mongo["server"], 27017, username=mongo["user"], password=mongo["pass"])
         self.db_name = db_name
-        # self.__initialize_collections()
 
-    def clear_db(self):
+        await init_beanie(database=self.db_connection[self.db_name],
+                          document_models=[PollOrmObject, GuildOrmObject, GameOrmObject])
+
+    async def clear_db(self):
         """
         Clears the database by dropping it and reinitializing the collections.
         """
-        self.db_connection.drop_database(self.db_name)
-        self.__initialize_collections()
+        await self.db_connection.drop_database(self.db_name)
+        # self.__initialize_collections()
 
     def close(self):
         self.db_connection.close()
