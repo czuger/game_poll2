@@ -2,9 +2,10 @@ import logging
 from datetime import datetime
 from datetime import timedelta
 
-from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
+from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll import Poll
+from poll.libs.objects.voters_engine import VotersEngine
 from poll.libs.poll.poll_embedding import get_players_embed
 from poll.libs.poll.poll_view import PollView
 
@@ -72,7 +73,8 @@ async def check_schedules_for_polls(db: DbConnector, bot):
                 logger.debug("Will reset poll")
 
                 poll_object = await Poll.find(db, discord_channel)
-                await poll_object.reset_votes()
+                ve = VotersEngine(poll_object)
+                await ve.reset_votes()
                 await __show_poll_by_channel(discord_channel, db, poll_object)
 
                 await db.poll_instances.update_one(
