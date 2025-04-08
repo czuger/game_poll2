@@ -3,10 +3,11 @@ import logging
 import discord
 
 from poll.libs.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
-from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll.poll import Poll
-from poll.libs.poll.poll_buttons import PollButton
+from poll.libs.objects.poll.poll_buttons import PollButton
+from poll.orm.poll_orm_object import OTHER_BUTTONS
 
 poll_logger = logging.getLogger(POLLS_LOG_NAME)
 
@@ -31,7 +32,7 @@ class PollView(discord.ui.View):
 
     @staticmethod
     def get_style_from_poll(other):
-        return Poll.OTHER_BUTTONS[other["key"]]["style"]
+        return OTHER_BUTTONS[other["key"]]["style"]
 
     async def initialize_view(self, db: DbConnector, poll: Poll):
         """
@@ -49,7 +50,6 @@ class PollView(discord.ui.View):
         PollView
             The initialized PollView instance.
         """
-        await poll.refresh()
 
         packet_size = 5
         keys = list(poll.games.keys())

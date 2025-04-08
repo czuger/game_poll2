@@ -23,7 +23,7 @@ class AddToPollButton(discord.ui.Button):
         self.poll_message = poll_message
 
     async def callback(self, interaction: discord.Interaction):
-        from poll.libs.poll.poll_view import PollView
+        from poll.libs.objects.poll.poll_view import PollView
 
         logger.debug(f"In callback : {self.label}, {self.custom_id}")
 

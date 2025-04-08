@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import discord
 
 from poll.libs.objects.poll.poll import Poll
-from poll.libs.poll.poll_view import PollView
+from poll.libs.objects.poll.poll_view import PollView
 from tests.base import BotTest
 
 

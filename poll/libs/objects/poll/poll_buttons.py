@@ -2,8 +2,8 @@ import discord
 
 from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.poll.poll_embedding import get_players_embed
 from poll.libs.objects.poll.poll_votes import PollVotes
-from poll.libs.poll.poll_embedding import get_players_embed
 
 
 class PollButton(discord.ui.Button):

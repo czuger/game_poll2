@@ -11,9 +11,9 @@ from poll.libs.objects.admin import is_super_admin
 from poll.libs.objects.database import DbConnector
 from poll.libs.objects.poll.poll import Poll
 from poll.libs.objects.poll.poll_base import PollNotFound
+from poll.libs.objects.poll.poll_embedding import get_players_embed
+from poll.libs.objects.poll.poll_view import PollView
 from poll.libs.objects.poll.poll_votes import PollVotes
-from poll.libs.poll.poll_embedding import get_players_embed
-from poll.libs.poll.poll_view import PollView
 
 poll_logger = logging.getLogger(POLLS_LOG_NAME)
 

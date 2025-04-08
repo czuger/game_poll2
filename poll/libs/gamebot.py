@@ -6,10 +6,10 @@ from discord.ext import tasks
 
 from poll.libs.cogs.admin_cog import AdminManagementCog
 from poll.libs.cogs.games_cog import GamesCog
+from poll.libs.cogs.poll_cog import PollCog
 from poll.libs.misc.bot.schedule_poll import check_schedules_for_polls
 from poll.libs.objects.poll import Poll
-from poll.libs.cogs.poll_cog import PollCog
-from poll.libs.poll.poll_view import PollView
+from poll.libs.objects.poll.poll_view import PollView
 
 logger = logging.getLogger(__name__)
 
