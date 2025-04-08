@@ -1,0 +1,214 @@
+{
+    "games": {
+        "la_guerre_de_l_anneau": {
+            "key": "la_guerre_de_l_anneau",
+            "long": "La Guerre de l'Anneau",
+            "short": "La Guerre de l'Anneau",
+            "type": "Board"
+        },
+        "twilight_imperium": {
+            "key": "twilight_imperium",
+            "long": "Twilight Imperium",
+            "short": "Twilight Imperium",
+            "type": "Board"
+        },
+        "dune": {
+            "key": "dune",
+            "long": "Dune",
+            "short": "Dune",
+            "type": "Board"
+        },
+        "la_qu_te_des_terres_du_milieu": {
+            "key": "la_qu_te_des_terres_du_milieu",
+            "long": "La Qu\u00eate des Terres du Milieu",
+            "short": "La Qu\u00eate des Terres du Milieu",
+            "type": "Board"
+        },
+        "ave_tenebrae": {
+            "key": "ave_tenebrae",
+            "long": "Ave Tenebrae",
+            "short": "Ave Tenebrae",
+            "type": "Board"
+        },
+        "firefly": {
+            "key": "firefly",
+            "long": "Firefly",
+            "short": "Firefly",
+            "type": "Board"
+        },
+        "western_legends": {
+            "key": "western_legends",
+            "long": "Western legends",
+            "short": "Western legends",
+            "type": "Board"
+        },
+        "sw_legion": {
+            "key": "sw_legion",
+            "long": "Star wars legion",
+            "short": "SW legion",
+            "type": "Miniatures"
+        },
+        "lion_rampant": {
+            "key": "lion_rampant",
+            "long": "Lion rampant",
+            "short": "Lion rampant",
+            "type": "Miniatures"
+        },
+        "dracula_s_america": {
+            "key": "dracula_s_america",
+            "long": "Dracula's america",
+            "short": "Dracula's america",
+            "type": "Miniatures"
+        },
+        "blitzkrieg": {
+            "key": "blitzkrieg",
+            "long": "Blitzkrieg",
+            "short": "Blitzkrieg",
+            "type": "Miniatures"
+        },
+        "principles_of_war": {
+            "key": "principles_of_war",
+            "long": "Principles of war",
+            "short": "Principles of war",
+            "type": "Miniatures"
+        },
+        "mousquets_et_tomahawks": {
+            "key": "mousquets_et_tomahawks",
+            "long": "Mousquets et Tomahawks",
+            "short": "Mousquets et Tomahawks",
+            "type": "Miniatures"
+        },
+        "saga": {
+            "key": "saga",
+            "long": "Saga",
+            "short": "Saga",
+            "type": "Miniatures",
+            "default": true
+        },
+        "dragon_rampant": {
+            "key": "dragon_rampant",
+            "long": "Dragon rampant",
+            "short": "Dragon rampant",
+            "type": "Miniatures"
+        },
+        "asoif": {
+            "key": "asoif",
+            "long": "A song of ice and fire",
+            "short": "ASOIF",
+            "type": "Miniatures"
+        },
+        "core_space": {
+            "key": "core_space",
+            "long": "Core space",
+            "short": "Core space",
+            "type": "Miniatures"
+        },
+        "malifaux": {
+            "key": "malifaux",
+            "long": "Malifaux",
+            "short": "Malifaux",
+            "type": "Miniatures",
+            "default": true
+        },
+        "batailles_empire": {
+            "key": "batailles_empire",
+            "long": "Batailles empire",
+            "short": "Batailles empire",
+            "type": "Miniatures"
+        },
+        "savage_core": {
+            "key": "savage_core",
+            "long": "Savage core",
+            "short": "Savage core",
+            "type": "Miniatures"
+        },
+        "kh_rn_ages": {
+            "key": "kh_rn_ages",
+            "long": "Kh\u00e2rn Ages",
+            "short": "Kh\u00e2rn Ages",
+            "type": "Miniatures"
+        },
+        "congo": {
+            "key": "congo",
+            "long": "Congo",
+            "short": "Congo",
+            "type": "Miniatures"
+        },
+        "bolt_action": {
+            "key": "bolt_action",
+            "long": "Bolt action",
+            "short": "Bolt action",
+            "type": "Miniatures",
+            "default": true
+        },
+        "sw_shatterpoint": {
+            "key": "sw_shatterpoint",
+            "long": "Star wars shatterpoint",
+            "short": "SW shatterpoint",
+            "type": "Miniatures"
+        },
+        "stargrave": {
+            "key": "stargrave",
+            "long": "Stargrave",
+            "short": "Stargrave",
+            "type": "Miniatures"
+        },
+        "blood_red_skies": {
+            "key": "blood_red_skies",
+            "long": "Blood red skies",
+            "short": "Blood red skies",
+            "type": "Miniatures"
+        },
+        "sw_armada": {
+            "key": "sw_armada",
+            "long": "Star wars armada",
+            "short": "SW armada",
+            "type": "Miniatures"
+        },
+        "adg": {
+            "key": "adg",
+            "long": "Art de la guerre",
+            "short": "ADG",
+            "type": "Miniatures",
+            "default": true
+        },
+        "gang_of_rome": {
+            "key": "gang_of_rome",
+            "long": "Gang of Rome",
+            "short": "Gang of Rome",
+            "type": "Miniatures"
+        },
+        "frostgrave": {
+            "key": "frostgrave",
+            "long": "Frostgrave",
+            "short": "Frostgrave",
+            "type": "Miniatures",
+            "default": true
+        },
+        "jugula": {
+            "key": "jugula",
+            "long": "Jugula",
+            "short": "Jugula",
+            "type": "Miniatures"
+        },
+        "briskars": {
+            "key": "briskars",
+            "long": "Briskars",
+            "short": "Briskars",
+            "type": "Miniatures"
+        },
+        "guildball": {
+            "key": "guildball",
+            "long": "Guildball",
+            "short": "Guildball",
+            "type": "Miniatures"
+        }
+    },
+    "poll_default": [
+        "adg",
+        "bolt_action",
+        "frostgrave",
+        "malifaux",
+        "saga"
+    ]
+}

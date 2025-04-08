@@ -41,6 +41,9 @@ class GuildOrmObject(Document):
     # The current games available on the guild
     games: list = field(default_factory=lambda: game_module.default_games)
 
+    # The games that will be added when a new poll is created
+    poll_default_games: list = field(default_factory=lambda: game_module.default_games)
+
     # The votes count (game_key, votes)
     total_votes_data: dict[str, VotesData] = field(default_factory=lambda: {})
 

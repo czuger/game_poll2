@@ -59,3 +59,13 @@ async def get_game(game_key: str) -> GameOrmObject:
         games_cache[game_key] = game
 
     return game
+
+
+async def get_game_short(game_key: str) -> str:
+    game = await get_game(game_key)
+    return game.short
+
+
+async def get_game_long(game_key: str) -> str:
+    game = await get_game(game_key)
+    return game.long

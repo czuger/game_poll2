@@ -4,8 +4,8 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from poll.libs.misc.project_root import find_project_root
-from poll.orm import GuildOrmObject
 from poll.orm.game_orm_object import GameOrmObject
+from poll.orm.guild_orm_object import GuildOrmObject
 from poll.orm.poll_orm_object import PollOrmObject
 
 

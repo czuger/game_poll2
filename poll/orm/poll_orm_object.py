@@ -1,10 +1,14 @@
+import copy
 from dataclasses import field
 from datetime import datetime
+from enum import Enum, auto
 from typing import Optional
 
 import discord
 from beanie import Document
 from pydantic import BaseModel
+
+from poll.orm.guild_orm_object import GuildOrmObject
 
 default_misc = {"schedule": None, "last_schedule": datetime.now()}
 
@@ -22,16 +26,34 @@ OTHER_BUTTONS = {
             "style": discord.ButtonStyle.grey, "action": "add_game"},
 }
 
+MAX_ROWS = 5
+MAX_COLS = 5
+
 
 class Schedule(BaseModel):
-    schedule: Optional[int] = None
-    last_schedule: datetime = datetime.now()
+    schedule_day: int
+    schedule_hour: int
+
+    last_schedule: Optional[datetime] = None
 
 
-class GameObject(BaseModel):
+class Votes(BaseModel):
     votes: list = field(default_factory=lambda: [])
     votes_count: int = 0
     last_vote: Optional[datetime] = None
+
+
+class ButtonType(Enum):
+    """Enum representing button types: game or other."""
+    GAME = auto()
+    OTHER = auto()
+
+
+class ButtonObject(BaseModel):
+    object_key: str
+    object_type: ButtonType
+
+    votes: Votes = field(default_factory=lambda: Votes())
 
 
 class PollOrmObject(Document):
@@ -44,13 +66,15 @@ class PollOrmObject(Document):
     """
     key: str
 
-    # Game key, game object
-    games: dict[str, GameObject] = field(default_factory=lambda: {})
+    default_games: list = field(default_factory=lambda: [])
 
-    # Button id, game_key
-    games_buttons: dict[str, str] = field(default_factory=lambda: {})
+    # Buttons data
+    buttons: dict[str, ButtonObject] = field(default_factory=lambda: {})
 
-    schedule: Schedule
+    # Buttons rows for display only
+    buttons_rows: list = field(default_factory=lambda: [])
+
+    schedule: Optional[Schedule] = None
 
     # If we need optional other buttons, use booleans. If no boolean associated, then the buttons are mandatory.
     # others: boolean
@@ -58,6 +82,12 @@ class PollOrmObject(Document):
 
     class Settings:
         name = "polls"
+
+    async def set_default_games(self, guild: GuildOrmObject):
+        """To be called when creating a new poll"""
+        self.default_games = copy.copy(guild.poll_default_games)
+
+        await self.save()
 
     def get_players_count(self):
         """Required to alert people about the size of the room"""
@@ -68,24 +98,3 @@ class PollOrmObject(Document):
                 players_set.add(voter)
 
         return len(players_set)
-
-    async def add_vote(self, button_key: str, user_key: str):
-        game_key = self.games_buttons[button_key]
-        current_votes = self.games[game_key].votes
-
-        if user_key not in current_votes:
-            self.games[game_key].votes.append(user_key)
-            self.games[game_key].votes_count += 1
-            self.games[game_key].last_vote = datetime.now()
-
-            await self.save()
-
-    async def remove_vote(self, button_key: str, user_key: str):
-        game_key = self.games_buttons[button_key]
-        current_votes = self.games[game_key].votes
-
-        if user_key in current_votes:
-            self.games[game_key].votes.remove(user_key)
-            self.games[game_key].votes_count -= 1
-
-            await self.save()
