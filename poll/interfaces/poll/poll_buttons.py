@@ -1,6 +1,6 @@
 import discord
 
-from poll.libs.interfaces.poll.poll_embedding import get_players_embed
+from poll.interfaces.poll.poll_embedding import get_players_embed
 from poll.orm.helpers.polls.rebuild_buttons import PollButtonElement
 from poll.orm.helpers.polls.votes import toggle_vote
 from poll.orm.poll_orm_object import PollOrmObject
@@ -22,7 +22,7 @@ class PollButton(discord.ui.Button):
         """
 
         super().__init__(label=button.short_str, custom_id=button.key, emoji=button.emoji,
-                         style=discord.ButtonStyle(str(button.style)), row=button.row)
+                         style=discord.ButtonStyle(button.style), row=button.row)
         self.poll = poll
 
     async def callback(self, interaction: discord.Interaction):

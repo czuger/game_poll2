@@ -4,11 +4,11 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 
-from poll.libs.cogs.admin_cog import AdminManagementCog
-from poll.libs.cogs.games_cog import GamesCog
-from poll.libs.cogs.poll_cog import PollCog
-from poll.libs.interfaces.poll import Poll
-from poll.libs.interfaces.poll import PollView
+from poll.cogs import AdminManagementCog
+from poll.cogs.games_cog import GamesCog
+from poll.cogs.poll_cog import PollCog
+from poll.interfaces.poll import Poll
+from poll.interfaces.poll import PollView
 from poll.libs.misc.bot.schedule_poll import check_schedules_for_polls
 
 logger = logging.getLogger(__name__)

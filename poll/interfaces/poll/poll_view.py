@@ -2,7 +2,7 @@ import logging
 
 import discord
 
-from poll.libs.interfaces.poll.poll_buttons import PollButton
+from poll.interfaces.poll.poll_buttons import PollButton
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 from poll.orm.poll_orm_object import PollOrmObject
 

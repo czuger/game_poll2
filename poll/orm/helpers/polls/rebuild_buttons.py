@@ -17,7 +17,7 @@ class PollButtonElement(BaseModel):
     row: int
     short_str: str
     emoji: Optional[str] = None
-    style: Optional[int] = None
+    style: Optional[int] = discord.ButtonStyle.grey.value
 
 
 async def build_poll_button_element(button_type: ButtonType, key: str, row: int) -> PollButtonElement:

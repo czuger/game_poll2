@@ -1,11 +1,11 @@
 from discord.ext import commands
 from discord.ext.commands import Context
 
-from poll.libs.interfaces.add_game.add_temporary_game import GameAlreadyExist
-from poll.libs.interfaces.add_game.add_temporary_game import add_temporary_game
+from poll.interfaces.add_game import GameAlreadyExist
+from poll.interfaces.add_game import add_temporary_game
+from poll.libs.misc.logging.command_logger import log_command_call
 from poll.libs.objects.database import DbConnector
 from poll.libs.objects.guild import Guild
-from poll.libs.misc.logging.command_logger import log_command_call
 
 
 class GamesCog(commands.Cog, name="jeux"):

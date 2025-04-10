@@ -2,11 +2,11 @@ import logging
 
 from discord.ext import commands
 
-from poll.libs.interfaces.poll import Poll
-from poll.libs.interfaces.poll import PollNotFound
-from poll.libs.interfaces.poll import PollView
-from poll.libs.interfaces.poll import PollVotes
-from poll.libs.interfaces.poll import get_players_embed
+from poll.interfaces.poll import Poll
+from poll.interfaces.poll import PollNotFound
+from poll.interfaces.poll import PollView
+from poll.interfaces.poll import PollVotes
+from poll.interfaces.poll import get_players_embed
 from poll.libs.misc.bot.schedule_poll import schedule_poll
 from poll.libs.misc.constants import DEFAULT_DELETE_AFTER
 from poll.libs.misc.logging.command_logger import log_command_call

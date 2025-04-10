@@ -3,7 +3,7 @@ from unittest import IsolatedAsyncioTestCase
 
 import discord
 
-from poll.libs.interfaces.poll.poll_view import PollView
+from poll.interfaces.poll.poll_view import PollView
 from tests.base import BotTest
 
 

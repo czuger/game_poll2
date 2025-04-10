@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, Mock
 import discord
 from discord import Guild
 
-from poll.libs.interfaces.poll.poll_embedding import get_players_embed
+from poll.interfaces.poll.poll_embedding import get_players_embed
 from poll.orm.helpers.polls.rebuild_buttons import rebuild_buttons
 from poll.orm.helpers.polls.votes import toggle_vote
 from tests.base import BotTest

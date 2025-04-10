@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 import discord
 
-from poll.libs.interfaces.poll import Poll
-from poll.libs.interfaces.poll import PollVotes
+from poll.interfaces.poll import Poll
+from poll.interfaces.poll import PollVotes
 from tests.base import BotTest
 
 

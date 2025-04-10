@@ -7,9 +7,9 @@ from unittest.mock import Mock
 import discord
 from discord import Interaction, Message, TextChannel, InteractionResponse
 
-from poll.libs.interfaces.add_game.add_to_poll_button import AddToPollButton
-from poll.libs.interfaces.helpers.buttons import make_btn_key
-from poll.libs.interfaces.poll import Poll
+from poll.interfaces.add_game.add_to_poll_button import AddToPollButton
+from poll.interfaces.helpers.buttons import make_btn_key
+from poll.interfaces.poll import Poll
 from poll.libs.objects.guild import Guild
 from tests.base import BotTest
 
