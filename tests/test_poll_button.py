@@ -6,8 +6,8 @@ from unittest.mock import Mock
 
 import discord
 
-from poll.libs.objects.poll.poll import Poll
-from poll.libs.objects.poll.poll_buttons import PollButton
+from poll.libs.interfaces.poll import Poll
+from poll.libs.interfaces.poll import PollButton
 from tests.base import BotTest
 
 

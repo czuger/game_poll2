@@ -1,11 +1,10 @@
 import unittest
-import asyncio
 from unittest.mock import Mock
 
 import discord
 
-from poll.libs.objects.poll.poll import Poll
-from poll.libs.objects.poll.poll_votes import PollVotes
+from poll.libs.interfaces.poll import Poll
+from poll.libs.interfaces.poll import PollVotes
 from tests.base import BotTest
 
 
@@ -83,7 +82,6 @@ class TestVotersEngine(unittest.IsolatedAsyncioTestCase, unittest.TestCase, BotT
         votes = self.voters_engine.get_votes()
 
         self.assertIn("my_user", votes[Poll.GAMES_KEY]["adg"])
-
 
 
 if __name__ == "__main__":

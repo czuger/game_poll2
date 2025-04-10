@@ -7,11 +7,11 @@ from discord import TextChannel, User
 from discord.ext.commands import Context, Author
 
 from poll.libs.cogs.poll_cog import PollCog
+from poll.libs.interfaces.poll import Poll
+from poll.libs.interfaces.poll import PollVotes
 from poll.libs.misc.constants import KEY
 from poll.libs.objects.admin import is_super_admin, is_admin
 from poll.libs.objects.guild import Guild
-from poll.libs.objects.poll.poll import Poll
-from poll.libs.objects.poll.poll_votes import PollVotes
 from poll.libs.objects.voters_engine import ElementNotInVotesDict
 from tests.base import BotTest
 

@@ -26,7 +26,17 @@ async def reset_votes(poll: PollOrmObject, guild: GuildOrmObject) -> Tuple[PollO
     return poll, guild
 
 
-async def add_vote(poll: PollOrmObject, button_key: str, user_key: str) -> PollOrmObject:
+async def toggle_vote(poll: PollOrmObject, button_key: str, user_key: int) -> PollOrmObject:
+    button = poll.buttons[button_key]
+    current_votes = button.votes.votes
+
+    if user_key not in current_votes:
+        return await add_vote(poll, button_key, user_key)
+    else:
+        return await remove_vote(poll, button_key, user_key)
+
+
+async def add_vote(poll: PollOrmObject, button_key: str, user_key: int) -> PollOrmObject:
     button = poll.buttons[button_key]
     current_votes = button.votes.votes
 
@@ -40,7 +50,7 @@ async def add_vote(poll: PollOrmObject, button_key: str, user_key: str) -> PollO
     return poll
 
 
-async def remove_vote(poll: PollOrmObject, button_key: str, user_key: str) -> PollOrmObject:
+async def remove_vote(poll: PollOrmObject, button_key: str, user_key: int) -> PollOrmObject:
     button = poll.buttons[button_key]
     current_votes = button.votes.votes
 

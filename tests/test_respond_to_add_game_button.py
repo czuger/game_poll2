@@ -7,9 +7,9 @@ from unittest.mock import Mock
 import discord
 
 from poll.libs.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
-from poll.libs.objects.guild import Guild
 from poll.libs.interfaces.helpers.buttons import make_btn_key
-from poll.libs.objects.poll.poll import Poll
+from poll.libs.interfaces.poll import Poll
+from poll.libs.objects.guild import Guild
 from tests.base import BotTest
 
 

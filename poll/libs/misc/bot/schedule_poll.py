@@ -2,11 +2,11 @@ import logging
 from datetime import datetime
 from datetime import timedelta
 
+from poll.libs.interfaces.poll import Poll
+from poll.libs.interfaces.poll import PollView
+from poll.libs.interfaces.poll import get_players_embed
 from poll.libs.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
 from poll.libs.objects.database import DbConnector
-from poll.libs.objects.poll.poll import Poll
-from poll.libs.objects.poll.poll_embedding import get_players_embed
-from poll.libs.objects.poll.poll_view import PollView
 
 logger = logging.getLogger(SCHEDULE_POLL_LOG_NAME)
 

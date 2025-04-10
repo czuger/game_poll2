@@ -1,35 +1,30 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import MagicMock
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 import discord
+from discord import Guild
 
-from poll.libs.objects.poll.poll import Poll
-from poll.libs.objects.poll.poll_embedding import get_players_embed
-from poll.libs.objects.poll.poll_votes import PollVotes
+from poll.libs.interfaces.poll.poll_embedding import get_players_embed
+from poll.orm.helpers.polls.rebuild_buttons import rebuild_buttons
+from poll.orm.helpers.polls.votes import toggle_vote
 from tests.base import BotTest
 
 
 class TestPollEmbedding(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
-    def setUp(self):
-        self.set_up()
+    async def asyncSetUp(self):
+        await self.set_up()
 
     async def test_poll_embedding(self):
-        user = MagicMock(display_name="foo")
-        discord_guild = MagicMock(id=123456, get_member=Mock())
+        user = MagicMock(id=654321, display_name="foo")
+        discord_guild = MagicMock(spec=Guild, id=123456, get_member=Mock())
         discord_guild.get_member.return_value = user
-        discord_channel = MagicMock(id=123456, guild=discord_guild)
 
-        poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
+        self.poll = await rebuild_buttons(self.poll)
 
-        # Embed with at least one user
-        button_id = list(poll.games.keys())[0]
-        user = MagicMock(id=654321)
+        button_key_1 = list(self.poll.buttons.keys())[0]
+        await toggle_vote(self.poll, button_key_1, user.id)
 
-        ve = PollVotes(poll)
-        await ve.toggle_vote(user, button_id)
-
-        embed = await get_players_embed(self.db, discord_channel)
+        embed = await get_players_embed(self.poll, discord_guild)
         self.assertIsInstance(embed, discord.Embed)

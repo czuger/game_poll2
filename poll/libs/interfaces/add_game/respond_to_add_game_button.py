@@ -3,10 +3,10 @@ import logging
 import discord
 
 from poll.libs.interfaces.add_game.add_game_to_poll_view import AddToPollView
-from poll.libs.objects.guild import Guild
 from poll.libs.interfaces.helpers.views import sort_and_split_by_chunks
+from poll.libs.interfaces.poll import Poll
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
-from poll.libs.objects.poll.poll import Poll
+from poll.libs.objects.guild import Guild
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 

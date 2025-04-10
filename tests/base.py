@@ -1,34 +1,40 @@
 from poll.libs.objects.database import DbConnector
+from poll.orm.game_orm_object import check_games_at_startup
+from poll.orm.guild_orm_object import GuildOrmObject
+from poll.orm.helpers.polls.misc import set_default_games
+from poll.orm.poll_orm_object import PollOrmObject
 
 
 class BotTest:
 
     def __init__(self):
         self.db = None
+        self.guild = None
+        self.poll = None
 
     async def set_up(self):
         self.db = DbConnector()
         await self.db.connect("games_database_tests")
         await self.db.clear_db()
 
-        # if os.path.exists("fixtures"):
-        #     fixtures_path = "fixtures"
-        # else:
-        #     fixtures_path = "tests/fixtures"
+        await check_games_at_startup()
 
-        # for root, dirs, files in os.walk(fixtures_path):
-        #     for file in files:
-        #         if file.endswith(".json"):
-        #             file_path = os.path.join(root, file)
-        #             with open(file_path, 'r') as json_file:
-        #                 try:
-        #                     json_data = json.load(json_file)
-        #                     self.db.games.insert_one(json_data)
-        #                 except Exception as e:
-        #                     print(f"Error inserting data from {file_path}: {str(e)}")
+        self.guild = await GuildOrmObject.find_one(PollOrmObject.key == "123456")
+        self.poll = await PollOrmObject.find_one(PollOrmObject.key == "123456")
+
+        if not self.guild:
+            self.guild = GuildOrmObject(key="123456")
+            await self.guild.insert()
+
+        if not self.poll:
+            self.poll = PollOrmObject(key="123456")
+            await self.poll.insert()
+
+        self.poll = await set_default_games(self.poll, self.guild)
 
     def close(self):
         self.db.close()
+        self.db = None
 
     async def set_admin(self, user_id: int, super_admin=False):
         await self.db.admins.update_one(

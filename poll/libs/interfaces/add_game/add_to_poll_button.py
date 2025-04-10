@@ -3,9 +3,9 @@ import logging
 import discord
 
 from poll.libs.interfaces.helpers.buttons import get_key_from_btn
+from poll.libs.interfaces.poll import Poll
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
 from poll.libs.objects.guild import Guild
-from poll.libs.objects.poll.poll import Poll
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 
@@ -23,7 +23,7 @@ class AddToPollButton(discord.ui.Button):
         self.poll_message = poll_message
 
     async def callback(self, interaction: discord.Interaction):
-        from poll.libs.objects.poll.poll_view import PollView
+        from poll.libs.interfaces.poll import PollView
 
         logger.debug(f"In callback : {self.label}, {self.custom_id}")
 
