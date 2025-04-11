@@ -2,8 +2,8 @@ from discord.ext import commands
 from discord.ext.commands import Context
 from poll.libs.objects.guild import Guild
 
-from poll.libs.misc.logging.command_logger import log_command_call
-from poll.libs.objects.admin import is_super_admin
+from poll.commands_response.admin import is_super_admin
+from poll.misc.logging.command_logger import log_command_call
 from poll.orm.database import DbConnector
 
 

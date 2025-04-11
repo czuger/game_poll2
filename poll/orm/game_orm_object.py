@@ -3,7 +3,7 @@ from typing import Tuple
 
 from beanie import Document, Indexed
 
-from poll.libs.misc.project_root import find_project_root
+from poll.misc.project_root import find_project_root
 
 default_games = None
 games_cache = {}

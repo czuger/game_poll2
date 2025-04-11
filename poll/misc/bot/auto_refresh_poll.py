@@ -5,7 +5,7 @@ from poll.interfaces.poll import Poll
 from poll.interfaces.poll import PollNotFound
 from poll.interfaces.poll import PollView
 from poll.interfaces.poll import get_players_embed
-from poll.libs.misc.logging.set_logging import AUTO_REFRESH_LOG_NAME
+from poll.misc.logging.set_logging import AUTO_REFRESH_LOG_NAME
 
 logger = logging.getLogger(AUTO_REFRESH_LOG_NAME)
 

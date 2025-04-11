@@ -2,12 +2,12 @@ import logging
 
 from discord.ext import commands
 
-from poll.libs.misc.logging.set_logging import ADMINS_LOG_NAME
-from poll.libs.objects.admin import downgrade
-from poll.libs.objects.admin import grant
-from poll.libs.objects.admin import revoke
-from poll.libs.objects.admin import super_admin
-from poll.libs.objects.admin import upgrade
+from poll.commands_response.admin import downgrade
+from poll.commands_response.admin import grant
+from poll.commands_response.admin import revoke
+from poll.commands_response.admin import super_admin
+from poll.commands_response.admin import upgrade
+from poll.misc import ADMINS_LOG_NAME
 from poll.orm.database import DbConnector
 
 DELETE_TIME = 15

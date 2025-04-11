@@ -4,13 +4,13 @@ from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
 from unittest.mock import Mock
 
-from poll.libs.objects.admin import downgrade
-from poll.libs.objects.admin import grant
-from poll.libs.objects.admin import is_admin
-from poll.libs.objects.admin import is_super_admin
-from poll.libs.objects.admin import revoke
-from poll.libs.objects.admin import super_admin
-from poll.libs.objects.admin import upgrade
+from poll.commands_response.admin import downgrade
+from poll.commands_response.admin import grant
+from poll.commands_response.admin import is_admin
+from poll.commands_response.admin import is_super_admin
+from poll.commands_response.admin import revoke
+from poll.commands_response.admin import super_admin
+from poll.commands_response.admin import upgrade
 from tests.base import BotTest
 
 

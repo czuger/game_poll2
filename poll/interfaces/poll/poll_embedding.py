@@ -5,17 +5,16 @@ This module mainly create the content of the poll. The part that show the status
 import logging
 
 import discord
-from discord import Guild
 
-from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
-from poll.orm.helpers.polls.get_poll_embedded_lines import get_poll_embedded_lines
+from poll.interfaces.poll.helpers.get_poll_embedded_lines import get_poll_embedded_lines
+from poll.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.misc.params_bundle import ParamsBundle
 from poll.orm.helpers.polls.misc import get_players_count
-from poll.orm.poll_orm_object import PollOrmObject
 
 logger = logging.getLogger(POLLS_LOG_NAME)
 
 
-async def get_players_embed(poll: PollOrmObject, guild: Guild):
+async def get_players_embed(params_b: ParamsBundle):
     """
     Create the status content of the poll.
       * Show the title
@@ -26,10 +25,10 @@ async def get_players_embed(poll: PollOrmObject, guild: Guild):
     discord.Embed
         The embed object displaying the poll selections.
     """
-    players_amount = f"Environs {get_players_count(poll)} joueurs prévus"
+    players_amount = f"Environs {get_players_count(params_b.poll)} joueurs prévus"
     embed = discord.Embed(title="A quoi allez vous jouer ?", color=discord.Color.blue(), description=players_amount)
 
-    for line in await get_poll_embedded_lines(poll, guild):
+    for line in await get_poll_embedded_lines(params_b):
         embed.add_field(name="", value=line, inline=False)
 
     return embed

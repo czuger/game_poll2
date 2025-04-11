@@ -1,10 +1,10 @@
 import json
 import logging.handlers
 
-from poll.libs.gamebot import GameBot
-from poll.libs.misc.bot.auto_refresh_poll import auto_refresh_poll
-from poll.libs.misc.logging.set_logging import set_logging
-from poll.libs.misc.project_root import find_project_root
+from poll.gamebot import GameBot
+from poll.misc import auto_refresh_poll
+from poll.misc import find_project_root
+from poll.misc import set_logging
 from poll.orm.database import DbConnector
 from poll.orm.redis import redis_connection
 

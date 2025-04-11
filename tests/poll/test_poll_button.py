@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, AsyncMock
 import discord
 from discord import User, Guild, Interaction
 
-from poll.interfaces.poll.poll_buttons import PollButton
-from poll.orm.helpers.polls.rebuild_buttons import PollButtonElement
+from poll.interfaces.poll.helpers.build_buttons_list import PollButtonElement
+from poll.interfaces.poll.poll_button import PollButton
 from poll.orm.poll_orm_object import PollOrmObject
 from tests.base import BotTest
 

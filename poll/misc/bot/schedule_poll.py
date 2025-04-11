@@ -5,7 +5,7 @@ from datetime import timedelta
 from poll.interfaces.poll import Poll
 from poll.interfaces.poll import PollView
 from poll.interfaces.poll import get_players_embed
-from poll.libs.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
+from poll.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
 from poll.orm.database import DbConnector
 
 logger = logging.getLogger(SCHEDULE_POLL_LOG_NAME)

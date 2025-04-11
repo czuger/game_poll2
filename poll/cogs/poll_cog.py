@@ -2,14 +2,14 @@ import logging
 
 from discord.ext import commands
 
+from poll.commands_response.admin import is_admin
+from poll.commands_response.admin import is_super_admin
+from poll.gamebot import GameBot
 from poll.interfaces.poll.poll_view import PollView
-from poll.libs.gamebot import GameBot
-from poll.libs.misc.bot.schedule_poll import schedule_poll
-from poll.libs.misc.constants import DEFAULT_DELETE_AFTER
-from poll.libs.misc.logging.command_logger import log_command_call
-from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
-from poll.libs.objects.admin import is_admin
-from poll.libs.objects.admin import is_super_admin
+from poll.misc import DEFAULT_DELETE_AFTER
+from poll.misc import POLLS_LOG_NAME
+from poll.misc import schedule_poll
+from poll.misc.logging.command_logger import log_command_call
 from poll.orm.database import DbConnector
 from poll.orm.poll_orm_object import PollOrmObject
 

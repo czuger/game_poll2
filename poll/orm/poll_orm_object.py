@@ -2,30 +2,12 @@ from dataclasses import field
 from datetime import datetime
 from typing import Optional
 
-import discord
 from beanie import Document
 from pydantic import BaseModel
 
-from poll.orm.helpers.polls.build_poll_button_element import ButtonType
+from poll.interfaces.poll.helpers.build_poll_button_element import ButtonType
 
 default_misc = {"schedule": None, "last_schedule": datetime.now()}
-
-OTHER_BUTTONS = {
-    "present_with_key": {"key": "present_with_key", "short": "Clés", "long": "Présent avec les clés", "emoji": "🔑",
-                         "style": discord.ButtonStyle.green},
-    # "tournament_orga": {"key": "tournament_orga", "short": "Tournoi/Orga",
-    #                     "long": "En tournoi ou en orga de tournoi", "emoji": "🍺",
-    #                     "style": discord.ButtonStyle.success},
-    "other": {"key": "other", "short": "Autre", "long": "Autre activité", "emoji": "♟️",
-              "style": discord.ButtonStyle.blurple},
-    "away": {"key": "away", "short": "Absent", "long": "Absent", "emoji": "⛱️",
-             "style": discord.ButtonStyle.blurple},
-    "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🧩",
-            "style": discord.ButtonStyle.grey, "action": "add_game"},
-}
-
-MAX_ROWS = 4
-MAX_COLS = 5
 
 
 class Schedule(BaseModel):
@@ -41,7 +23,7 @@ class Votes(BaseModel):
     last_vote: Optional[datetime] = None
 
 
-class ButtonObject(BaseModel):
+class PollElement(BaseModel):
     object_key: str
     object_type: ButtonType
 
@@ -58,13 +40,7 @@ class PollOrmObject(Document):
     """
     key: str
 
-    selected_games: list = field(default_factory=lambda: [])
-
-    # Buttons data
-    buttons: dict[str, ButtonObject] = field(default_factory=lambda: {})
-
-    # Buttons rows for display only
-    buttons_for_view: list = field(default_factory=lambda: [])
+    poll_elements: dict[str, PollElement] = field(default_factory=lambda: {})
 
     schedule: Optional[Schedule] = None
 

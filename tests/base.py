@@ -1,8 +1,8 @@
+from poll.misc.params_bundle import ParamsBundle
 from poll.orm.database import DbConnector
 from poll.orm.game_orm_object import check_games_at_startup
 from poll.orm.guild_orm_object import GuildOrmObject
 from poll.orm.helpers.polls.misc import set_default_games
-from poll.orm.helpers.polls.rebuild_buttons import rebuild_buttons
 from poll.orm.poll_orm_object import PollOrmObject
 
 
@@ -12,6 +12,7 @@ class BotTest:
         self.db = None
         self.guild = None
         self.poll = None
+        self.params_b = None
 
     async def set_up(self):
         self.db = DbConnector()
@@ -31,8 +32,8 @@ class BotTest:
             self.poll = PollOrmObject(key="123456")
             await self.poll.insert()
 
-        self.poll = await set_default_games(self.poll, self.guild)
-        self.poll = await rebuild_buttons(self.poll)
+        self.params_b = ParamsBundle(poll=self.poll, guild=self.guild)
+        self.params_b = await set_default_games(ParamsBundle(poll=self.poll, guild=self.guild))
 
     def close(self):
         self.db.close()

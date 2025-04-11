@@ -1,4 +1,0 @@
-KEY = "key"
-LONG_NAME = "long"
-
-DEFAULT_DELETE_AFTER = 120
