@@ -1,3 +1,4 @@
+import datetime
 import json
 from typing import Tuple
 
@@ -44,6 +45,9 @@ class GameOrmObject(Document):
     short: str
     long: str
     game_type: str
+
+    temporary: bool = False
+    add_date: datetime.datetime = None
 
     class Settings:
         name = "games"

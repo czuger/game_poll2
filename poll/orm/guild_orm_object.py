@@ -6,6 +6,7 @@ from beanie import Document, Indexed
 from pydantic import BaseModel
 
 import poll.orm.game_orm_object as game_module
+from poll.misc.project_root import find_project_root
 
 guild_cache = {}
 
