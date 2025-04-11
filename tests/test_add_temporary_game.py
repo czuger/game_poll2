@@ -2,8 +2,8 @@ import unittest
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
 
+from poll.commands_response import add_temporary_game
 from poll.interfaces.add_game import GameAlreadyExist
-from poll.interfaces.add_game import add_temporary_game
 from poll.interfaces.helpers import replace_spaces_and_non_ansi
 
 

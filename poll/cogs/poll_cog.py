@@ -2,18 +2,16 @@ import logging
 
 from discord.ext import commands
 
-from poll.interfaces.poll import Poll
-from poll.interfaces.poll import PollNotFound
-from poll.interfaces.poll import PollView
-from poll.interfaces.poll import PollVotes
-from poll.interfaces.poll import get_players_embed
+from poll.interfaces.poll.poll_view import PollView
+from poll.libs.gamebot import GameBot
 from poll.libs.misc.bot.schedule_poll import schedule_poll
 from poll.libs.misc.constants import DEFAULT_DELETE_AFTER
 from poll.libs.misc.logging.command_logger import log_command_call
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
 from poll.libs.objects.admin import is_admin
 from poll.libs.objects.admin import is_super_admin
-from poll.libs.objects.database import DbConnector
+from poll.orm.database import DbConnector
+from poll.orm.poll_orm_object import PollOrmObject
 
 poll_logger = logging.getLogger(POLLS_LOG_NAME)
 
@@ -21,17 +19,17 @@ poll_logger = logging.getLogger(POLLS_LOG_NAME)
 class PollCog(commands.Cog, name="sondages"):
     """Commandes relatives aux sondages"""
 
-    def __init__(self, bot, db: DbConnector):
+    def __init__(self, bot: GameBot, db: DbConnector):
         self.bot = bot
         self.db = db
 
-    async def __show_poll(self, ctx: commands.Context, poll: Poll):
+    async def __show_poll(self, ctx: commands.Context, poll: PollOrmObject):
         """Display the poll information with an interactive view."""
         # Create a new PollView instance
         pv = PollView()
 
         # Initialize the view with the poll data from the database
-        await pv.initialize_view(self.db, poll)
+        await pv.initialize_view(self.bot.redis_connection, poll)
 
         # Generate the embed containing the player information
         embed = await get_players_embed(self.db, ctx.channel)

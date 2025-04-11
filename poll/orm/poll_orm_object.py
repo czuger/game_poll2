@@ -1,11 +1,12 @@
 from dataclasses import field
 from datetime import datetime
-from enum import Enum, auto
 from typing import Optional
 
 import discord
 from beanie import Document
 from pydantic import BaseModel
+
+from poll.orm.helpers.polls.build_poll_button_element import ButtonType
 
 default_misc = {"schedule": None, "last_schedule": datetime.now()}
 
@@ -38,12 +39,6 @@ class Votes(BaseModel):
     votes: list = field(default_factory=lambda: [])
     votes_count: int = 0
     last_vote: Optional[datetime] = None
-
-
-class ButtonType(Enum):
-    """Enum representing button types: game or other."""
-    GAME = auto()
-    OTHER = auto()
 
 
 class ButtonObject(BaseModel):

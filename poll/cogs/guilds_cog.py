@@ -1,10 +1,10 @@
 from discord.ext import commands
 from discord.ext.commands import Context
-
-from poll.libs.objects.admin import is_super_admin
-from poll.libs.objects.database import DbConnector
 from poll.libs.objects.guild import Guild
+
 from poll.libs.misc.logging.command_logger import log_command_call
+from poll.libs.objects.admin import is_super_admin
+from poll.orm.database import DbConnector
 
 
 class GuildsCog(commands.Cog, name="guildes"):

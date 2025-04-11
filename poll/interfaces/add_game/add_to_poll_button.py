@@ -1,36 +1,40 @@
 import logging
 
 import discord
+import redis
+from discord import Message
 
-from poll.interfaces.helpers.buttons import get_key_from_btn
-from poll.interfaces.poll import Poll
+from poll.interfaces.add_game.add_game_to_poll.add_game_to_poll import add_game_to_poll
+from poll.interfaces.poll.poll_view import PollView
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
-from poll.libs.objects.guild import Guild
+from poll.orm.helpers.polls.rebuild_buttons import PollButtonElement
+from poll.orm.poll_orm_object import PollOrmObject
+from poll.orm.redis import get_button_associated_key
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 
 
 class AddToPollButton(discord.ui.Button):
     """
-    This class create a button that will add a game in the poll
+    This the response to the add button in the AddGame view.
     """
 
-    def __init__(self, db, guild: Guild, poll: Poll, poll_message, label: str, custom_id: str, row: int):
-        super().__init__(label=label, custom_id=custom_id, row=row)
-        self.db = db
+    def __init__(self, redis_connection: redis.Redis, poll: PollOrmObject, poll_message: Message,
+                 button_element: PollButtonElement):
+        super().__init__(label=button_element.short_str, custom_id=button_element.key, row=button_element.row)
+
         self.poll = poll
-        self.guild = guild
         self.poll_message = poll_message
+        self.redis_connection = redis_connection
 
     async def callback(self, interaction: discord.Interaction):
-        from poll.interfaces.poll import PollView
 
         logger.debug(f"In callback : {self.label}, {self.custom_id}")
 
-        game_key = get_key_from_btn(self.custom_id)
+        game_key = await get_button_associated_key(self.redis_connection, self.custom_id)
         logger.debug(f"In AddToPollButton : game_key = {game_key}")
 
-        (was_added, long_name) = await self.poll.add_game(game_key)
+        (poll, guild, game_key) = await add_game_to_poll(self.poll, self.guild, game_key)
         if was_added:
             # Were we able to add the game ?
             pv = PollView()

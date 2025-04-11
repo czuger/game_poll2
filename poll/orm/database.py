@@ -15,16 +15,6 @@ class DbConnector:
 
     Attributes
     ----------
-    db : pymongo.database.Database
-        The database object.
-    games : pymongo.collection.Collection
-        The games collection in the database.
-    poll_instances : pymongo.collection.Collection
-        The polls collection in the database.
-    guilds : pymongo.collection.Collection
-        The guilds collection in the database.
-    admins : pymongo.collection.Collection
-        The admins collection in the database.
     db_connection : pymongo.MongoClient
         The MongoDB client connection.
     db_name : str
@@ -44,26 +34,8 @@ class DbConnector:
         """
         Initializes the DbConnector with default values.
         """
-        self.db = None
-        self.games = None
-        self.poll_instances = None
-        self.guilds = None
-        self.admins = None
-
         self.db_connection = None
         self.db_name = None
-
-    def __initialize_collections(self):
-        """
-        Initializes the collections in the database.
-        """
-        self.db = self.db_connection[self.db_name]
-
-        self.games = self.db["games"]
-        self.poll_instances = self.db["poll_instances"]
-        self.guilds = self.db["guilds"]
-        self.admins = self.db["admins"]
-        self.votes_history = self.db["votes_history"]
 
     async def connect(self, db_name="games_database"):
         """

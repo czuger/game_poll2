@@ -8,7 +8,7 @@ from poll.libs.objects.admin import grant
 from poll.libs.objects.admin import revoke
 from poll.libs.objects.admin import super_admin
 from poll.libs.objects.admin import upgrade
-from poll.libs.objects.database import DbConnector
+from poll.orm.database import DbConnector
 
 DELETE_TIME = 15
 logger = logging.getLogger(ADMINS_LOG_NAME)

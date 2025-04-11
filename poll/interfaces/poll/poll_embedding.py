@@ -8,7 +8,7 @@ import discord
 from discord import Guild
 
 from poll.libs.misc.logging.set_logging import POLLS_LOG_NAME
-from poll.orm.helpers.polls.get_poll_lines import get_poll_embedded_lines
+from poll.orm.helpers.polls.get_poll_embedded_lines import get_poll_embedded_lines
 from poll.orm.helpers.polls.misc import get_players_count
 from poll.orm.poll_orm_object import PollOrmObject
 

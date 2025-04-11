@@ -1,19 +1,22 @@
 import json
 import logging.handlers
 
-from poll.libs.objects.database import DbConnector
 from poll.libs.gamebot import GameBot
 from poll.libs.misc.bot.auto_refresh_poll import auto_refresh_poll
-from poll.libs.misc.bot.gpt_test import call_chatgpt_async
-from poll.libs.misc.project_root import find_project_root
 from poll.libs.misc.logging.set_logging import set_logging
+from poll.libs.misc.project_root import find_project_root
+from poll.orm.database import DbConnector
+from poll.orm.redis import redis_connection
 
 if __name__ == "__main__":
     set_logging()
 
     db = DbConnector()
     db.connect()
-    bot = GameBot(db)
+
+    redis_client = redis_connection()
+
+    bot = GameBot(db, redis_client)
 
 
     @bot.event
@@ -22,7 +25,6 @@ if __name__ == "__main__":
             return  # Ignore messages sent by the bot itself
 
         await auto_refresh_poll(db, message)
-        # await call_chatgpt_async(db, message, bot.gpt_key)
         await bot.process_commands(message)  # Process commands if there are any
 
 

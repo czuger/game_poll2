@@ -1,4 +1,5 @@
 import discord
+import redis
 
 from poll.interfaces.poll.poll_embedding import get_players_embed
 from poll.orm.helpers.polls.rebuild_buttons import PollButtonElement
@@ -11,7 +12,7 @@ class PollButton(discord.ui.Button):
     A class used to represent a poll button in a Discord UI.
     """
 
-    def __init__(self, poll: PollOrmObject, button: PollButtonElement):
+    def __init__(self, redis_connection: redis.Redis, poll: PollOrmObject, button: PollButtonElement):
         """
         Initializes the PollButton class with a database object, poll instance, and button properties.
 
@@ -22,8 +23,9 @@ class PollButton(discord.ui.Button):
         """
 
         super().__init__(label=button.short_str, custom_id=button.key, emoji=button.emoji,
-                         style=discord.ButtonStyle(button.style), row=button.row)
+                         style=discord.ButtonStyle(str(button.style)), row=button.row)
         self.poll = poll
+        self.redis_connection = redis_connection
 
     async def callback(self, interaction: discord.Interaction):
         """

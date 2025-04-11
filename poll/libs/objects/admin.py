@@ -2,8 +2,8 @@ import logging
 
 from discord.ext import commands
 
-from poll.libs.objects.database import DbConnector
 from poll.libs.misc.logging.set_logging import ADMINS_LOG_NAME
+from poll.orm.database import DbConnector
 
 DELETE_TIME = 15
 logger = logging.getLogger(ADMINS_LOG_NAME)

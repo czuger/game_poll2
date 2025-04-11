@@ -51,13 +51,13 @@ class GuildOrmObject(Document):
         name = "guilds"
 
 
-async def get_guild(guild_key: str) -> GuildOrmObject:
+async def get_guild(guild_key: int) -> GuildOrmObject:
     global guild_cache
 
     if guild_key not in guild_cache:
         guild = await GuildOrmObject.find_one(GuildOrmObject.key == guild_key)
         if not guild:
-            guild = GuildOrmObject(key=str)
+            guild = GuildOrmObject(key=guild_key)
         guild_cache[guild_key] = guild
 
     return guild_cache[guild_key]

@@ -3,10 +3,10 @@ import logging
 import discord
 
 from poll.interfaces.add_game.add_game_to_poll_view import AddToPollView
-from poll.interfaces.helpers.views import sort_and_split_by_chunks
-from poll.interfaces.poll import Poll
+from poll.interfaces.helpers.sort_and_split import sort_and_split
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
-from poll.libs.objects.guild import Guild
+from poll.orm.guild_orm_object import get_guild
+from poll.orm.poll_orm_object import PollOrmObject
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 
@@ -15,15 +15,14 @@ add_game_waiting_user = {}
 
 class RespondToAddGameButton(discord.ui.Button):
     """
-    This class create the button that is used to react to the "Add new game" button in the main poll
+    This class is used to respond to the AddGame button in the poll.
     """
 
-    def __init__(self, db, poll: Poll, label: str, custom_id: str, row: int, emoji=None,
+    def __init__(self, poll: PollOrmObject, label: str, custom_id: str, row: int, emoji=None,
                  style=discord.ButtonStyle.gray):
         super().__init__(label=label, custom_id=custom_id, emoji=emoji, style=style, row=row)
         logger.debug(f"In RespondToAddGameButton.init, custom_id={custom_id}")
         self.poll = poll
-        self.db = db
 
     async def callback(self, interaction: discord.Interaction):
         logger.debug("In RespondToAddGameButton")
@@ -31,21 +30,18 @@ class RespondToAddGameButton(discord.ui.Button):
         await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=30,
                                                 ephemeral=True)
 
-        guild = await Guild.find_or_create_by_channel(self.db, interaction.channel)
+        guild = await get_guild(interaction.channel.guild.id)
 
-        games_keys = list(guild.games.keys())
-        logger.debug(f"In RespondToAddGameButton, games_keys = {games_keys}")
-        for v in self.poll.games.values():
-            k = v["key"]
-            if k in games_keys:
-                games_keys.remove(v["key"])
+        remaining_games = list(set(guild.games) - set(self.poll.selected_games))
+        logger.debug(
+            f"In RespondToAddGameButton, guild.games = {guild.games}, poll_selected_games = {self.poll.selected_games}, "
+            f"remaining_games = {remaining_games}")
 
-        logger.debug(f"In RespondToAddGameButton, cleaned games_keys = {games_keys}")
+        remaining_games_chunks = sort_and_split(remaining_games)
 
-        chunks = sort_and_split_by_chunks(games_keys, guild)
-        for index, chunk in enumerate(chunks):
+        for index, chunk in enumerate(remaining_games_chunks):
             pv = AddToPollView()
-            await pv.initialize_view(self.db, guild, self.poll, interaction.message, chunk)
+            await pv.initialize_view(guild, self.poll, interaction.message, chunk)
 
             await interaction.user.send(f"Quel jeu voulez vous ajouter ? ({index})", view=pv, delete_after=300)
 

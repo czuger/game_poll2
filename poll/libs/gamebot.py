@@ -1,6 +1,7 @@
 import logging
 
 import discord
+import redis
 from discord.ext import commands
 from discord.ext import tasks
 
@@ -10,6 +11,7 @@ from poll.cogs.poll_cog import PollCog
 from poll.interfaces.poll import Poll
 from poll.interfaces.poll import PollView
 from poll.libs.misc.bot.schedule_poll import check_schedules_for_polls
+from poll.orm.database import DbConnector
 
 logger = logging.getLogger(__name__)
 
@@ -24,14 +26,9 @@ class GameBot(commands.Bot):
     The main GameBot class.
     """
 
-    def __init__(self, db):
+    def __init__(self, db: DbConnector, redis_connection: redis.Redis):
         """
         Initialize the GameBot instance.
-
-        Parameters
-        ----------
-        db : Database
-            Database instance to store and manage game data.
 
         Returns
         -------
@@ -46,7 +43,7 @@ class GameBot(commands.Bot):
         super().__init__(command_prefix="g2!", intents=intents)
 
         self.db = db
-        self.gpt_key = None
+        self.redis_connection = redis_connection
 
     async def setup_hook(self) -> None:
         """

@@ -1,4 +1,4 @@
-from poll.libs.objects.database import DbConnector
+from poll.orm.database import DbConnector
 from poll.orm.game_orm_object import check_games_at_startup
 from poll.orm.guild_orm_object import GuildOrmObject
 from poll.orm.helpers.polls.misc import set_default_games

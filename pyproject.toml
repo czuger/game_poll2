@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "games_poll2"
-version = "0.1.0"
+version = "1.0.0"
 description = "A project using Discord, MongoDB, and testing tools"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -16,7 +16,8 @@ dependencies = [
     "motor~=3.5.1",
     "aiohttp~=3.10.11",
     "certifi~=2024.12.14",
-    "beanie~=1.29.0"
+    "beanie~=1.29.0",
+    "redis"
 ]
 
 [tool.setuptools]
