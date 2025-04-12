@@ -4,7 +4,7 @@ EXPIRATION_TIME = 60 * 60 * 48  # 48 hours
 
 
 def redis_connection():
-    return redis.Redis(host="rpi4db")
+    return redis.Redis(host="rpi4db", decode_responses=True)
 
 
 async def save_button_associated_key(redis_co: redis.Redis, button_key: str, element_key: str) -> None:
@@ -13,5 +13,5 @@ async def save_button_associated_key(redis_co: redis.Redis, button_key: str, ele
 
 
 async def get_button_associated_key(redis_co: redis.Redis, button_key: str) -> str:
-    element_key = await redis_co.get(button_key)
+    element_key = str(await redis_co.get(button_key))
     return element_key

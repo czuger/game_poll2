@@ -18,7 +18,7 @@ class PollButton(discord.ui.Button):
         """
 
         super().__init__(label=button.short_str, custom_id=button.key, emoji=button.emoji,
-                         style=discord.ButtonStyle(str(button.style)), row=button.row)
+                         style=discord.ButtonStyle(button.style), row=button.row)  # noqa
         self.params_b = params_b
 
     async def callback(self, interaction: discord.Interaction):

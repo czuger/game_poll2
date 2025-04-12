@@ -20,9 +20,9 @@ class RespondToAddGameButton(discord.ui.Button):
 
     def __init__(self, params_b: ParamsBundle, poll_button_element: PollButtonElement):
         super().__init__(label=poll_button_element.short_str, custom_id=poll_button_element.key,
-                         emoji=poll_button_element.emoji, style=discord.ButtonStyle(str(poll_button_element.style)),
+                         emoji=poll_button_element.emoji, style=discord.ButtonStyle(poll_button_element.style),  # noqa
                          row=poll_button_element.row)
-        logger.debug(f"In RespondToAddGameButton.init, custom_id={poll_button_element.custom_id}")
+        logger.debug(f"In RespondToAddGameButton.init, custom_id={poll_button_element.key}")
         self.params_b = params_b
 
     async def callback(self, interaction: discord.Interaction):
@@ -31,7 +31,7 @@ class RespondToAddGameButton(discord.ui.Button):
         await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=30,
                                                 ephemeral=True)
 
-        remaining_games = list(set(self.params_b.guild.games) - set(self.params_b.poll.poll_elements))
+        remaining_games = list(set(self.params_b.guild.games) - set(self.params_b.poll.poll_elements.keys()))
         logger.debug(
             f"In RespondToAddGameButton, guild.games = {self.params_b.guild.games}, "
             f"poll_selected_games = {self.params_b.poll.poll_elements}, "

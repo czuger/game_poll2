@@ -1,16 +1,26 @@
 from typing import Tuple
 
 from poll.interfaces.add_game.add_game_to_poll.select_game_to_remove import select_game_to_remove
+from poll.misc.objects import ButtonType
 from poll.misc.params_bundle import ParamsBundle
 from poll.orm.poll_orm_object import PollElement
 
 
-def make_room_for_new_game(params_b: ParamsBundle) -> ParamsBundle:
-    game_key_to_remove = select_game_to_remove(params_b.guild)
+def add_all_votes_to_guild(params_b: ParamsBundle) -> ParamsBundle:
+    pass
+    # TODO : first move all votes data to guild
+    # Move vote count and reset to zero
+    # Only move last vote time
 
-    params_b.guild.total_votes_data[game_key_to_remove].total_votes_count += params_b.poll.games[
-        game_key_to_remove].votes_count
-    params_b.guild.total_votes_data[game_key_to_remove].last_vote += params_b.poll.games[game_key_to_remove].last_vote
+
+def make_room_for_new_game(params_b: ParamsBundle) -> ParamsBundle:
+    params_b = add_all_votes_to_guild(params_b)
+
+    game_key_to_remove = select_game_to_remove(params_b)
+
+    # params_b.guild.total_votes_data[game_key_to_remove].total_votes_count += params_b.poll.games[
+    #     game_key_to_remove].votes_count
+    # params_b.guild.total_votes_data[game_key_to_remove].last_vote += params_b.poll.games[game_key_to_remove].last_vote
 
     del params_b.poll.poll_elements[game_key_to_remove]
 
@@ -22,7 +32,7 @@ async def add_game_to_poll(params_b: ParamsBundle, game_key: str) -> Tuple[Param
         if len(params_b.poll.poll_elements.keys()) >= 20:
             params_b = make_room_for_new_game(params_b)
 
-        params_b.poll.poll_elements[game_key] = PollElement()
+        params_b.poll.poll_elements[game_key] = PollElement(object_key=game_key, object_type=ButtonType.GAME)
 
         await params_b.poll.save()
 

@@ -2,7 +2,6 @@ import logging
 
 import discord
 
-from poll.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
 from poll.interfaces.poll.helpers.build_buttons_list import build_buttons_list
 from poll.interfaces.poll.poll_button import PollButton
 from poll.misc.logging.set_logging import POLLS_LOG_NAME
@@ -28,6 +27,9 @@ class PollView(discord.ui.View):
         PollView
             The initialized PollView instance.
         """
+        # Required to avoid circular imports
+        from poll.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
+
         for button_element in await build_buttons_list(params_b):
             if button_element.key == "add":
                 button = RespondToAddGameButton(params_b, button_element)

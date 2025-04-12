@@ -1,45 +1,33 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock
-from unittest.mock import MagicMock
-from unittest.mock import Mock
 
 import discord
 
-from poll.interfaces.add_game import RespondToAddGameButton
-from poll.interfaces.helpers.buttons import make_btn_key
-from poll.interfaces.poll import Poll
-from poll.libs.objects.guild import Guild
+from poll.interfaces.add_game.respond_to_add_game_button import RespondToAddGameButton
+from poll.interfaces.poll.helpers.build_poll_button_element import build_poll_button_element
+from poll.misc.objects import ButtonType
+from poll.orm.game_orm_object import GameOrmObject
 from tests.base import BotTest
 
 
 class TestRespondToAddGameButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
-    def setUp(self):
-        self.set_up()
+    async def asyncSetUp(self):
+        await self.set_up()
 
     async def test_add_game_button(self):
-        user = AsyncMock(id=252627, display_name="foo")
+        cursor = GameOrmObject.find_all()
+        games = await cursor.to_list(length=None)
+        games_keys = [e.key for e in games]
 
-        discord_guild = AsyncMock(id=123456, get_member=Mock())
-        discord_guild.get_member.return_value = user
+        self.params_b.guild.games = games_keys
+        self.params_b.guild.save()
 
-        discord_channel = MagicMock(id=123456, guild=discord_guild)
+        button_element = await build_poll_button_element(self.params_b, ButtonType.OTHER, "add", 4)
 
-        message = AsyncMock(edit=AsyncMock())
-        message.edit.return_value = 0
-
-        response = AsyncMock(defer=AsyncMock())
-        response.defer.return_value = 0
-
-        interaction = AsyncMock(channel=discord_channel, user=user, message=message, response=response)
-
-        # Toggle first button (should be game)
-        poll = await Poll.find(self.db, discord_channel, create_if_not_exist=True)
-        guild = await Guild.find_or_create_by_channel(self.db, discord_channel)
-        game_key = guild.poll_default[0]
-        button_id = make_btn_key(game_key, "g")
-
-        pb = RespondToAddGameButton(self.db, poll, "foo", button_id, 0)
-        await pb.callback(interaction)
+        pb = RespondToAddGameButton(self.params_b, button_element)
+        await pb.callback(self.interaction)
         self.assertIsInstance(pb, discord.ui.Button)
+
+        self.assertEqual(2, len(self.interaction.user.method_calls))
+        self.assertEqual(25, len(self.interaction.user.method_calls[0][2]["view"].children))

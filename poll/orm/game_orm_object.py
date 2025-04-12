@@ -1,5 +1,6 @@
 import datetime
 import json
+from dataclasses import field
 from typing import Tuple
 
 from beanie import Document, Indexed
@@ -47,7 +48,7 @@ class GameOrmObject(Document):
     game_type: str
 
     temporary: bool = False
-    add_date: datetime.datetime = None
+    add_date: datetime.datetime = field(default_factory=lambda: datetime.datetime.now())
 
     class Settings:
         name = "games"
@@ -60,6 +61,8 @@ async def get_game(game_key: str) -> GameOrmObject:
 
     if not game:
         game = await GameOrmObject.find_one(GameOrmObject.key == game_key)
+        if not game:
+            raise RuntimeError(f"{game_key} is not in game database")
         games_cache[game_key] = game
 
     return game

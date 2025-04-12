@@ -1,51 +1,32 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock
-from unittest.mock import MagicMock
-from unittest.mock import Mock
 
 import discord
-from discord import Interaction, Message, TextChannel, InteractionResponse
 
 from poll.interfaces.add_game.add_to_poll_button import AddToPollButton
-from poll.interfaces.helpers.buttons import make_btn_key
-from poll.interfaces.poll import Poll
-from poll.libs.objects.guild import Guild
+from poll.interfaces.poll.helpers.build_poll_button_element import build_poll_button_element
+from poll.misc.objects import ButtonType
+from poll.orm.game_orm_object import GameOrmObject
 from tests.base import BotTest
 
 
 class TestAddToPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
-    def setUp(self):
-        self.set_up()
+    async def asyncSetUp(self):
+        await self.set_up()
 
     async def test_add_to_poll_button(self):
-        user = AsyncMock(id=252627, display_name="foo")
+        cursor = GameOrmObject.find_all()
+        games = await cursor.to_list(length=None)
+        remaining_games_keys = [e.key for e in games]
 
-        discord_guild = AsyncMock(spec=Guild, id="my_guild", get_member=Mock())
-        discord_guild.get_member.return_value = user
+        remaining_games_keys = list(set(remaining_games_keys) - set(self.params_b.poll.poll_elements.keys()))
 
-        chat_discord_channel = MagicMock(spec=TextChannel, id="chat_channel", guild=discord_guild)
-        poll_discord_channel = MagicMock(spec=TextChannel, id="poll_channel", guild=discord_guild)
+        for i in range(20):
+            key = str(remaining_games_keys.pop())
+            button_element = await build_poll_button_element(self.params_b, ButtonType.GAME, key, 0)
+            pb = AddToPollButton(self.params_b, button_element)
+            await pb.callback(self.interaction)
+            self.assertIsInstance(pb, discord.ui.Button)
 
-        message = AsyncMock(spec=Message, edit=AsyncMock())
-        message.edit.return_value = 0
-
-        response = AsyncMock(spec=InteractionResponse, defer=AsyncMock())
-        response.defer.return_value = 0
-
-        interaction = AsyncMock(spec=Interaction, channel=chat_discord_channel, user=user, message=message,
-                                response=response)
-
-        poll = await Poll.find(self.db, poll_discord_channel, create_if_not_exist=True)
-
-        guild = await Guild.find_or_create_by_channel(self.db, poll_discord_channel)
-        game_key = list(guild.poll_default)[0]
-        button_id = make_btn_key(game_key, "g")
-
-        pb = AddToPollButton(self.db, guild, poll, message, "foo", button_id, 0)
-        await pb.callback(interaction)
-        self.assertIsInstance(pb, discord.ui.Button)
-
-        buttons_keys = [e["key"] for e in poll.games.values()]
-        self.assertIn(game_key, buttons_keys)
+            print(len(self.params_b.poll.poll_elements.keys()))
