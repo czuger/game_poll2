@@ -22,11 +22,12 @@ class TestAddToPollButton(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
         remaining_games_keys = list(set(remaining_games_keys) - set(self.params_b.poll.poll_elements.keys()))
 
-        for i in range(20):
+        for i in range(25):
             key = str(remaining_games_keys.pop())
             button_element = await build_poll_button_element(self.params_b, ButtonType.GAME, key, 0)
             pb = AddToPollButton(self.params_b, button_element)
             await pb.callback(self.interaction)
             self.assertIsInstance(pb, discord.ui.Button)
 
-            print(len(self.params_b.poll.poll_elements.keys()))
+        # We shouldn't add more than 20 games. Due to discord limitations.
+        self.assertEqual(20, len(self.params_b.poll.poll_elements))

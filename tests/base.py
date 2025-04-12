@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from poll.misc.params_bundle import ParamsBundle
 from poll.orm.database import DbConnector
-from poll.orm.game_orm_object import check_games_at_startup
+from poll.orm.game_orm_object import check_games_at_startup, GameOrmObject
 from poll.orm.guild_orm_object import GuildOrmObject
 from poll.orm.helpers.polls.misc import set_default_games
 from poll.orm.poll_orm_object import PollOrmObject
@@ -25,6 +25,24 @@ def build_interaction():
 
     interaction = AsyncMock(channel=discord_channel, user=user, message=message, response=response)
     return interaction
+
+
+async def get_games_keys_not_in_guild(params_b: ParamsBundle) -> list:
+    """Return games keys not already in guild."""
+    cursor = GameOrmObject.find_all()
+    games = await cursor.to_list(length=None)
+    remaining_games_keys = [e.key for e in games]
+
+    return list(set(remaining_games_keys) - set(params_b.guild.games))
+
+
+async def get_games_keys_not_in_poll(params_b: ParamsBundle) -> list:
+    """Return games keys not already in guild."""
+    cursor = GameOrmObject.find_all()
+    games = await cursor.to_list(length=None)
+    remaining_games_keys = [e.key for e in games]
+
+    return list(set(remaining_games_keys) - set(params_b.poll.poll_elements.keys()))
 
 
 class BotTest:

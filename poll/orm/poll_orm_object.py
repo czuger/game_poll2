@@ -19,8 +19,9 @@ class Schedule(BaseModel):
 
 class Votes(BaseModel):
     votes: list = field(default_factory=lambda: [])
-    votes_count: int = 0
-    last_vote: Optional[datetime] = None
+    # To be removed once translation to Guild is done.
+    # votes_count: int = 0
+    # last_vote: Optional[datetime] = None
 
 
 class PollElement(BaseModel):

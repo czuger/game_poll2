@@ -6,22 +6,8 @@ from poll.misc.params_bundle import ParamsBundle
 from poll.orm.poll_orm_object import PollElement
 
 
-def add_all_votes_to_guild(params_b: ParamsBundle) -> ParamsBundle:
-    pass
-    # TODO : first move all votes data to guild
-    # Move vote count and reset to zero
-    # Only move last vote time
-
-
 def make_room_for_new_game(params_b: ParamsBundle) -> ParamsBundle:
-    params_b = add_all_votes_to_guild(params_b)
-
     game_key_to_remove = select_game_to_remove(params_b)
-
-    # params_b.guild.total_votes_data[game_key_to_remove].total_votes_count += params_b.poll.games[
-    #     game_key_to_remove].votes_count
-    # params_b.guild.total_votes_data[game_key_to_remove].last_vote += params_b.poll.games[game_key_to_remove].last_vote
-
     del params_b.poll.poll_elements[game_key_to_remove]
 
     return params_b
