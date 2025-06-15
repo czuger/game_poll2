@@ -8,7 +8,9 @@ from pydantic import BaseModel
 import poll.orm.game_orm_object as game_module
 from poll.misc.project_root import find_project_root
 
-guild_cache = {}
+
+class GuildNotFound(RuntimeError):
+    pass
 
 
 async def get_pre_loaded_games(cls):
@@ -36,7 +38,7 @@ class VotesData(BaseModel):
 
 
 class GuildOrmObject(Document):
-    key: Indexed(str, unique=True)
+    key: Indexed(int, unique=True)
 
     # The current games available on the guild
     games: list = field(default_factory=lambda: game_module.default_games)
@@ -49,15 +51,3 @@ class GuildOrmObject(Document):
 
     class Settings:
         name = "guilds"
-
-
-async def get_guild(guild_key: int) -> GuildOrmObject:
-    global guild_cache
-
-    if guild_key not in guild_cache:
-        guild = await GuildOrmObject.find_one(GuildOrmObject.key == guild_key)
-        if not guild:
-            guild = GuildOrmObject(key=guild_key)
-        guild_cache[guild_key] = guild
-
-    return guild_cache[guild_key]

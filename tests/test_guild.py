@@ -1,59 +1,47 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock
 from unittest.mock import Mock
-
-from poll.libs.objects.guild import Guild
 
 from poll.cogs.guilds_cog import GuildsCog
 from poll.commands_response.admin import grant
 from poll.commands_response.admin import super_admin
+from poll.orm.guild_orm_object import GuildOrmObject
+from poll.orm.helpers.guilds.getters import find_or_create_guild
+from poll.orm.helpers.polls.votes import toggle_vote
 from tests.base import BotTest
 
 
 class TestGuild(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
-    def setUp(self):
-        self.set_up()
+    async def asyncSetUp(self):
+        await self.set_up()
 
-        self.user_id = 94030
-        self.user = Mock(name="Test User", id=self.user_id)
-        self.discord_guild = Mock(name="Test Guild", id=123456)
-        self.discord_channel = AsyncMock(name="Test Channel", guild=self.discord_guild, me=self.user, author=self.user)
-        self.context = AsyncMock(name="Test Context", channel=self.discord_channel, interaction=self.discord_channel,
-                                 me=self.user, author=self.user)
-
-        self.bot = Mock(name="Test Bot")
-        self.gc = gc = GuildsCog(self.bot, self.db)
+        # self.user_id = 94030
+        # self.user = Mock(name="Test User", id=self.user_id)
+        # self.discord_guild = Mock(name="Test Guild", id=123456)
+        # self.discord_channel = AsyncMock(name="Test Channel", guild=self.discord_guild, me=self.user, author=self.user)
+        # self.context = AsyncMock(name="Test Context", channel=self.discord_channel, interaction=self.discord_channel,
+        #                          me=self.user, author=self.user)
+        #
+        # self.bot = Mock(name="Test Bot")
+        # self.gc = gc = GuildsCog(self.bot, self.db)
 
     async def test_guild_find_or_create(self):
-        guild = await Guild.find_or_create_by_channel(self.db, self.discord_channel)
+        guild = await find_or_create_guild(456789)
 
-        self.assertEqual("123456", guild.key)
+        self.assertEqual(456789, guild.key)
 
-        self.assertIn("adg", guild.games.keys())
-        self.assertIn("adg", guild.poll_default)
+        self.assertIn("adg", guild.games)
+        self.assertIn("adg", guild.poll_default_games)
+
+        newly_created_guild = GuildOrmObject.find_one(GuildOrmObject.key == 456789)
+        self.assertTrue(newly_created_guild)
 
     async def test_guild_vote_count(self):
-        guild = await Guild.find_or_create_by_channel(self.db, self.discord_channel)
-        await guild.count_vote("adg", str(self.user_id))
-        await guild.count_vote("congo", str(self.user_id))
+        await toggle_vote(self.params_b, "adg", 123)
+        await toggle_vote(self.params_b, "adg", 456)
 
-        query = {"guild_id": "123456", "votes": {"$elemMatch": {"gk": "foo"}}}
-        result = await self.db.db.votes.find_one(query)
-        self.assertFalse(result)
-
-        query = {"guild_id": "123456", "votes": {"$elemMatch": {"gk": "adg"}}}
-        result = await self.db.db.votes.find_one(query)
-        self.assertTrue(result)
-
-        pipeline = [
-            {"$match": {"guild_id": "123456"}},
-            {"$project": {"votes_count": {"$size": "$votes"}}}
-        ]
-
-        result = await self.db.db.votes.aggregate(pipeline).to_list(length=None)
-        self.assertEqual(2, result[0]['votes_count'])
+        self.assertEqual(2, self.params_b.guild.total_votes_data["adg"].total_votes_count)
 
     async def test_guild_reset_command_not_available_for_common_users(self):
         await self.gc.reset_guild.callback(self.gc, self.context)

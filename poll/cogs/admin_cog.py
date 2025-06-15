@@ -7,7 +7,7 @@ from poll.commands_response.admin import grant
 from poll.commands_response.admin import revoke
 from poll.commands_response.admin import super_admin
 from poll.commands_response.admin import upgrade
-from poll.misc import ADMINS_LOG_NAME
+from poll.misc.logging.set_logging import ADMINS_LOG_NAME
 from poll.orm.database import DbConnector
 
 DELETE_TIME = 15

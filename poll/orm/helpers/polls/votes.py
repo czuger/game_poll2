@@ -39,6 +39,7 @@ def __decrease_guild_vote(guild: GuildOrmObject, element_key: str) -> GuildOrmOb
 
 
 def __get_votes(params_b: ParamsBundle, element_key: str) -> Tuple[PollElement, list]:
+    """Return the """
     poll_element = params_b.poll.poll_elements[element_key]
 
     if not poll_element:

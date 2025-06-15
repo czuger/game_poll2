@@ -5,7 +5,7 @@ from typing import Optional
 from beanie import Document
 from pydantic import BaseModel
 
-from poll.interfaces.poll.helpers.build_poll_button_element import ButtonType
+from poll.misc.objects import ButtonType
 
 default_misc = {"schedule": None, "last_schedule": datetime.now()}
 
@@ -39,8 +39,9 @@ class PollOrmObject(Document):
       "votes": [1, 2, 3]
     }
     """
-    key: str
+    key: int
 
+    # Contain the button key <key_guid>, PollElement
     poll_elements: dict[str, PollElement] = field(default_factory=lambda: {})
 
     schedule: Optional[Schedule] = None

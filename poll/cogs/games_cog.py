@@ -1,8 +1,6 @@
 from discord.ext import commands
 from discord.ext.commands import Context
-from poll.libs.objects.guild import Guild
 
-from poll.interfaces.add_game import GameAlreadyExist
 from poll.misc.logging.command_logger import log_command_call
 from poll.orm.database import DbConnector
 

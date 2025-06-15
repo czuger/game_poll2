@@ -2,9 +2,9 @@ import unittest
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
 
-from poll.cogs import AdminManagementCog
+from poll.cogs.admin_cog import AdminManagementCog
 from poll.commands_response.admin import super_admin
-from poll.misc import ADMINS_LOG_NAME
+from poll.misc.logging.set_logging import ADMINS_LOG_NAME
 from tests.base import BotTest
 
 

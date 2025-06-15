@@ -4,13 +4,15 @@ from discord.ext import commands
 
 from poll.commands_response.admin import is_admin
 from poll.commands_response.admin import is_super_admin
-from poll.gamebot import GameBot
+from poll.interfaces.poll.poll_embedding import get_players_embed
 from poll.interfaces.poll.poll_view import PollView
-from poll.misc import DEFAULT_DELETE_AFTER
-from poll.misc import POLLS_LOG_NAME
-from poll.misc import schedule_poll
+from poll.misc.bot.schedule_poll import schedule_poll
+from poll.misc.constants import DEFAULT_DELETE_AFTER
+from poll.misc.exceptions import PollNotFound
 from poll.misc.logging.command_logger import log_command_call
-from poll.orm.database import DbConnector
+from poll.misc.logging.set_logging import POLLS_LOG_NAME
+from poll.misc.params_bundle import ParamsBundle
+from poll.orm.helpers.polls.votes import reset_votes
 from poll.orm.poll_orm_object import PollOrmObject
 
 poll_logger = logging.getLogger(POLLS_LOG_NAME)
@@ -19,20 +21,19 @@ poll_logger = logging.getLogger(POLLS_LOG_NAME)
 class PollCog(commands.Cog, name="sondages"):
     """Commandes relatives aux sondages"""
 
-    def __init__(self, bot: GameBot, db: DbConnector):
-        self.bot = bot
-        self.db = db
+    def __init__(self, params_b: ParamsBundle):  # noqa
+        self.params_b = params_b
 
-    async def __show_poll(self, ctx: commands.Context, poll: PollOrmObject):
+    async def __show_poll(self, ctx: commands.Context):
         """Display the poll information with an interactive view."""
         # Create a new PollView instance
         pv = PollView()
 
         # Initialize the view with the poll data from the database
-        await pv.initialize_view(self.bot.redis_connection, poll)
+        pv = await pv.initialize_view(self.params_b)
 
         # Generate the embed containing the player information
-        embed = await get_players_embed(self.db, ctx.channel)
+        embed = await get_players_embed(self.params_b)
 
         # Send the message with the embed and the interactive view
         await ctx.send(embed=embed, view=pv)
@@ -43,7 +44,7 @@ class PollCog(commands.Cog, name="sondages"):
         # Fetch or create the poll for the current channel
         log_command_call(ctx.author, ctx.channel, "jeux")
 
-        poll = await Poll.find(self.db, ctx.channel, create_if_not_exist=True)
+        poll = await PollOrmObject.find_one(PollOrmObject.key == ctx.channel.id)
 
         # Display the poll using the __show_poll method
         await self.__show_poll(ctx, poll)
@@ -56,16 +57,17 @@ class PollCog(commands.Cog, name="sondages"):
         try:
             if await is_super_admin(self.db, ctx, ctx.author.id):
                 # Find the poll for the current channel
-                poll = await Poll.find(self.db, ctx.channel)
+                old_poll = await PollOrmObject.find_one(PollOrmObject.key == ctx.channel.id)
 
                 # Remove the current poll from the database
-                await poll.remove_poll_from_db()
+                await old_poll.remove_poll_from_db()
 
                 # Create a new poll after resetting
-                poll = await Poll.find(self.db, ctx.channel, create_if_not_exist=True)
+                new_poll = await PollOrmObject(key=ctx.channel.id)
+                await new_poll.save()
 
                 # Display the new poll using the __show_poll method
-                await self.__show_poll(ctx, poll)
+                await self.__show_poll(ctx, new_poll)
         except PollNotFound:
             await ctx.send(content="Le sondage n'existe pas.", ephemeral=True, delete_after=DEFAULT_DELETE_AFTER)
 
@@ -74,16 +76,18 @@ class PollCog(commands.Cog, name="sondages"):
         """Supprime les votes pour un sondage donné (admin)"""
         log_command_call(ctx.author, ctx.channel, "votes")
 
-        if await is_admin(self.db, ctx, ctx.author.id):
-            # Find the poll for the current channel
-            poll = await Poll.find(self.db, ctx.channel)
+        try:
+            if await is_admin(self.db, ctx, ctx.author.id):
+                # Find the poll for the current channel
+                params_b = ParamsBundle()
+                params_b.poll = await PollOrmObject.find_one(PollOrmObject.key == ctx.channel.id)
 
-            # Reset votes
-            ve = PollVotes(poll)
-            await ve.reset_votes()
+                params_b = await reset_votes(params_b)
 
-            # Display the new poll using the __show_poll method
-            await self.__show_poll(ctx, poll)
+                # Display the new poll using the __show_poll method
+                await self.__show_poll(ctx, params_b.poll)
+        except PollNotFound:
+            await ctx.send(content="Le sondage n'existe pas.", ephemeral=True, delete_after=DEFAULT_DELETE_AFTER)
 
     @commands.command(name="planif_jeux")
     async def schedule_polls(self, ctx: commands.Context, day: int):

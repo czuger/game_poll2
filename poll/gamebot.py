@@ -5,12 +5,10 @@ import redis
 from discord.ext import commands
 from discord.ext import tasks
 
-from poll.cogs import AdminManagementCog
 from poll.cogs.games_cog import GamesCog
 from poll.cogs.poll_cog import PollCog
-from poll.interfaces.poll import Poll
-from poll.interfaces.poll import PollView
-from poll.misc import check_schedules_for_polls
+from poll.interfaces.poll.poll_view import PollView
+from poll.misc.bot.schedule_poll import check_schedules_for_polls
 from poll.orm.database import DbConnector
 
 logger = logging.getLogger(__name__)

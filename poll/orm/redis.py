@@ -1,6 +1,6 @@
 import redis.asyncio as redis
 
-EXPIRATION_TIME = 60 * 60 * 48  # 48 hours
+EXPIRATION_TIME = 60 * 60 * 24 * 7  # 7 days
 
 
 def redis_connection():

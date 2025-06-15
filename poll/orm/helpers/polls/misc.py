@@ -22,3 +22,9 @@ def get_players_count(poll: PollOrmObject) -> int:
             players_set.add(voter)
 
     return len(players_set)
+
+# async def get_bot_at_restart(cls, bot, db: DbConnector, poll_record):
+#     print(poll_record[cls.POLL_KEY])
+#     channel = await bot.fetch_channel(poll_record[cls.POLL_KEY])
+#     logger.debug(channel)
+#     return cls(db, channel, poll_record)

@@ -1,0 +1,2 @@
+class PollNotFound(RuntimeError):
+    pass

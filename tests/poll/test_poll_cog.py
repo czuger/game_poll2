@@ -1,25 +1,21 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from unittest.mock import AsyncMock
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, AsyncMock
 
 from discord import TextChannel, User
-from discord.ext.commands import Context, Author
-from poll.libs.objects.guild import Guild
-from poll.libs.objects.voters_engine import ElementNotInVotesDict
+from discord.ext.commands import Author, Context
 
 from poll.cogs.poll_cog import PollCog
 from poll.commands_response.admin import is_super_admin, is_admin
-from poll.interfaces.poll import Poll
-from poll.interfaces.poll import PollVotes
 from poll.misc.constants import KEY
 from tests.base import BotTest
 
 
 class TestPollCog(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
-    def setUp(self):
-        """Set up the test case with BotTest's set_up method."""
-        super().set_up()  # Call BotTest's setUp for database and other setups
+
+    async def asyncSetUp(self):
+        await self.set_up()
+
         self.bot = MagicMock()
         self.cog = PollCog(self.bot, self.db)
 
@@ -39,9 +35,6 @@ class TestPollCog(IsolatedAsyncioTestCase, unittest.TestCase, BotTest):
 
     async def test_poll_command_poll_exist(self):
         """Test the jeux command."""
-        # Ensure that a poll exist for this channel
-        await Poll.find(self.db, self.ctx.channel, create_if_not_exist=True)
-
         # Call the command
         await self.cog.poll(self.cog, self.ctx)
 

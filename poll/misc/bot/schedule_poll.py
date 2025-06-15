@@ -2,10 +2,12 @@ import logging
 from datetime import datetime
 from datetime import timedelta
 
-from poll.interfaces.poll import Poll
-from poll.interfaces.poll import PollView
-from poll.interfaces.poll import get_players_embed
+from discord import TextChannel
+
+from poll.interfaces.poll.poll_embedding import get_players_embed
+from poll.interfaces.poll.poll_view import PollView
 from poll.misc.logging.set_logging import SCHEDULE_POLL_LOG_NAME
+from poll.misc.params_bundle import ParamsBundle
 from poll.orm.database import DbConnector
 
 logger = logging.getLogger(SCHEDULE_POLL_LOG_NAME)
@@ -16,12 +18,12 @@ DAYS_AGO = 6
 french_day_names = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
 
 
-async def __show_poll_by_channel(channel, db: DbConnector, poll: Poll):
+async def __show_poll_by_channel(params_b: ParamsBundle, channel: TextChannel):
     pv = PollView()
 
-    await pv.initialize_view(db, poll)
-    embed = await get_players_embed(db, channel)
-    await channel.send("", embed=embed, view=pv)
+    await pv.initialize_view(params_b)
+    embed = await get_players_embed(params_b)
+    await channel.send("", embed=embed, view=pv)  # noqa
 
 
 async def schedule_poll(db: DbConnector, ctx, day: int = None):
