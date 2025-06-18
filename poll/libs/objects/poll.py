@@ -33,8 +33,8 @@ class Poll:
                   "style": discord.ButtonStyle.blurple},
         "away": {"key": "away", "short": "Absent", "long": "Absent", "emoji": "⛱️",
                  "style": discord.ButtonStyle.blurple},
-        # "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🧩",
-        #         "style": discord.ButtonStyle.grey, "action": "add_game"},
+        "add": {"key": "add", "short": "Ajouter", "long": "Ajouter un jeu", "emoji": "🧩",
+                "style": discord.ButtonStyle.grey, "action": "add_game"},
     }
 
     BUTTONS_KEY = "buttons"

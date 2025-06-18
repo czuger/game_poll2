@@ -3,9 +3,9 @@ import logging
 import discord
 
 from poll.libs.interfaces.add_game.add_game_to_poll_view import AddToPollView
-from poll.libs.objects.guild import Guild
 from poll.libs.interfaces.helpers.views import sort_and_split_by_chunks
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
+from poll.libs.objects.guild import Guild
 from poll.libs.objects.poll import Poll
 
 logger = logging.getLogger(ADD_GAMES_LOG_NAME)
@@ -27,6 +27,12 @@ class RespondToAddGameButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         logger.debug("In RespondToAddGameButton")
+
+        if len(self.poll.games) >= 20:
+            await interaction.response.send_message(
+                "Il n'y a plus de place disponible dans le sondage 🥺. Contactez l'admin pour faire le ménage.",
+                delete_after=30, ephemeral=True)
+            return
 
         await interaction.response.send_message("La suite se passe en discussion privée 😎", delete_after=30,
                                                 ephemeral=True)
