@@ -1,0 +1,231 @@
+{
+  "title": "Liste des Armées Historiques",
+  "periods": {
+    "PERIODE ANCIENNE": {
+      "categories": {
+        "Sumer & Babylone": {
+          "armies": {
+            "1": "Sumer et Akkad",
+            "2": "Successeurs Sumériens",
+            "3": "Amorrites et Montagnards",
+            "4": "Elamites",
+            "5": "Anciens Assyriens et Babyloniens",
+            "6": "Babyloniens Kassites",
+            "7": "Assyriens",
+            "8": "Néo-Babyloniens",
+            "9": "Empire Assyrien et Sargonides"
+          }
+        },
+        "Egypte Ancienne": {
+          "armies": {
+            "10": "Egyptiens Ancien et Moyen Empire",
+            "11": "Nubiens",
+            "12": "Libyens",
+            "13": "Hyksos",
+            "14": "Egyptiens Nouvel Empire",
+            "15": "Egyptiens Libyens",
+            "16": "Egyptiens Kushites"
+          }
+        },
+        "Proche Orient Ancien": {
+          "armies": {
+            "17": "Anciens Bédouins",
+            "18": "Cités Syriennes",
+            "19": "Etats du Golfe et d'Oman",
+            "20": "Hittites",
+            "21": "Hourrites du Mitanni",
+            "22": "Syrie, Canaan et Ougarit",
+            "23": "Anciens Hébreux",
+            "24": "Peuples de la mer",
+            "25": "Philistins",
+            "26": "Araméens et Néo-Hittites",
+            "27": "Urartu",
+            "28": "Mèdes",
+            "29": "Phrygiens"
+          }
+        },
+        "Europe Ancienne": {
+          "armies": {
+            "30": "Mycéniens",
+            "31": "Grecs époque Géométrique",
+            "32": "Phéniciens de Chypre",
+            "33": "Celtes"
+          }
+        },
+        "Asie Ancienne": {
+          "armies": {
+            "34": "Vallée de l'Indus",
+            "35": "Indiens Védiques",
+            "36": "Chinois Erlitou et Shang",
+            "37": "Chinois Zhou et Printemps et Automnes"
+          }
+        }
+      }
+    },
+    "PERIODE CLASSIQUE": {
+      "categories": {
+        "Macédoniens": {
+          "armies": {
+            "38": "Premiers Macédoniens",
+            "39": "Alexandre Macédonien",
+            "40": "Alexandre le Grand",
+            "41": "Diadoques et Successeurs",
+            "42": "Séleucides",
+            "43": "Lagides",
+            "44": "Pyrrhus",
+            "45": "Derniers Macédoniens",
+            "46": "Bactriens et Indo-Grecs"
+          }
+        },
+        "Rome et l'Italie": {
+          "armies": {
+            "47": "Tribus d'Italie",
+            "48": "Etrusques",
+            "49": "Romains Tulliens",
+            "50": "Syracuse",
+            "51": "Campaniens, Lucaniens, Apuliens et Bruttiens",
+            "52": "Romains Camille",
+            "53": "Romains de la République"
+          }
+        },
+        "Carthage et Afrique": {
+          "armies": {
+            "64": "Perses Achéménides",
+            "65": "Lydiens",
+            "66": "Lyciens",
+            "67": "Bithyniens",
+            "68": "Perses Achéménides tardifs",
+            "69": "Cappadociens",
+            "70": "Royaume du Bosphore",
+            "71": "Arméniens",
+            "72": "Galates",
+            "73": "Pergame"
+          }
+        },
+        "Orient et Steppes": {
+          "armies": {
+            "74": "Araméens",
+            "223": "Coréens Goryeo",
+            "224": "Vietnamiens médiévaux",
+            "225": "Chinois Song",
+            "226": "Xi Xia",
+            "227": "Jurchen-Jin",
+            "228": "Kara-Khitan",
+            "229": "Empire Mongol"
+          }
+        }
+      }
+    },
+    "MOYEN AGE TARDIF": {
+      "categories": {
+        "Europe Médiévale": {
+          "armies": {
+            "230": "Royaume de Grenade",
+            "231": "Suisses",
+            "232": "Ecossais Médiévaux",
+            "233": "Irlandais Médiévaux",
+            "234": "Anglo-Irlandais médiévaux",
+            "235": "Condottieres Italiens",
+            "236": "Anglais Guerre de cent ans",
+            "237": "Français Guerre de cent ans",
+            "238": "Allemands Médiévaux",
+            "239": "Espagnols Médiévaux",
+            "240": "Royaume de Navarre",
+            "241": "Grandes Compagnies",
+            "242": "Bourguignons",
+            "243": "Flamands",
+            "244": "Gallois Médiévaux",
+            "245": "Ordonnance Française",
+            "246": "Ordonnance Bourguignonne",
+            "247": "Guerre des Roses"
+          }
+        },
+        "Europe Orientale Médiévale": {
+          "armies": {
+            "248": "Lithuaniens",
+            "249": "Hongrois Médiévaux",
+            "250": "Russes Moscovites",
+            "251": "Scandinaves Médiévaux",
+            "252": "Horde d'Or",
+            "253": "Teutoniques Médiévaux",
+            "254": "Polonais Médiévaux",
+            "255": "Hussite"
+          }
+        },
+        "Balkans, Grèce et Moyen Orient": {
+          "armies": {
+            "256": "Empire Serbe",
+            "257": "Second Empire Bulgare",
+            "258": "Byzantins Tardifs",
+            "259": "Mamelouks",
+            "260": "Turcomans",
+            "261": "Turcs Ottomans",
+            "262": "Compagnie Catalane",
+            "263": "Ordre de St Jean",
+            "264": "Chypre Médievale",
+            "265": "Valaques et Moldaves",
+            "266": "Albanais",
+            "267": "Empire Ottoman",
+            "268": "Byzance assiégée"
+          }
+        },
+        "Asie Centrale": {
+          "armies": {
+            "269": "Perses Islamiques",
+            "270": "Mongols Ilkhanides",
+            "271": "Mongols des Steppes",
+            "272": "Jalayirides",
+            "273": "Timourides",
+            "274": "Turcomans Mouton Noir - Mouton Blanc"
+          }
+        },
+        "Asie Médiévale": {
+          "armies": {
+            "275": "Sultanat de Delhi",
+            "276": "Royaume de Vijayanagar",
+            "277": "Indonésiens et Malaisiens",
+            "278": "Siam",
+            "279": "Chinois Yuan",
+            "280": "Samourai Tardifs",
+            "281": "Chinois Ming",
+            "282": "Coréens Yi"
+          }
+        }
+      }
+    },
+    "AMERIQUES": {
+      "categories": {
+        "Amérique centrale": {
+          "armies": {
+            "283": "Olmèques",
+            "284": "Mayas",
+            "285": "Zapotèques et Mixtèques",
+            "286": "Toltèques",
+            "287": "Chinantèques",
+            "288": "Tarasques",
+            "289": "Aztèques",
+            "290": "Texcalas"
+          }
+        },
+        "Amérique du sud": {
+          "armies": {
+            "291": "Incas",
+            "292": "Chancas",
+            "293": "Mochicas et Chimus",
+            "294": "Tupis",
+            "295": "Mapuches"
+          }
+        },
+        "Amérique du nord": {
+          "armies": {
+            "296": "Chichimèques",
+            "297": "Pueblos",
+            "298": "Tribus d'Amérique du nord",
+            "299": "Indiens du Mississipi",
+            "300": "Polynésiens et Mélanésiens"
+          }
+        }
+      }
+    }
+  }
+}

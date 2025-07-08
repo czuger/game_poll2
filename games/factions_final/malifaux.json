@@ -1,0 +1,24 @@
+{
+  "code": "MAL",
+  "title": "Malifaux",
+  "periods": {
+    "MAL_BRE": {
+      "title": "Ère de la Brèche",
+      "categories": {
+        "MAL_BRE_FAC": {
+          "title": "Factions",
+          "armies": {
+            "MAL_BRE_FAC_001": "The Guild",
+            "MAL_BRE_FAC_002": "The Resurrectionists",
+            "MAL_BRE_FAC_003": "The Arcanists",
+            "MAL_BRE_FAC_004": "The Neverborn",
+            "MAL_BRE_FAC_005": "The Outcasts",
+            "MAL_BRE_FAC_006": "The Ten Thunders",
+            "MAL_BRE_FAC_007": "The Gremlins (Bayou)",
+            "MAL_BRE_FAC_008": "The Explorers' Society"
+          }
+        }
+      }
+    }
+  }
+}

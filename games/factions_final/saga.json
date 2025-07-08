@@ -1,0 +1,146 @@
+{
+  "code": "SAG",
+  "title": "SAGA",
+  "periods": {
+    "SAG_ALE": {
+      "title": "Alexandre",
+      "categories": {
+        "SAG_ALE_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_ALE_FAC_001": "Cités Grecques",
+            "SAG_ALE_FAC_002": "Perses",
+            "SAG_ALE_FAC_003": "Thraces",
+            "SAG_ALE_FAC_004": "Macédoniens",
+            "SAG_ALE_FAC_005": "Indiens",
+            "SAG_ALE_FAC_006": "Diadoques"
+          }
+        }
+      }
+    },
+    "SAG_HAN": {
+      "title": "Hannibal",
+      "categories": {
+        "SAG_HAN_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_HAN_FAC_001": "Carthaginois",
+            "SAG_HAN_FAC_002": "République de Rome",
+            "SAG_HAN_FAC_003": "Gaulois",
+            "SAG_HAN_FAC_004": "Graeculi",
+            "SAG_HAN_FAC_005": "Ibères",
+            "SAG_HAN_FAC_006": "Numides"
+          }
+        }
+      }
+    },
+    "SAG_INV": {
+      "title": "Invasions",
+      "categories": {
+        "SAG_INV_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_INV_FAC_001": "Romains (Bas-Empire)",
+            "SAG_INV_FAC_002": "Huns",
+            "SAG_INV_FAC_003": "Goths",
+            "SAG_INV_FAC_004": "Britons",
+            "SAG_INV_FAC_005": "Saxons",
+            "SAG_INV_FAC_006": "Pictes",
+            "SAG_INV_FAC_007": "Francs",
+            "SAG_INV_FAC_008": "Sassanides",
+            "SAG_INV_FAC_009": "Scotti",
+            "SAG_INV_FAC_010": "Alt Clut (Strathclyde)",
+            "SAG_INV_FAC_011": "Cymry (Pays de Galles)",
+            "SAG_INV_FAC_012": "Vandales"
+          }
+        }
+      }
+    },
+    "SAG_VIK": {
+      "title": "Vikings",
+      "categories": {
+        "SAG_VIK_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_VIK_FAC_001": "Anglo-Saxons",
+            "SAG_VIK_FAC_002": "Gallois",
+            "SAG_VIK_FAC_003": "Normands",
+            "SAG_VIK_FAC_004": "Vikings",
+            "SAG_VIK_FAC_005": "Anglos-Danois",
+            "SAG_VIK_FAC_006": "Romains Byzantins",
+            "SAG_VIK_FAC_007": "Hiberno-Nordiques",
+            "SAG_VIK_FAC_008": "Irlandais",
+            "SAG_VIK_FAC_009": "Rus Païens",
+            "SAG_VIK_FAC_010": "Scots",
+            "SAG_VIK_FAC_011": "Carolingiens",
+            "SAG_VIK_FAC_012": "Jomsvikings",
+            "SAG_VIK_FAC_013": "Peuples Germains",
+            "SAG_VIK_FAC_014": "Lombards",
+            "SAG_VIK_FAC_015": "Peuples des Steppes",
+            "SAG_VIK_FAC_016": "Omeyyades"
+          }
+        }
+      }
+    },
+    "SAG_CRO": {
+      "title": "Croisades",
+      "categories": {
+        "SAG_CRO_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_CRO_FAC_001": "Byzantins",
+            "SAG_CRO_FAC_002": "Croisés",
+            "SAG_CRO_FAC_003": "Ordenstaat",
+            "SAG_CRO_FAC_004": "Maures",
+            "SAG_CRO_FAC_005": "Milites Christi",
+            "SAG_CRO_FAC_006": "Mutatawwi'a",
+            "SAG_CRO_FAC_007": "Peuples Païens",
+            "SAG_CRO_FAC_008": "Polonais",
+            "SAG_CRO_FAC_009": "Princes de l'Est",
+            "SAG_CRO_FAC_010": "Sarrasins",
+            "SAG_CRO_FAC_011": "Espagnols",
+            "SAG_CRO_FAC_012": "Mongols",
+            "SAG_CRO_FAC_013": "Cumans",
+            "SAG_CRO_FAC_014": "Pillards Païens",
+            "SAG_CRO_FAC_015": "Arméniens de Cilicie",
+            "SAG_CRO_FAC_016": "Hongrois Arpad"
+          }
+        }
+      }
+    },
+    "SAG_CHE": {
+      "title": "Chevalerie",
+      "categories": {
+        "SAG_CHE_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_CHE_FAC_001": "Français",
+            "SAG_CHE_FAC_002": "Anglais",
+            "SAG_CHE_FAC_003": "Bourguignons",
+            "SAG_CHE_FAC_004": "Bretons",
+            "SAG_CHE_FAC_005": "Flamands",
+            "SAG_CHE_FAC_006": "Suisses",
+            "SAG_CHE_FAC_007": "Hussites",
+            "SAG_CHE_FAC_008": "Italiens"
+          }
+        }
+      }
+    },
+    "SAG_AGE": {
+      "title": "Age de la Magie",
+      "categories": {
+        "SAG_AGE_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SAG_AGE_FAC_001": "Les Grands Royaumes",
+            "SAG_AGE_FAC_002": "Les Seigneurs de la Nature",
+            "SAG_AGE_FAC_003": "Les Légions des Morts",
+            "SAG_AGE_FAC_004": "La Horde",
+            "SAG_AGE_FAC_005": "L'Outremonde",
+            "SAG_AGE_FAC_006": "Les Peuples Souterrains"
+          }
+        }
+      }
+    }
+  }
+}

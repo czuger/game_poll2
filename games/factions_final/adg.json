@@ -1,0 +1,253 @@
+{
+  "code": "ADG",
+  "title": "Art de la Guerre",
+  "periods": {
+    "ADG_ANC": {
+      "title": "PERIODE ANCIENNE",
+      "categories": {
+        "ADG_ANC_SUM": {
+          "title": "Sumer & Babylone",
+          "armies": {
+            "ADG_ANC_SUM_001": "Sumer et Akkad",
+            "ADG_ANC_SUM_002": "Successeurs Sumériens",
+            "ADG_ANC_SUM_003": "Amorrites et Montagnards",
+            "ADG_ANC_SUM_004": "Elamites",
+            "ADG_ANC_SUM_005": "Anciens Assyriens et Babyloniens",
+            "ADG_ANC_SUM_006": "Babyloniens Kassites",
+            "ADG_ANC_SUM_007": "Assyriens",
+            "ADG_ANC_SUM_008": "Néo-Babyloniens",
+            "ADG_ANC_SUM_009": "Empire Assyrien et Sargonides"
+          }
+        },
+        "ADG_ANC_EGY": {
+          "title": "Egypte Ancienne",
+          "armies": {
+            "ADG_ANC_EGY_010": "Egyptiens Ancien et Moyen Empire",
+            "ADG_ANC_EGY_011": "Nubiens",
+            "ADG_ANC_EGY_012": "Libyens",
+            "ADG_ANC_EGY_013": "Hyksos",
+            "ADG_ANC_EGY_014": "Egyptiens Nouvel Empire",
+            "ADG_ANC_EGY_015": "Egyptiens Libyens",
+            "ADG_ANC_EGY_016": "Egyptiens Kushites"
+          }
+        },
+        "ADG_ANC_PRO": {
+          "title": "Proche Orient Ancien",
+          "armies": {
+            "ADG_ANC_PRO_017": "Anciens Bédouins",
+            "ADG_ANC_PRO_018": "Cités Syriennes",
+            "ADG_ANC_PRO_019": "Etats du Golfe et d'Oman",
+            "ADG_ANC_PRO_020": "Hittites",
+            "ADG_ANC_PRO_021": "Hourrites du Mitanni",
+            "ADG_ANC_PRO_022": "Syrie, Canaan et Ougarit",
+            "ADG_ANC_PRO_023": "Anciens Hébreux",
+            "ADG_ANC_PRO_024": "Peuples de la mer",
+            "ADG_ANC_PRO_025": "Philistins",
+            "ADG_ANC_PRO_026": "Araméens et Néo-Hittites",
+            "ADG_ANC_PRO_027": "Urartu",
+            "ADG_ANC_PRO_028": "Mèdes",
+            "ADG_ANC_PRO_029": "Phrygiens"
+          }
+        },
+        "ADG_ANC_EUR": {
+          "title": "Europe Ancienne",
+          "armies": {
+            "ADG_ANC_EUR_030": "Mycéniens",
+            "ADG_ANC_EUR_031": "Grecs époque Géométrique",
+            "ADG_ANC_EUR_032": "Phéniciens de Chypre",
+            "ADG_ANC_EUR_033": "Celtes"
+          }
+        },
+        "ADG_ANC_ASI": {
+          "title": "Asie Ancienne",
+          "armies": {
+            "ADG_ANC_ASI_034": "Vallée de l'Indus",
+            "ADG_ANC_ASI_035": "Indiens Védiques",
+            "ADG_ANC_ASI_036": "Chinois Erlitou et Shang",
+            "ADG_ANC_ASI_037": "Chinois Zhou et Printemps et Automnes"
+          }
+        }
+      }
+    },
+    "ADG_CLA": {
+      "title": "PERIODE CLASSIQUE",
+      "categories": {
+        "ADG_CLA_MAC": {
+          "title": "Macédoniens",
+          "armies": {
+            "ADG_CLA_MAC_038": "Premiers Macédoniens",
+            "ADG_CLA_MAC_039": "Alexandre Macédonien",
+            "ADG_CLA_MAC_040": "Alexandre le Grand",
+            "ADG_CLA_MAC_041": "Diadoques et Successeurs",
+            "ADG_CLA_MAC_042": "Séleucides",
+            "ADG_CLA_MAC_043": "Lagides",
+            "ADG_CLA_MAC_044": "Pyrrhus",
+            "ADG_CLA_MAC_045": "Derniers Macédoniens",
+            "ADG_CLA_MAC_046": "Bactriens et Indo-Grecs"
+          }
+        },
+        "ADG_CLA_ROM": {
+          "title": "Rome et l'Italie",
+          "armies": {
+            "ADG_CLA_ROM_047": "Tribus d'Italie",
+            "ADG_CLA_ROM_048": "Etrusques",
+            "ADG_CLA_ROM_049": "Romains Tulliens",
+            "ADG_CLA_ROM_050": "Syracuse",
+            "ADG_CLA_ROM_051": "Campaniens, Lucaniens, Apuliens et Bruttiens",
+            "ADG_CLA_ROM_052": "Romains Camille",
+            "ADG_CLA_ROM_053": "Romains de la République"
+          }
+        },
+        "ADG_CLA_CAR": {
+          "title": "Carthage et Afrique",
+          "armies": {
+            "ADG_CLA_CAR_064": "Perses Achéménides",
+            "ADG_CLA_CAR_065": "Lydiens",
+            "ADG_CLA_CAR_066": "Lyciens",
+            "ADG_CLA_CAR_067": "Bithyniens",
+            "ADG_CLA_CAR_068": "Perses Achéménides tardifs",
+            "ADG_CLA_CAR_069": "Cappadociens",
+            "ADG_CLA_CAR_070": "Royaume du Bosphore",
+            "ADG_CLA_CAR_071": "Arméniens",
+            "ADG_CLA_CAR_072": "Galates",
+            "ADG_CLA_CAR_073": "Pergame"
+          }
+        },
+        "ADG_CLA_ORI": {
+          "title": "Orient et Steppes",
+          "armies": {
+            "ADG_CLA_ORI_074": "Araméens",
+            "ADG_CLA_ORI_223": "Coréens Goryeo",
+            "ADG_CLA_ORI_224": "Vietnamiens médiévaux",
+            "ADG_CLA_ORI_225": "Chinois Song",
+            "ADG_CLA_ORI_226": "Xi Xia",
+            "ADG_CLA_ORI_227": "Jurchen-Jin",
+            "ADG_CLA_ORI_228": "Kara-Khitan",
+            "ADG_CLA_ORI_229": "Empire Mongol"
+          }
+        }
+      }
+    },
+    "ADG_TAR": {
+      "title": "MOYEN AGE TARDIF",
+      "categories": {
+        "ADG_TAR_EUR": {
+          "title": "Europe Médiévale",
+          "armies": {
+            "ADG_TAR_EUR_230": "Royaume de Grenade",
+            "ADG_TAR_EUR_231": "Suisses",
+            "ADG_TAR_EUR_232": "Ecossais Médiévaux",
+            "ADG_TAR_EUR_233": "Irlandais Médiévaux",
+            "ADG_TAR_EUR_234": "Anglo-Irlandais médiévaux",
+            "ADG_TAR_EUR_235": "Condottieres Italiens",
+            "ADG_TAR_EUR_236": "Anglais Guerre de cent ans",
+            "ADG_TAR_EUR_237": "Français Guerre de cent ans",
+            "ADG_TAR_EUR_238": "Allemands Médiévaux",
+            "ADG_TAR_EUR_239": "Espagnols Médiévaux",
+            "ADG_TAR_EUR_240": "Royaume de Navarre",
+            "ADG_TAR_EUR_241": "Grandes Compagnies",
+            "ADG_TAR_EUR_242": "Bourguignons",
+            "ADG_TAR_EUR_243": "Flamands",
+            "ADG_TAR_EUR_244": "Gallois Médiévaux",
+            "ADG_TAR_EUR_245": "Ordonnance Française",
+            "ADG_TAR_EUR_246": "Ordonnance Bourguignonne",
+            "ADG_TAR_EUR_247": "Guerre des Roses"
+          }
+        },
+        "ADG_TAR_EOR": {
+          "title": "Europe Orientale Médiévale",
+          "armies": {
+            "ADG_TAR_EOR_248": "Lithuaniens",
+            "ADG_TAR_EOR_249": "Hongrois Médiévaux",
+            "ADG_TAR_EOR_250": "Russes Moscovites",
+            "ADG_TAR_EOR_251": "Scandinaves Médiévaux",
+            "ADG_TAR_EOR_252": "Horde d'Or",
+            "ADG_TAR_EOR_253": "Teutoniques Médiévaux",
+            "ADG_TAR_EOR_254": "Polonais Médiévaux",
+            "ADG_TAR_EOR_255": "Hussite"
+          }
+        },
+        "ADG_TAR_BAL": {
+          "title": "Balkans, Grèce et Moyen Orient",
+          "armies": {
+            "ADG_TAR_BAL_256": "Empire Serbe",
+            "ADG_TAR_BAL_257": "Second Empire Bulgare",
+            "ADG_TAR_BAL_258": "Byzantins Tardifs",
+            "ADG_TAR_BAL_259": "Mamelouks",
+            "ADG_TAR_BAL_260": "Turcomans",
+            "ADG_TAR_BAL_261": "Turcs Ottomans",
+            "ADG_TAR_BAL_262": "Compagnie Catalane",
+            "ADG_TAR_BAL_263": "Ordre de St Jean",
+            "ADG_TAR_BAL_264": "Chypre Médievale",
+            "ADG_TAR_BAL_265": "Valaques et Moldaves",
+            "ADG_TAR_BAL_266": "Albanais",
+            "ADG_TAR_BAL_267": "Empire Ottoman",
+            "ADG_TAR_BAL_268": "Byzance assiégée"
+          }
+        },
+        "ADG_TAR_CEN": {
+          "title": "Asie Centrale",
+          "armies": {
+            "ADG_TAR_CEN_269": "Perses Islamiques",
+            "ADG_TAR_CEN_270": "Mongols Ilkhanides",
+            "ADG_TAR_CEN_271": "Mongols des Steppes",
+            "ADG_TAR_CEN_272": "Jalayirides",
+            "ADG_TAR_CEN_273": "Timourides",
+            "ADG_TAR_CEN_274": "Turcomans Mouton Noir - Mouton Blanc"
+          }
+        },
+        "ADG_TAR_ASM": {
+          "title": "Asie Médiévale",
+          "armies": {
+            "ADG_TAR_ASM_275": "Sultanat de Delhi",
+            "ADG_TAR_ASM_276": "Royaume de Vijayanagar",
+            "ADG_TAR_ASM_277": "Indonésiens et Malaisiens",
+            "ADG_TAR_ASM_278": "Siam",
+            "ADG_TAR_ASM_279": "Chinois Yuan",
+            "ADG_TAR_ASM_280": "Samourai Tardifs",
+            "ADG_TAR_ASM_281": "Chinois Ming",
+            "ADG_TAR_ASM_282": "Coréens Yi"
+          }
+        }
+      }
+    },
+    "ADG_AME": {
+      "title": "AMERIQUES",
+      "categories": {
+        "ADG_AME_CEN": {
+          "title": "Amérique centrale",
+          "armies": {
+            "ADG_AME_CEN_283": "Olmèques",
+            "ADG_AME_CEN_284": "Mayas",
+            "ADG_AME_CEN_285": "Zapotèques et Mixtèques",
+            "ADG_AME_CEN_286": "Toltèques",
+            "ADG_AME_CEN_287": "Chinantèques",
+            "ADG_AME_CEN_288": "Tarasques",
+            "ADG_AME_CEN_289": "Aztèques",
+            "ADG_AME_CEN_290": "Texcalas"
+          }
+        },
+        "ADG_AME_SUD": {
+          "title": "Amérique du sud",
+          "armies": {
+            "ADG_AME_SUD_291": "Incas",
+            "ADG_AME_SUD_292": "Chancas",
+            "ADG_AME_SUD_293": "Mochicas et Chimus",
+            "ADG_AME_SUD_294": "Tupis",
+            "ADG_AME_SUD_295": "Mapuches"
+          }
+        },
+        "ADG_AME_NOR": {
+          "title": "Amérique du nord",
+          "armies": {
+            "ADG_AME_NOR_296": "Chichimèques",
+            "ADG_AME_NOR_297": "Pueblos",
+            "ADG_AME_NOR_298": "Tribus d'Amérique du nord",
+            "ADG_AME_NOR_299": "Indiens du Mississipi",
+            "ADG_AME_NOR_300": "Polynésiens et Mélanésiens"
+          }
+        }
+      }
+    }
+  }
+}

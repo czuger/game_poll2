@@ -1,0 +1,35 @@
+{
+  "code": "BOL",
+  "title": "Bolt Action",
+  "periods": {
+    "BOL_2GM": {
+      "title": "2nd Guerre Mondiale",
+      "categories": {
+        "BOL_2GM_FAC": {
+          "title": "Factions",
+          "armies": {
+            "BOL_2GM_FAC_001": "Allemagne",
+            "BOL_2GM_FAC_002": "Union soviétique",
+            "BOL_2GM_FAC_003": "États-Unis",
+            "BOL_2GM_FAC_004": "Royaume-Uni",
+            "BOL_2GM_FAC_005": "Japon",
+            "BOL_2GM_FAC_006": "France",
+            "BOL_2GM_FAC_007": "Italie",
+            "BOL_2GM_FAC_008": "Chine nationaliste",
+            "BOL_2GM_FAC_009": "Pologne",
+            "BOL_2GM_FAC_010": "Finlande",
+            "BOL_2GM_FAC_011": "Hongrie",
+            "BOL_2GM_FAC_012": "Roumanie",
+            "BOL_2GM_FAC_013": "Résistance/Partisans",
+            "BOL_2GM_FAC_014": "Norvège",
+            "BOL_2GM_FAC_015": "Belgique",
+            "BOL_2GM_FAC_016": "Pays-Bas",
+            "BOL_2GM_FAC_017": "Grèce",
+            "BOL_2GM_FAC_018": "Bulgarie",
+            "BOL_2GM_FAC_019": "Croatie"
+          }
+        }
+      }
+    }
+  }
+}

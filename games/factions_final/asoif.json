@@ -1,0 +1,25 @@
+{
+  "code": "SOI",
+  "title": "A Song of Ice and Fire",
+  "periods": {
+    "SOI_TRO": {
+      "title": "Troisième Ère",
+      "categories": {
+        "SOI_TRO_FAC": {
+          "title": "Factions",
+          "armies": {
+            "SOI_TRO_FAC_001": "Maison Stark",
+            "SOI_TRO_FAC_002": "Maison Lannister",
+            "SOI_TRO_FAC_003": "Maison Baratheon",
+            "SOI_TRO_FAC_004": "Maison Greyjoy",
+            "SOI_TRO_FAC_005": "Maison Targaryen",
+            "SOI_TRO_FAC_006": "Maison Martell",
+            "SOI_TRO_FAC_007": "La Garde de Nuit",
+            "SOI_TRO_FAC_008": "Les Sauvageons (Free Folk)",
+            "SOI_TRO_FAC_009": "Mercenaires (Neutres)"
+          }
+        }
+      }
+    }
+  }
+}
