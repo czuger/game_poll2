@@ -1,11 +1,15 @@
-from datetime import datetime, timedelta
+import logging
+from datetime import datetime
+from datetime import timedelta
 from typing import Dict
 
 from pymongo import MongoClient
 
 from poll.libs.misc.config import ConfigReader
+from poll.libs.misc.logging.set_logging import COMPUTE_VOTES_LOG_NAME
+from poll.libs.misc.logging.set_logging import set_logging
 
-DATABASE_NAME = "games_database"  # Update with your database name
+logger = logging.getLogger(COMPUTE_VOTES_LOG_NAME)
 
 
 def compute_game_score(total_votes: int, last_votes: int) -> float:
@@ -24,12 +28,12 @@ def compute_game_score(total_votes: int, last_votes: int) -> float:
 
 
 class VoteCalculator:
-    def __init__(self, config_reader):
+    def __init__(self, config_reader: ConfigReader):
         connection_string = config_reader.get_mongo_connection_string()
         self.client = MongoClient(connection_string)
-        self.db = self.client[DATABASE_NAME]
-        self.votes = self.db.votes  # Adjust collection name as needed
-        self.guilds = self.db.guilds  # Adjust collection name as needed
+        self.db = self.client[config_reader.get_db_name()]
+        self.votes = self.db.votes
+        self.guilds = self.db.guilds
 
     def get_vote_totals(self) -> Dict[str, int]:
         """Get grand total votes for all games"""
@@ -87,38 +91,39 @@ class VoteCalculator:
             )
 
             if result.matched_count > 0:
-                print(f"✓ Updated {game_key}: total_votes={total_votes}, last_votes={last_votes}")
+                logger.info(f"✓ Updated {game_key}: total_votes={total_votes}, last_votes={last_votes}")
             else:
-                print(f"⚠ Game '{game_key}' not found in games collection")
+                logger.info(f"⚠ Game '{game_key}' not found in games collection")
 
         except Exception as e:
-            print(f"✗ Error updating {game_key}: {e}")
+            logger.info(f"✗ Error updating {game_key}: {e}")
 
     def update_all_games(self):
         """Main method to update all games with vote totals"""
-        print("Calculating vote totals...")
+        logger.info("Calculating vote totals...")
 
         # Get vote totals
         grand_totals = self.get_vote_totals()
+        logger.info("grand_totals = ", grand_totals)
         last_2_months_totals = self.get_last_months_totals()
-
-        print(f"Found votes for {len(grand_totals)} games")
-        print(f"Grand totals: {grand_totals}")
-        print(f"Last 2 months: {last_2_months_totals}")
+        logger.info("last_2_months_totals = ", last_2_months_totals)
 
         # Get all unique game keys
         all_game_keys = set(grand_totals.keys()) | set(last_2_months_totals.keys())
 
-        print(f"\nUpdating {len(all_game_keys)} games...")
+        logger.info(f"\nUpdating {len(all_game_keys)} games...")
 
         # Update each game
         for game_key in all_game_keys:
+            logger.info("Processing key = ", game_key)
             total_votes = grand_totals.get(game_key, 0)
             last_votes = last_2_months_totals.get(game_key, 0)
 
+            logger.info("total_votes, last_votes", total_votes, last_votes)
+
             self.update_game_votes(game_key, total_votes, last_votes)
 
-        print(f"\n✓ Finished updating all games")
+        logger.info(f"\n✓ Finished updating all games")
 
     def close(self):
         """Close database connection"""
@@ -131,7 +136,7 @@ class VoteCalculator:
         guild_data = self.guilds.find_one({"key": guild_id})
 
         if not guild_data or "games" not in guild_data:
-            print(f"⚠ No games found for guild {guild_id}")
+            logger.info(f"⚠ No games found for guild {guild_id}")
             return {}
 
         games_dict = {}
@@ -153,55 +158,35 @@ class VoteCalculator:
                 lowest_score = scores_dict[game_key]
                 lowest_key = game_key
 
-        print(lowest_score, lowest_key)
+        logger.info(lowest_score, lowest_key)
 
         games.sort(reverse=True)
         for game in games:
-            print(game)
+            logger.info(game)
 
 
 def main():
     # Import and initialize your ConfigReader
 
-    config_reader = ConfigReader(config_file_path="config_staging.json")  # Initialize with any required parameters
+    config_reader = ConfigReader(config_file_path="config.json")  # Initialize with any required parameters
+
+    set_logging(config_reader)
 
     # Initialize calculator
     calculator = VoteCalculator(config_reader)
 
     try:
         # Update all games
+        logger.info("About to update all games.")
         calculator.update_all_games()
 
-        game_keys = [
-            'adg',
-            'bolt_action',
-            'frostgrave',
-            'malifaux',
-            'saga',
-            'asoif',
-            'v_for_victory',
-            'valour___fortitude',
-            'principles_of_war',
-            'kings_of_war',
-            'sw_legion',
-            'adeptus_titanicus',
-            'mousquets_et_tomahawks',
-            'firefly',
-            'lion_rampant',
-            'blood_bowl',
-            'au_contact',
-            'epic',
-            'dracula_s_america',
-            'rumbleslam'
-        ]
+        # logger.info(len(game_keys))
 
-        print(len(game_keys))
-
-        calculator.find_lowest_voted_game(list(game_keys))
-        pass
+        # calculator.find_lowest_voted_game(list(game_keys))
+        # pass
 
     except Exception as e:
-        print(f"Error: {e}")
+        logger.info(f"Error: {e}")
 
     finally:
         # Clean up

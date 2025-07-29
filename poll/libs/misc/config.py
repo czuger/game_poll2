@@ -65,7 +65,10 @@ class ConfigReader:
         Returns:
             dict: The MongoDB configuration.
         """
-        return self.config.get("mongo", {})
+        return self.config["mongo"]
+
+    def get_db_name(self):
+        return self.get_mongo_config()["db_name"]
 
     def get_mongo_connection_string(self):
         """

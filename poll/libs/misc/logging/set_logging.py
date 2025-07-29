@@ -14,6 +14,7 @@ ADD_GAMES_LOG_NAME = "add_games"
 AUTO_REFRESH_LOG_NAME = "auto_refresh_poll"
 SCHEDULE_POLL_LOG_NAME = "schedule_poll"
 VOTERS_ENGINE_LOG_NAME = "voters_engine_log"
+COMPUTE_VOTES_LOG_NAME = "compute_votes"
 
 
 # Define a utility function to set up a rotating file handler with a formatter
@@ -61,3 +62,6 @@ def set_logging(config: ConfigReader):
     setup_rotating_logger(VOTERS_ENGINE_LOG_NAME,
                           f"/var/log/{log_directory}/{VOTERS_ENGINE_LOG_NAME}.log",
                           logging.DEBUG)
+    setup_rotating_logger(COMPUTE_VOTES_LOG_NAME,
+                          f"/var/log/{log_directory}/{COMPUTE_VOTES_LOG_NAME}.log",
+                          logging.INFO)
