@@ -104,9 +104,9 @@ class VoteCalculator:
 
         # Get vote totals
         grand_totals = self.get_vote_totals()
-        logger.info("grand_totals = ", grand_totals)
+        logger.info(f"grand_totals = {grand_totals}")
         last_2_months_totals = self.get_last_months_totals()
-        logger.info("last_2_months_totals = ", last_2_months_totals)
+        logger.info(f"last_2_months_totals = {last_2_months_totals}")
 
         # Get all unique game keys
         all_game_keys = set(grand_totals.keys()) | set(last_2_months_totals.keys())
@@ -115,11 +115,11 @@ class VoteCalculator:
 
         # Update each game
         for game_key in all_game_keys:
-            logger.info("Processing key = ", game_key)
+            logger.info(f"Processing key = {game_key}")
             total_votes = grand_totals.get(game_key, 0)
             last_votes = last_2_months_totals.get(game_key, 0)
 
-            logger.info("total_votes, last_votes", total_votes, last_votes)
+            logger.info(f"total_votes, last_votes = {total_votes}, {last_votes}")
 
             self.update_game_votes(game_key, total_votes, last_votes)
 
