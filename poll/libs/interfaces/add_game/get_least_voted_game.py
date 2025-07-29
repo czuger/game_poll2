@@ -11,7 +11,8 @@ def find_lowest_voted_game(guild: Guild, poll: Poll):
     lowest_score = 999999999
     lowest_key = None
 
-    for game_key in poll.games.keys():
+    for game_poll_key in poll.games.keys():
+        game_key = poll.games[game_poll_key]["key"]
         score = guild.games[game_key]["votes_score"]
 
         logger.info(f"Game score = {game_key}, {score}")
