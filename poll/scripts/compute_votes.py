@@ -129,41 +129,6 @@ class VoteCalculator:
         """Close database connection"""
         self.client.close()
 
-    def get_games_by_score_simple(self, guild_id: str = "487195321852624917") -> Dict:
-        """
-        Simple approach: get guild data and sort in Python
-        """
-        guild_data = self.guilds.find_one({"key": guild_id})
-
-        if not guild_data or "games" not in guild_data:
-            logger.info(f"⚠ No games found for guild {guild_id}")
-            return {}
-
-        games_dict = {}
-        for game_key, game_data in guild_data["games"].items():
-            games_dict[game_key] = game_data.get("votes_score", 0)
-
-        return games_dict
-
-    def find_lowest_voted_game(self, game_list):
-        scores_dict = self.get_games_by_score_simple()
-        lowest_score = 999999999
-        lowest_key = None
-
-        games = []
-
-        for game_key in game_list:
-            games.append((scores_dict[game_key], game_key))
-            if scores_dict[game_key] < lowest_score:
-                lowest_score = scores_dict[game_key]
-                lowest_key = game_key
-
-        logger.info(lowest_score, lowest_key)
-
-        games.sort(reverse=True)
-        for game in games:
-            logger.info(game)
-
 
 def main():
     # Import and initialize your ConfigReader
