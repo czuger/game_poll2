@@ -31,6 +31,7 @@ def find_lowest_voted_game(guild: Guild, poll: Poll):
 
 def trim_games_list(guild: Guild, poll: Poll):
     """We will remove all games over 19 to make room to the new one"""
+    logger.info(f"len(poll.games) = {len(poll.games)}")
     while len(poll.games) >= 20:
         logger.info(f"len(poll.games) = {len(poll.games)}")
 
