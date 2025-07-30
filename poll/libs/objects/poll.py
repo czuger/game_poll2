@@ -66,6 +66,24 @@ class Poll:
 
         self.__initialize_poll(record)
 
+    def __repr__(self):
+        """
+        Return a string representation of the Poll object for debugging.
+
+        Returns
+        -------
+        str
+            A string representation showing key poll information.
+        """
+        channel_info = f"#{self.channel.name}" if hasattr(self.channel, 'name') else str(self.channel)
+
+        games_count = len(self.games) if self.games else 0
+        others_count = len(self.others) if self.others else 0
+        votes_count = len(self.votes) if self.votes else 0
+
+        return (f"Poll(key='{self.key}', channel={channel_info}, "
+                f"games={games_count}, others={others_count}, votes={votes_count})")
+
     def __initialize_poll(self, poll_dict: dict) -> None:
         self.games = poll_dict[self.BUTTONS_KEY][self.GAMES_KEY]
         self.others = poll_dict[self.BUTTONS_KEY][self.OTHERS_KEY]
