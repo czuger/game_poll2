@@ -10,6 +10,7 @@ logger = logging.getLogger(ADD_GAMES_LOG_NAME)
 def find_lowest_voted_game(guild: Guild, poll: Poll):
     lowest_score = 999999999
     lowest_key = None
+    lowest_poll_key = None
 
     logger.info(f"In find_lowest_voted_game poll = {poll}")
 
@@ -22,6 +23,7 @@ def find_lowest_voted_game(guild: Guild, poll: Poll):
         if score < lowest_score:
             lowest_score = score
             lowest_key = game_key
+            lowest_poll_key = game_poll_key
 
-    logger.info(f"Lowest key = {lowest_key}, {lowest_score}")
-    return lowest_key
+    logger.info(f"Lowest key = {lowest_poll_key}, {lowest_key}, {lowest_score}")
+    return lowest_poll_key
