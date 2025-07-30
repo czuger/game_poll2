@@ -3,7 +3,7 @@ from copy import copy
 
 import discord
 
-from poll.libs.interfaces.add_game.get_least_voted_game import find_lowest_voted_game
+from poll.libs.interfaces.add_game.get_least_voted_game import trim_games_list
 from poll.libs.interfaces.helpers.buttons import get_key_from_btn
 from poll.libs.interfaces.helpers.buttons import make_btn_key
 from poll.libs.misc.logging.set_logging import ADD_GAMES_LOG_NAME
@@ -48,9 +48,7 @@ class AddToPollButton(discord.ui.Button):
         logger.debug(f"Document check for : {self.poll.key}, {game['key']} -> found = {found}")
 
         if not found:
-            if len(self.poll.games) >= 20:
-                least_game_key = find_lowest_voted_game(self.guild, self.poll)
-                del self.poll.games[least_game_key]
+            self.poll = trim_games_list(self.guild, self.poll)
 
             game["players"] = []
             new_btn_key = make_btn_key(game_key, "g")

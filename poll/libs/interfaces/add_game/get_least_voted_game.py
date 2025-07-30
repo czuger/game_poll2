@@ -27,3 +27,18 @@ def find_lowest_voted_game(guild: Guild, poll: Poll):
 
     logger.info(f"Lowest key = {lowest_poll_key}, {lowest_key}, {lowest_score}")
     return lowest_poll_key
+
+
+def trim_games_list(guild: Guild, poll: Poll):
+    """We will remove all games over 19 to make room to the new one"""
+    while len(poll.games) >= 20:
+        logger.info(f"len(poll.games) = {len(poll.games)}")
+
+        least_game_key = find_lowest_voted_game(guild, poll)
+        logger.info(f"least_game_key = {least_game_key}")
+
+        logger.info(f"poll.games.keys() - before = {poll.games.keys()}")
+        del poll.games[least_game_key]
+        logger.info(f"poll.games.keys() - after = {poll.games.keys()}")
+
+    return poll
