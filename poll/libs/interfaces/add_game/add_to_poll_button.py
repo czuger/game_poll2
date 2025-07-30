@@ -54,11 +54,12 @@ class AddToPollButton(discord.ui.Button):
             new_btn_key = make_btn_key(game_key, "g")
             logger.debug(f"In AddToPollButton : new_btn_key = {new_btn_key}")
 
+            self.poll.games[new_btn_key] = game
             await self.db.poll_instances.update_one(
                 {"key": self.poll.key},
                 {"$set": {"buttons.games": self.poll.games}}
             )
-
+            
             pv = PollView()
             await pv.initialize_view(self.db, self.poll)
 
