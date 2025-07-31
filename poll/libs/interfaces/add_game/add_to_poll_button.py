@@ -1,3 +1,4 @@
+import datetime
 import logging
 from copy import copy
 
@@ -50,7 +51,15 @@ class AddToPollButton(discord.ui.Button):
         if not found:
             self.poll = trim_games_list(self.guild, self.poll)
 
+            if len(self.poll.games) >= 20:
+                await interaction.response.send_message(
+                    "Oops !!! Trop de messages ont été envoyés dans les derniers temps 🥺. Impossible d'ajouter un jeu avant demain.",
+                    delete_after=30, ephemeral=True)
+                return
+
             game["players"] = []
+            game["add_date"] = datetime.datetime.now(datetime.UTC)
+
             new_btn_key = make_btn_key(game_key, "g")
             logger.debug(f"In AddToPollButton : new_btn_key = {new_btn_key}")
 
@@ -59,7 +68,7 @@ class AddToPollButton(discord.ui.Button):
                 {"key": self.poll.key},
                 {"$set": {"buttons.games": self.poll.games}}
             )
-            
+
             pv = PollView()
             await pv.initialize_view(self.db, self.poll)
 
