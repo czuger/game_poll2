@@ -17,8 +17,8 @@ def find_lowest_voted_game(guild: Guild, poll: Poll):
 
     for game_poll_key in poll.games.keys():
         game_key = poll.games[game_poll_key]["key"]
-        add_date = poll.games[game_poll_key].get(
-            "add_date", one_year_ago=datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=365))
+        one_year_ago = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=365)
+        add_date = poll.games[game_poll_key].get("add_date", one_year_ago)
 
         if add_date > datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1):
             continue
