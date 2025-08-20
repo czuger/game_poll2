@@ -20,6 +20,9 @@ def find_lowest_voted_game(guild: Guild, poll: Poll):
         one_year_ago = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=365)
         add_date = poll.games[game_poll_key].get("add_date", one_year_ago)
 
+        if add_date.tzinfo is None:
+            add_date = add_date.replace(tzinfo=datetime.UTC)
+            
         if add_date > datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1):
             continue
             # We skip games added recently.
